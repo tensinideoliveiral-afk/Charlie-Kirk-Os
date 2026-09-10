@@ -1,0 +1,2577 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en" data-theme="dark">\
+<head>\
+<meta charset="UTF-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\
+<title>Charlie Kirk OS</title>\
+<link rel="preconnect" href="https://fonts.googleapis.com">\
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">\
+<style>\
+/* ============ base / theme ============ */\
+*\{margin:0;padding:0;box-sizing:border-box\}\
+:root\{\
+  --font-ui:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;\
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;\
+  --accent:#e0913f; --accent-fg:#1d1409;\
+  --glass:rgba(33,27,21,.80); --glass-2:rgba(48,39,31,.55);\
+  --brd:rgba(255,243,226,.09); --brd-2:rgba(255,243,226,.16);\
+  --fg:#f3ece2; --fg-dim:#b3a493; --fg-faint:#7c6f5e;\
+  --danger:#e2574f; --ok:#66b38a;\
+  --shadow-win:0 32px 80px -22px rgba(0,0,0,.75),0 4px 18px rgba(0,0,0,.35);\
+  --shadow-win-off:0 14px 44px -16px rgba(0,0,0,.55);\
+\}\
+[data-theme="light"]\{\
+  --glass:rgba(255,252,246,.82); --glass-2:rgba(255,250,240,.7);\
+  --brd:rgba(62,45,27,.11); --brd-2:rgba(62,45,27,.2);\
+  --fg:#2c2118; --fg-dim:#6f6353; --fg-faint:#a4907a;\
+  --shadow-win:0 30px 70px -24px rgba(60,40,20,.45),0 4px 16px rgba(60,40,20,.18);\
+  --shadow-win-off:0 12px 36px -16px rgba(60,40,20,.35);\
+\}\
+html\{font-size:16px\}\
+body\{font-family:var(--font-ui);background:#171310;color:var(--fg);height:100vh;overflow:hidden;cursor:default;-webkit-user-select:none;user-select:none\}\
+::selection\{background:var(--accent);color:var(--accent-fg)\}\
+::-webkit-scrollbar\{width:9px;height:9px\}\
+::-webkit-scrollbar-thumb\{background:rgba(140,124,103,.35);border-radius:6px;border:2px solid transparent;background-clip:content-box\}\
+::-webkit-scrollbar-track\{background:transparent\}\
+*\{scrollbar-width:thin;scrollbar-color:rgba(140,124,103,.35) transparent\}\
+button\{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer\}\
+input,textarea,select\{font-family:inherit\}\
+body.no-anim *\{transition:none!important;animation:none!important\}\
+\
+/* ============ desktop ============ */\
+#desktop\{position:fixed;inset:0;overflow:hidden\}\
+#wallpaper\{position:absolute;inset:0;z-index:0;transition:opacity .35s\}\
+#icons\{position:absolute;inset:0;z-index:1\}\
+#win-layer\{position:absolute;inset:0;z-index:10;pointer-events:none\}\
+.dicon\{position:absolute;width:5.6rem;padding:.45rem .25rem .35rem;border-radius:.75rem;display:flex;flex-direction:column;align-items:center;gap:.28rem\}\
+.dicon .icn\{width:3.1rem;height:3.1rem;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35))\}\
+.dicon .icn svg\{width:100%;height:100%\}\
+.dicon .lbl\{font-size:.72rem;line-height:1.25;text-align:center;color:var(--fg);text-shadow:0 1px 3px rgba(0,0,0,.65),0 0 10px rgba(0,0,0,.45);max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word\}\
+.dicon.selected\{background:color-mix(in srgb,var(--accent) 28%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 55%,transparent)\}\
+.dicon .icn,.dicon .lbl\{pointer-events:none\}\
+\
+/* ============ windows ============ */\
+.win\{position:absolute;pointer-events:auto;display:flex;flex-direction:column;background:var(--glass);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5);border:1px solid var(--brd-2);border-radius:1rem;box-shadow:var(--shadow-win-off);overflow:hidden;min-width:21rem;min-height:13rem\}\
+.win.focused\{box-shadow:var(--shadow-win);border-color:color-mix(in srgb,var(--accent) 32%,var(--brd-2))\}\
+.win.opening\{animation:winIn .28s cubic-bezier(.2,.9,.25,1.12)\}\
+@keyframes winIn\{from\{opacity:0;transform:scale(.92) translateY(14px)\}\}\
+.win.closing\{animation:winOut .2s ease forwards\}\
+@keyframes winOut\{to\{opacity:0;transform:scale(.93) translateY(8px)\}\}\
+.win.minimized\{display:none\}\
+.win.maximized\{border-radius:.8rem\}\
+.win.maximized .rs\{display:none\}\
+.titlebar\{height:2.7rem;flex:none;display:flex;align-items:center;gap:.55rem;padding:0 .45rem 0 .9rem;border-bottom:1px solid var(--brd);cursor:default;background:rgba(255,255,255,.03)\}\
+[data-theme="light"] .titlebar\{background:rgba(255,255,255,.35)\}\
+.tb-icon\{width:1.1rem;height:1.1rem;flex:none;display:grid;place-items:center\}\
+.tb-icon svg\{width:100%;height:100%\}\
+.tb-title\{flex:1;min-width:0;font-size:.82rem;font-weight:600;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)\}\
+.win:not(.focused) .tb-title\{color:var(--fg-dim)\}\
+.tb-controls\{display:flex;gap:2px\}\
+.wc\{width:2rem;height:1.85rem;border-radius:.5rem;display:grid;place-items:center;color:var(--fg-dim)\}\
+.wc:hover\{background:rgba(128,110,90,.25);color:var(--fg)\}\
+.wc-close:hover\{background:var(--danger);color:#fff\}\
+.win-body\{flex:1;min-height:0;position:relative;display:flex;flex-direction:column\}\
+.rs\{position:absolute;z-index:6\}\
+.rs-n\{top:-3px;left:10px;right:10px;height:7px;cursor:ns-resize\}\
+.rs-s\{bottom:-3px;left:10px;right:10px;height:7px;cursor:ns-resize\}\
+.rs-e\{right:-3px;top:10px;bottom:10px;width:7px;cursor:ew-resize\}\
+.rs-w\{left:-3px;top:10px;bottom:10px;width:7px;cursor:ew-resize\}\
+.rs-ne\{top:-3px;right:-3px;width:14px;height:14px;cursor:nesw-resize\}\
+.rs-nw\{top:-3px;left:-3px;width:14px;height:14px;cursor:nwse-resize\}\
+.rs-se\{bottom:-3px;right:-3px;width:14px;height:14px;cursor:nwse-resize\}\
+.rs-sw\{bottom:-3px;left:-3px;width:14px;height:14px;cursor:nesw-resize\}\
+.drag-ghost\{position:fixed;z-index:960000;pointer-events:none;opacity:.95;transform:rotate(-4deg) scale(1.1);filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))\}\
+.drop-hint\{outline:2px solid var(--accent);outline-offset:-2px;background:color-mix(in srgb,var(--accent) 15%,transparent)!important;border-radius:.7rem\}\
+\
+/* ============ dock ============ */\
+#dock\{position:fixed;left:50%;bottom:.75rem;transform:translateX(-50%);z-index:900000;display:flex;align-items:center;gap:.35rem;padding:.5rem .55rem;background:var(--glass);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.4rem;box-shadow:0 18px 50px -12px rgba(0,0,0,.6);max-width:96vw\}\
+.dock-btn\{width:2.9rem;height:2.9rem;border-radius:.85rem;display:grid;place-items:center;position:relative;flex:none;transition:transform .18s cubic-bezier(.2,.9,.3,1.4),background .18s\}\
+.dock-btn svg\{width:1.9rem;height:1.9rem\}\
+.dock-btn:hover\{transform:translateY(-.3rem) scale(1.08);background:rgba(128,110,90,.18)\}\
+.dock-btn.running::after\{content:'';position:absolute;bottom:.1rem;left:50%;transform:translateX(-50%);width:.32rem;height:.32rem;border-radius:50%;background:var(--accent)\}\
+.dock-btn.active\{background:rgba(128,110,90,.22)\}\
+#start-btn\{width:3.1rem;height:3.1rem;border-radius:1rem;background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 92%,#fff),color-mix(in srgb,var(--accent) 62%,#5c3413));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -6px color-mix(in srgb,var(--accent) 70%,transparent);display:grid;place-items:center;flex:none\}\
+#start-btn svg\{width:1.5rem;height:1.5rem\}\
+#start-btn:hover\{transform:translateY(-.2rem) scale(1.05)\}\
+.dock-sep\{width:1px;height:2.1rem;background:var(--brd-2);margin:0 .3rem;flex:none\}\
+.dock-clock\{padding:0 .7rem;text-align:center;line-height:1.2;border-radius:.7rem;flex:none;cursor:pointer\}\
+.dock-clock:hover\{background:rgba(128,110,90,.18)\}\
+#clock-time\{font-size:.92rem;font-weight:700\}\
+#clock-date\{font-size:.62rem;color:var(--fg-dim)\}\
+.dock-tray\{width:2.2rem;height:2.2rem;border-radius:.65rem;display:grid;place-items:center;color:var(--fg-dim);flex:none\}\
+.dock-tray:hover\{background:rgba(128,110,90,.18);color:var(--fg)\}\
+\
+/* ============ launcher / popovers ============ */\
+.launch-veil\{position:fixed;inset:0;z-index:910000\}\
+#launcher\{position:fixed;left:50%;bottom:5.4rem;transform:translateX(-50%);z-index:911000;width:33rem;max-width:94vw;background:var(--glass);backdrop-filter:blur(32px) saturate(1.6);-webkit-backdrop-filter:blur(32px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.3rem;padding:.9rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);animation:popIn .22s cubic-bezier(.2,.9,.3,1.1)\}\
+@keyframes popIn\{from\{opacity:0;transform:translate(var(--pdx,0),10px) scale(.97)\}\}\
+#launcher\{--pdx:-50%\}\
+#launcher input\{width:100%;padding:.62rem .9rem;border-radius:.7rem;background:rgba(128,110,90,.16);border:1px solid var(--brd-2);color:var(--fg);font-size:.9rem;outline:none;margin-bottom:.85rem\}\
+.lgrid\{display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem;max-height:17rem;overflow:auto\}\
+.ltile\{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.65rem .25rem;border-radius:.85rem;cursor:pointer\}\
+.ltile .icn\{width:2.6rem;height:2.6rem\}\
+.ltile .icn svg\{width:100%;height:100%\}\
+.ltile span\{font-size:.7rem;text-align:center;line-height:1.2\}\
+.ltile:hover,.ltile.hl\{background:rgba(128,110,90,.22)\}\
+.pop\{position:fixed;z-index:911000;background:var(--glass);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.1rem;padding:.85rem;box-shadow:0 24px 60px -18px rgba(0,0,0,.65);animation:popIn .2s cubic-bezier(.2,.9,.3,1.1);min-width:14rem\}\
+\
+/* ============ context menu ============ */\
+.ctx\{position:fixed;z-index:950000;min-width:13.5rem;padding:.3rem;background:var(--glass);backdrop-filter:blur(26px) saturate(1.6);-webkit-backdrop-filter:blur(26px) saturate(1.6);border:1px solid var(--brd-2);border-radius:.8rem;box-shadow:0 18px 50px -12px rgba(0,0,0,.65);animation:ctxIn .13s ease\}\
+@keyframes ctxIn\{from\{opacity:0;transform:scale(.96) translateY(2px)\}\}\
+.ctx-item\{display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;border-radius:.5rem;font-size:.8rem;cursor:pointer;color:var(--fg)\}\
+.ctx-item:hover\{background:var(--accent);color:var(--accent-fg)\}\
+.ctx-item.danger\{color:var(--danger)\}\
+.ctx-item.danger:hover\{background:var(--danger);color:#fff\}\
+.ctx-item.dis\{opacity:.4;cursor:default\}\
+.ctx-item.dis:hover\{background:none;color:var(--fg)\}\
+.ctx-item .ci\{width:1rem;height:1rem;display:grid;place-items:center;opacity:.85;flex:none\}\
+.ctx-sep\{height:1px;background:var(--brd);margin:.3rem .4rem\}\
+\
+/* ============ modal / dialog ============ */\
+.modal-veil\{position:fixed;inset:0;z-index:980000;background:rgba(12,9,6,.45);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:grid;place-items:center;animation:fadeIn .16s\}\
+@keyframes fadeIn\{from\{opacity:0\}\}\
+.modal\{width:min(26rem,92vw);background:var(--glass);backdrop-filter:blur(30px) saturate(1.5);-webkit-backdrop-filter:blur(30px) saturate(1.5);border:1px solid var(--brd-2);border-radius:1.15rem;box-shadow:0 30px 80px -18px rgba(0,0,0,.7);animation:modIn .22s cubic-bezier(.2,.9,.3,1.1)\}\
+.modal.wide\{width:min(31rem,94vw)\}\
+@keyframes modIn\{from\{opacity:0;transform:scale(.94) translateY(10px)\}\}\
+.modal-title\{padding:1rem 1.2rem .35rem;font-weight:700;font-size:1rem\}\
+.modal-body\{padding:.45rem 1.2rem 1rem;font-size:.86rem;color:var(--fg-dim);line-height:1.55\}\
+.modal-actions\{display:flex;justify-content:flex-end;gap:.5rem;padding:0 1.2rem 1.1rem\}\
+.btn\{padding:.5rem .95rem;border-radius:.6rem;font-weight:600;font-size:.82rem;border:1px solid var(--brd-2);background:rgba(128,110,90,.16);color:var(--fg);cursor:pointer\}\
+.btn:hover\{background:rgba(128,110,90,.3)\}\
+.btn.primary\{background:var(--accent);border-color:transparent;color:var(--accent-fg)\}\
+.btn.primary:hover\{filter:brightness(1.09)\}\
+.btn.danger\{background:var(--danger);border-color:transparent;color:#fff\}\
+.btn:disabled\{opacity:.4;cursor:default\}\
+/* file picker */\
+.fp\{display:flex;flex-direction:column;min-height:16rem\}\
+.fp-main\{display:flex;min-height:14rem;border:1px solid var(--brd);border-radius:.7rem;overflow:hidden\}\
+.fp-side\{width:9.5rem;flex:none;border-right:1px solid var(--brd);padding:.4rem;overflow:auto\}\
+.fp-list\{flex:1;overflow:auto;padding:.35rem;display:flex;flex-direction:column;gap:1px\}\
+.fp-row\{display:flex;align-items:center;gap:.55rem;padding:.38rem .55rem;border-radius:.5rem;font-size:.8rem;cursor:pointer;color:var(--fg)\}\
+.fp-row:hover\{background:rgba(128,110,90,.18)\}\
+.fp-row.sel\{background:color-mix(in srgb,var(--accent) 26%,transparent)\}\
+.fp-row .icn\{width:1.15rem;height:1.15rem;flex:none\}\
+.fp-row .icn svg\{width:100%;height:100%\}\
+.fp-foot\{display:flex;align-items:center;gap:.5rem;padding-top:.7rem\}\
+.fp-name\{flex:1;padding:.45rem .7rem;border-radius:.6rem;background:rgba(128,110,90,.16);border:1px solid var(--brd-2);color:var(--fg);font-size:.82rem;outline:none\}\
+.fp-empty\{padding:1.5rem;text-align:center;color:var(--fg-faint);font-size:.78rem\}\
+.place\{display:flex;align-items:center;gap:.55rem;padding:.4rem .55rem;border-radius:.55rem;font-size:.78rem;color:var(--fg-dim);cursor:pointer;text-align:left;width:100%\}\
+.place .icn\{width:1rem;height:1rem;flex:none;color:var(--accent)\}\
+.place:hover\{background:rgba(128,110,90,.16)\}\
+.place.cur\{background:color-mix(in srgb,var(--accent) 22%,transparent);color:var(--fg)\}\
+.side-h\{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-faint);padding:.5rem .55rem .25rem\}\
+\
+/* ============ toasts ============ */\
+#toasts\{position:fixed;right:1rem;bottom:5.4rem;z-index:990000;display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;pointer-events:none\}\
+.toast\{display:flex;gap:.55rem;align-items:center;padding:.6rem .9rem;background:var(--glass);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--brd-2);border-radius:.8rem;font-size:.8rem;box-shadow:0 14px 40px -10px rgba(0,0,0,.55);animation:toastIn .25s cubic-bezier(.2,.9,.3,1.1)\}\
+@keyframes toastIn\{from\{opacity:0;transform:translateX(20px)\}\}\
+.toast.out\{animation:toastOut .25s forwards\}\
+@keyframes toastOut\{to\{opacity:0;transform:translateX(20px)\}\}\
+.toast .ci\{color:var(--accent);display:grid;place-items:center\}\
+\
+/* ============ finder ============ */\
+.finder\{display:flex;flex-direction:column;height:100%\}\
+.fdr-bar\{display:flex;align-items:center;gap:.3rem;padding:.42rem .55rem;border-bottom:1px solid var(--brd);flex:none\}\
+.ibtn\{width:1.85rem;height:1.85rem;border-radius:.5rem;display:grid;place-items:center;color:var(--fg-dim);flex:none\}\
+.ibtn:hover\{background:rgba(128,110,90,.2);color:var(--fg)\}\
+.ibtn:disabled\{opacity:.32;cursor:default\}\
+.ibtn:disabled:hover\{background:none\}\
+.ibtn.on\{background:var(--accent);color:var(--accent-fg)\}\
+.crumbs\{display:flex;align-items:center;gap:.05rem;flex:1;min-width:0;overflow:hidden;font-size:.78rem;padding:0 .3rem\}\
+.crumb\{padding:.24rem .42rem;border-radius:.45rem;color:var(--fg-dim);white-space:nowrap;cursor:pointer\}\
+.crumb:hover\{background:rgba(128,110,90,.18);color:var(--fg)\}\
+.crumb.cur\{color:var(--fg);font-weight:600\}\
+.crumb-sep\{color:var(--fg-faint);flex:none\}\
+.fdr-main\{flex:1;display:flex;min-height:0\}\
+.fdr-side\{width:10.2rem;flex:none;border-right:1px solid var(--brd);padding:.45rem;overflow:auto;display:flex;flex-direction:column;gap:1px\}\
+.fdr-view\{flex:1;overflow:auto;padding:.75rem;align-content:start;position:relative\}\
+.fdr-view.grid\{display:grid;grid-template-columns:repeat(auto-fill,5.4rem);gap:.35rem\}\
+.fdr-view.list\{display:flex;flex-direction:column;gap:1px\}\
+.fi\{display:flex;flex-direction:column;align-items:center;gap:.32rem;padding:.5rem .25rem .38rem;border-radius:.7rem;cursor:default\}\
+.fdr-view.list .fi\{flex-direction:row;padding:.34rem .6rem;gap:.65rem;align-items:center\}\
+.fi .icn\{width:2.45rem;height:2.45rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,.22))\}\
+.fdr-view.list .fi .icn\{width:1.25rem;height:1.25rem\}\
+.fi .icn svg\{width:100%;height:100%\}\
+.fi .lbl\{font-size:.72rem;text-align:center;line-height:1.25;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;color:var(--fg)\}\
+.fdr-view.list .fi .lbl\{flex:1;text-align:left;-webkit-line-clamp:1\}\
+.fi .meta\{font-size:.66rem;color:var(--fg-faint);white-space:nowrap\}\
+.fi.selected\{background:color-mix(in srgb,var(--accent) 26%,transparent)\}\
+.fdr-status\{flex:none;border-top:1px solid var(--brd);padding:.32rem .8rem;font-size:.66rem;color:var(--fg-dim);display:flex;justify-content:space-between\}\
+.empty-note\{grid-column:1/-1;padding:2.4rem 1rem;text-align:center;color:var(--fg-faint);font-size:.8rem;line-height:1.6\}\
+.rename-input\{font-size:.74rem;padding:.2rem .4rem;border-radius:.4rem;border:1px solid var(--accent);background:var(--glass);color:var(--fg);outline:none;width:5rem;text-align:center\}\
+\
+/* ============ text edit ============ */\
+.tedit\{display:flex;flex-direction:column;height:100%\}\
+.te-bar\{display:flex;align-items:center;gap:.15rem;padding:.4rem .5rem;border-bottom:1px solid var(--brd);flex:none;flex-wrap:wrap\}\
+.te-group\{display:flex;gap:2px;padding:0 .25rem;align-items:center\}\
+.te-group+.te-group\{border-left:1px solid var(--brd);margin-left:.25rem;padding-left:.5rem\}\
+.tbtn\{width:1.85rem;height:1.85rem;border-radius:.5rem;display:grid;place-items:center;color:var(--fg-dim)\}\
+.tbtn:hover\{background:rgba(128,110,90,.2);color:var(--fg)\}\
+.tbtn.on\{background:var(--accent);color:var(--accent-fg)\}\
+.te-sel\{padding:.28rem .4rem;border-radius:.5rem;background:rgba(128,110,90,.16);border:1px solid var(--brd-2);color:var(--fg);font-size:.74rem;outline:none;cursor:pointer\}\
+.te-sel option\{background:#2a221b;color:#eee\}\
+.te-spring\{flex:1\}\
+.te-txt\{font-size:.76rem;padding:.32rem .7rem;border-radius:.55rem;border:1px solid var(--brd-2);background:rgba(128,110,90,.14);color:var(--fg);font-weight:600\}\
+.te-txt:hover\{background:rgba(128,110,90,.28)\}\
+.te-scroll\{flex:1;overflow:auto\}\
+.sahur-paper\{background:repeating-linear-gradient(0deg,rgba(120,80,45,.06) 0 2px,transparent 2px 27px),repeating-linear-gradient(90deg,rgba(120,80,45,.04) 0 2px,transparent 2px 95px),linear-gradient(180deg,#fbf4e5,#f0e5cd)\}\
+.editor\{min-height:100%;padding:2rem 2.4rem;outline:none;font-family:Georgia,'Times New Roman',serif;font-size:1rem;line-height:1.75;color:#33261a;caret-color:var(--accent);-webkit-user-select:text;user-select:text\}\
+.editor:empty::before\{content:attr(data-ph);color:#b8a887\}\
+.editor font[size="1"]\{font-size:.75rem\}\
+.editor font[size="2"]\{font-size:.85rem\}\
+.editor font[size="3"]\{font-size:1rem\}\
+.editor font[size="4"]\{font-size:1.2rem\}\
+.editor font[size="5"]\{font-size:1.5rem\}\
+.editor font[size="6"]\{font-size:2rem\}\
+.editor font[size="7"]\{font-size:2.6rem\}\
+.te-banner\{flex:none;padding:.45rem .9rem;font-size:.74rem;background:color-mix(in srgb,var(--danger) 22%,transparent);color:var(--fg);border-bottom:1px solid var(--brd)\}\
+\
+/* ============ paint ============ */\
+.paint\{display:flex;height:100%\}\
+.p-rail\{width:3.2rem;flex:none;border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.45rem .25rem;overflow:auto\}\
+.ptool\{width:2.15rem;height:2.15rem;border-radius:.6rem;display:grid;place-items:center;color:var(--fg-dim)\}\
+.ptool:hover\{background:rgba(128,110,90,.2);color:var(--fg)\}\
+.ptool.on\{background:var(--accent);color:var(--accent-fg)\}\
+.p-rail .p-sep\{height:1px;width:60%;background:var(--brd);margin:.3rem 0\}\
+.p-canvas-wrap\{flex:1;min-width:0;overflow:auto;display:grid;place-items:center;padding:1rem;background:radial-gradient(rgba(128,110,90,.14) 1px,transparent 1.4px);background-size:1.4rem 1.4rem\}\
+.paint-cv\{background:#fff;border-radius:.4rem;box-shadow:0 12px 34px -10px rgba(0,0,0,.5);max-width:100%;max-height:100%;cursor:crosshair;touch-action:none\}\
+.p-panel\{width:10.5rem;flex:none;border-left:1px solid var(--brd);padding:.7rem .65rem;display:flex;flex-direction:column;gap:.7rem;overflow:auto\}\
+.p-lbl\{font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--fg-faint)\}\
+.p-color\{width:100%;height:2.4rem;border-radius:.6rem;border:1px solid var(--brd-2);background:none;padding:0;cursor:pointer\}\
+.p-color::-webkit-color-swatch-wrapper\{padding:2px\}\
+.p-color::-webkit-color-swatch\{border:none;border-radius:.45rem\}\
+.p-color::-moz-color-swatch\{border:none;border-radius:.45rem\}\
+.p-swatches\{display:grid;grid-template-columns:repeat(5,1fr);gap:.32rem\}\
+.swatch\{width:1.3rem;height:1.3rem;border-radius:.42rem;border:2px solid transparent;cursor:pointer\}\
+.swatch.on\{border-color:var(--fg)\}\
+input[type=range]\{-webkit-appearance:none;appearance:none;width:100%;height:1.1rem;background:none;cursor:pointer\}\
+input[type=range]::-webkit-slider-runnable-track\{height:.3rem;border-radius:.2rem;background:rgba(128,110,90,.3)\}\
+input[type=range]::-webkit-slider-thumb\{-webkit-appearance:none;width:.95rem;height:.95rem;border-radius:50%;background:var(--accent);margin-top:-.33rem;box-shadow:0 1px 4px rgba(0,0,0,.4)\}\
+input[type=range]::-moz-range-track\{height:.3rem;border-radius:.2rem;background:rgba(128,110,90,.3)\}\
+input[type=range]::-moz-range-thumb\{width:.95rem;height:.95rem;border:none;border-radius:50%;background:var(--accent)\}\
+.p-dot-prev\{width:100%;height:2.6rem;display:grid;place-items:center;background:rgba(128,110,90,.12);border-radius:.6rem\}\
+.p-actions\{display:flex;flex-direction:column;gap:.4rem\}\
+.p-actions .btn\{width:100%;font-size:.76rem;padding:.45rem\}\
+\
+/* ============ viewer ============ */\
+.viewer\{display:flex;flex-direction:column;height:100%\}\
+.vw-bar\{flex:none;display:flex;align-items:center;gap:.3rem;padding:.42rem .6rem;border-bottom:1px solid var(--brd);font-size:.78rem;color:var(--fg-dim)\}\
+.vw-area\{flex:1;overflow:auto;display:grid;place-items:center;padding:1rem;background:repeating-conic-gradient(rgba(128,110,90,.1) 0 25%,transparent 0 50%) 0 0/1.6rem 1.6rem\}\
+.vw-area img\{border-radius:.3rem;box-shadow:0 12px 34px -10px rgba(0,0,0,.5)\}\
+\
+/* ============ settings ============ */\
+.settings\{display:flex;height:100%\}\
+.set-nav\{width:11rem;flex:none;border-right:1px solid var(--brd);padding:.55rem .45rem;display:flex;flex-direction:column;gap:1px;overflow:auto\}\
+.set-body\{flex:1;overflow:auto;padding:1.1rem 1.3rem\}\
+.set-h\{font-size:1.05rem;font-weight:700;margin-bottom:.3rem\}\
+.set-sub\{font-size:.76rem;color:var(--fg-dim);margin-bottom:1rem\}\
+.set-card\{background:rgba(128,110,90,.1);border:1px solid var(--brd);border-radius:.9rem;padding:.85rem .95rem;margin-bottom:.85rem\}\
+.set-card h4\{font-size:.82rem;font-weight:700;margin-bottom:.55rem\}\
+.set-row\{display:flex;align-items:center;justify-content:space-between;gap:1rem;font-size:.8rem;padding:.3rem 0\}\
+.seg\{display:flex;background:rgba(128,110,90,.16);border-radius:.6rem;padding:3px\}\
+.seg button\{padding:.32rem .8rem;border-radius:.45rem;font-size:.76rem;color:var(--fg-dim)\}\
+.seg button.on\{background:var(--accent);color:var(--accent-fg)\}\
+.wp-grid\{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.6rem,1fr));gap:.55rem\}\
+.wp-chip\{height:4.6rem;border-radius:.65rem;border:2px solid var(--brd-2);cursor:pointer;position:relative;overflow:hidden\}\
+.wp-chip.on\{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)\}\
+.wp-chip span\{position:absolute;left:.45rem;bottom:.35rem;font-size:.64rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9)\}\
+.wp-chip.dk span\{color:#33261a;text-shadow:0 1px 2px rgba(255,255,255,.7)\}\
+.acc-row\{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap\}\
+.acc-dot\{width:1.45rem;height:1.45rem;border-radius:50%;border:2px solid transparent;cursor:pointer\}\
+.acc-dot.on\{border-color:var(--fg)\}\
+.acc-custom\{width:1.45rem;height:1.45rem;border-radius:50%;border:2px dashed var(--fg-faint);background:none;padding:0;cursor:pointer;overflow:hidden\}\
+.acc-custom::-webkit-color-swatch-wrapper\{padding:0\}\
+.acc-custom::-webkit-color-swatch\{border:none;border-radius:50%\}\
+.spec-row\{display:flex;justify-content:space-between;gap:1rem;padding:.42rem 0;border-bottom:1px dashed var(--brd);font-size:.8rem\}\
+.spec-row span:first-child\{color:var(--fg-dim)\}\
+.spec-row span:last-child\{font-weight:600;text-align:right\}\
+.about-hero\{display:flex;align-items:center;gap:1.1rem;margin-bottom:1rem\}\
+.about-hero .mas\{width:5.2rem;height:6.9rem;flex:none\}\
+.about-hero .mas img\{width:100%;height:100%\}\
+.tgl\{width:2.6rem;height:1.45rem;border-radius:1rem;background:rgba(128,110,90,.3);position:relative;transition:background .18s;flex:none\}\
+.tgl::after\{content:'';position:absolute;top:.15rem;left:.15rem;width:1.15rem;height:1.15rem;border-radius:50%;background:#f4ead8;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.35)\}\
+.tgl.on\{background:var(--accent)\}\
+.tgl.on::after\{transform:translateX(1.15rem)\}\
+\
+/* ============ terminal ============ */\
+.term\{height:100%;display:flex;flex-direction:column;background:#14100b;color:#e8ded0;font-family:var(--font-mono);font-size:.78rem\}\
+.term-out\{flex:1;overflow:auto;padding:.75rem .9rem;white-space:pre-wrap;word-break:break-word;line-height:1.6;-webkit-user-select:text;user-select:text\}\
+.term-out .t-acc\{color:#e0913f\}\
+.term-out .t-dim\{color:#8a7c68\}\
+.term-out .t-dir\{color:#e0913f;font-weight:600\}\
+.term-in\{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-top:1px solid rgba(255,243,226,.08)\}\
+.term-prompt\{color:#e0913f;flex:none;font-weight:600\}\
+.term-in input\{flex:1;background:none;border:none;outline:none;color:#e8ded0;font:inherit;caret-color:#e0913f\}\
+\
+/* ============ calculator ============ */\
+.calc\{height:100%;display:flex;flex-direction:column;padding:.7rem;gap:.55rem\}\
+.calc-disp\{flex:none;background:rgba(0,0,0,.3);border:1px solid var(--brd);border-radius:.8rem;padding:.7rem .95rem;text-align:right;font-family:var(--font-mono);overflow:hidden\}\
+.calc-expr\{font-size:.68rem;color:var(--fg-dim);min-height:1em;white-space:nowrap\}\
+.calc-cur\{font-size:1.65rem;font-weight:600;white-space:nowrap\}\
+.calc-grid\{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:.42rem\}\
+.ck\{border-radius:.8rem;background:rgba(128,110,90,.16);border:1px solid var(--brd);font-size:1rem;font-weight:600;color:var(--fg)\}\
+.ck:hover\{background:rgba(128,110,90,.32)\}\
+.ck.fn\{color:var(--fg-dim)\}\
+.ck.op\{color:var(--accent)\}\
+.ck.eq\{background:var(--accent);color:var(--accent-fg);border-color:transparent\}\
+\
+/* ============ notes ============ */\
+.notes\{height:100%;display:flex;flex-direction:column\}\
+.nt-bar\{flex:none;display:flex;align-items:center;gap:.4rem;padding:.42rem .6rem;border-bottom:1px solid var(--brd)\}\
+.nt-board\{flex:1;overflow:auto;position:relative;background:radial-gradient(circle at 30% 15%,rgba(255,243,226,.04),transparent 55%),repeating-linear-gradient(45deg,rgba(255,243,226,.02) 0 14px,transparent 14px 28px)\}\
+.nt-inner\{position:relative;width:70rem;height:42rem\}\
+.sticky\{position:absolute;width:11.5rem;display:flex;flex-direction:column;box-shadow:0 12px 26px -8px rgba(0,0,0,.5);border-radius:.28rem .28rem .4rem .4rem\}\
+.st-head\{display:flex;align-items:center;gap:.25rem;padding:.22rem .3rem;cursor:grab;user-select:none\}\
+.st-head .st-dot\{width:.85rem;height:.85rem;border-radius:50%;border:2px solid rgba(60,40,10,.35);cursor:pointer;flex:none\}\
+.st-head .st-x\{margin-left:auto;width:1.15rem;height:1.15rem;border-radius:.35rem;display:grid;place-items:center;color:rgba(60,40,10,.6);flex:none\}\
+.st-head .st-x:hover\{background:rgba(60,40,10,.15)\}\
+.sticky textarea\{flex:1;min-height:8rem;resize:none;background:none;border:none;outline:none;font-family:var(--font-ui);font-size:.76rem;line-height:1.45;color:#3a2d1c;padding:.35rem .5rem;-webkit-user-select:text;user-select:text\}\
+\
+/* ============ boot ============ */\
+#boot\{position:fixed;inset:0;z-index:999999;background:radial-gradient(120% 90% at 50% 0%,#251c12,#120d08 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity .55s;cursor:pointer\}\
+#boot.off\{opacity:0;pointer-events:none\}\
+#boot-mascot\{width:8.4rem;height:11.2rem;animation:bob 2.2s ease-in-out infinite\}\
+#boot-mascot svg,#boot-mascot img\{width:100%;height:100%\}\
+@keyframes bob\{50%\{transform:translateY(-.6rem)\}\}\
+.boot-word\{font-size:1.55rem;font-weight:700;letter-spacing:.03em;color:#f3ece2\}\
+.boot-word b\{color:var(--accent)\}\
+.boot-sub\{font-size:.72rem;color:#8a7c68;letter-spacing:.1em;text-transform:uppercase\}\
+.boot-lines\{height:1.2rem;font-size:.78rem;color:var(--accent);font-family:var(--font-mono)\}\
+.boot-bar\{width:14rem;height:3px;border-radius:2px;background:rgba(255,243,226,.12);overflow:hidden\}\
+.boot-bar i\{display:block;height:100%;width:0;background:var(--accent);transition:width .35s\}\
+.boot-hint\{position:fixed;bottom:3.2rem;font-size:.72rem;color:#8a7c68;animation:pulse 1.7s infinite\}\
+@keyframes pulse\{50%\{opacity:.35\}\}\
+</style>\
+</head>\
+<body>\
+\
+<div id="boot">\
+  <div id="boot-mascot"></div>\
+  <div class="boot-word">Charlie <b>Kirk</b> OS</div>\
+  <div class="boot-sub">tung&nbsp;tung&nbsp;tung&nbsp;sahur edition &mdash; v1.0</div>\
+  <div class="boot-lines" id="boot-lines"></div>\
+  <div class="boot-bar"><i id="boot-bar"></i></div>\
+  <div class="boot-hint" id="boot-hint">click anywhere to power on</div>\
+</div>\
+\
+<div id="desktop">\
+  <div id="wallpaper"></div>\
+  <div id="icons"></div>\
+  <div id="win-layer"></div>\
+</div>\
+\
+<div id="dock">\
+  <button id="start-btn" title="Start"></button>\
+  <div class="dock-sep"></div>\
+  <div id="dock-apps"></div>\
+  <div class="dock-sep"></div>\
+  <div class="dock-clock" id="clock" title="Clock &amp; calendar">\
+    <div id="clock-time">--:--</div><div id="clock-date"></div>\
+  </div>\
+  <button class="dock-tray" id="sound-btn" title="Sound"></button>\
+  <button class="dock-tray" id="qs-btn" title="Quick settings"></button>\
+</div>\
+\
+<div id="toasts"></div>\
+\
+<script>\
+/* =====================================================================\
+   ASSETS SLOTS \'97 drop your own elements here later (URLs / data URLs).\
+     ASSETS.mascot     -> boot logo, About panel, Paint stamp\
+     ASSETS.wallpaper  -> extra "Your Art" wallpaper entry\
+     ASSETS.logo       -> start-button mark (falls back to built-in log)\
+   ===================================================================== */\
+const ASSETS = \{ mascot: null, wallpaper: null, logo: null \};\
+\
+/* ===================== tiny helpers ===================== */\
+const $  = (s, r=document) => r.querySelector(s);\
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];\
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));\
+let _uid = 1;\
+const uid = p => (p||'n') + (_uid++) + Math.random().toString(36).slice(2, 6);\
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');\
+\
+function h(tag, props, ...children)\{\
+  const e = document.createElement(tag);\
+  if (props) for (const [k, v] of Object.entries(props))\{\
+    if (v == null) continue;\
+    if (k === 'class') e.className = v;\
+    else if (k === 'style') Object.assign(e.style, v);\
+    else if (k === 'html') e.innerHTML = v;\
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), v);\
+    else e.setAttribute(k, v);\
+  \}\
+  children.flat(9).forEach(c => \{ if (c == null) return; e.append(c.nodeType ? c : document.createTextNode(c)); \});\
+  return e;\
+\}\
+function fmtBytes(n)\{\
+  if (n < 1024) return n + ' B';\
+  if (n < 1048576) return (n/1024).toFixed(1) + ' KB';\
+  return (n/1048576).toFixed(1) + ' MB';\
+\}\
+const fmtDate = t => new Date(t).toLocaleString([], \{ dateStyle:'medium', timeStyle:'short' \});\
+function hexLum(hex)\{\
+  const n = parseInt(hex.slice(1), 16);\
+  return (0.2126*((n>>16)&255) + 0.7152*((n>>8)&255) + 0.0722*(n&255)) / 255;\
+\}\
+\
+/* ===================== line icons (24x24 stroke) ===================== */\
+const IC = \{\
+  minus:'<path d="M6 12h12"/>', plus:'<path d="M12 5v14M5 12h14"/>',\
+  close:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',\
+  square:'<rect x="6" y="6" width="12" height="12" rx="2.5"/>',\
+  search:'<path d="M11 4.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z"/><path d="M16 16l4.5 4.5"/>',\
+  back:'<path d="M14.5 6l-6 6 6 6"/>', fwd:'<path d="M9.5 6l6 6-6 6"/>', chevD:'<path d="M6 9.5l6 6 6-6"/>',\
+  grid:'<path d="M4.5 4.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 13.5h6v6h-6zM13.5 13.5h6v6h-6z"/>',\
+  list:'<path d="M4.5 6.5h15M4.5 12h15M4.5 17.5h15"/>',\
+  folder:'<path d="M3.5 7.5c0-1.1.9-2 2-2h4l2 2.5h7c1.1 0 2 .9 2 2v7.5c0 1.1-.9 2-2 2h-13c-1.1 0-2-.9-2-2z"/>',\
+  doc:'<path d="M6.5 3.5h7l4.5 4.5v12.5h-11.5z"/><path d="M13.5 3.5v4.5h4.5M9.5 12h5.5M9.5 15.5h5.5"/>',\
+  image:'<path d="M4 5.5h16v13H4z"/><circle cx="9" cy="10" r="1.6"/><path d="M4.5 17l5-5 3.5 3.5 3-3 4 4.5"/>',\
+  trash:'<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 10.5v6M14 10.5v6"/>',\
+  pencil:'<path d="M4.5 19.5l.8-3.2L16.5 5.1a1.7 1.7 0 0 1 2.4 2.4L7.7 18.7z"/><path d="M14.5 7l2.5 2.5"/>',\
+  save:'<path d="M5 4.5h11.5L19 7v12.5H5z"/><path d="M8 4.5V10h7V4.5"/><path d="M8 19.5v-6h8v6"/>',\
+  refresh:'<path d="M5 12a7 7 0 0 1 12-4.9M19 12a7 7 0 0 1-12 4.9"/><path d="M17 3.5v4h-4M7 20.5v-4h4"/>',\
+  undo:'<path d="M8.5 5.5L4 10l4.5 4.5"/><path d="M4 10h10a5.2 5.2 0 0 1 0 10.4h-4"/>',\
+  redo:'<path d="M15.5 5.5L20 10l-4.5 4.5"/><path d="M20 10H10a5.2 5.2 0 0 0 0 10.4h4"/>',\
+  bold:'<path d="M7.5 4.5h5a3.3 3.3 0 0 1 0 6.6h-5zM7.5 11.1h6a3.7 3.7 0 0 1 0 7.4h-6z"/>',\
+  italic:'<path d="M10.5 4.5h7M6.5 19.5h7M14.5 4.5l-4.5 15"/>',\
+  underline:'<path d="M7 4.5v6.5a5 5 0 0 0 10 0V4.5M5.5 20.5h13"/>',\
+  grain:'<path d="M3.5 7.5c2.5-2.2 5-2.2 7.5 0s5 2.2 7.5 0M3.5 12.5c2.5-2.2 5-2.2 7.5 0s5 2.2 7.5 0M3.5 17.5c2.5-2.2 5-2.2 7.5 0s5 2.2 7.5 0"/>',\
+  brush:'<path d="M14.8 4.2l5 5-8.3 8.3-5-5z"/><path d="M6.5 12.5l-2.2 6.9c-.2.7.5 1.4 1.2 1.2l6.9-2.2z"/>',\
+  eraser:'<path d="M15.5 4.5l4.5 4.5-9 9H6l-2-2z"/><path d="M11 8.5l5 5"/>',\
+  fill:'<path d="M10.5 3.5l8 8-7.2 7.2a2.5 2.5 0 0 1-3.6 0L4 14z"/><path d="M4.5 14h13"/><path d="M19.5 17.5c0 1-.7 1.8-1.5 1.8s-1.5-.8-1.5-1.8 1.5-2.6 1.5-2.6 1.5 1.6 1.5 2.6z"/>',\
+  stamp:'<path d="M9.5 4.5h5l.8 6H8.7z"/><path d="M6.5 13.5h11a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-1a1 1 0 0 1 1-1z"/><path d="M5 20.5h14"/>',\
+  sliders:'<path d="M4 7.5h8M16.5 7.5h3.5M4 16.5h3.5M12 16.5h8"/><circle cx="14" cy="7.5" r="2.2"/><circle cx="8.5" cy="16.5" r="2.2"/>',\
+  volOn:'<path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/>',\
+  volOff:'<path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',\
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/>',\
+  moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/>',\
+  info:'<circle cx="12" cy="12" r="8.5"/><path d="M12 11v6M12 7.2v.4"/>',\
+  power:'<path d="M12 3v8"/><path d="M6.8 6.5a7.5 7.5 0 1 0 10.4 0"/>',\
+  download:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M4.5 19.5h15"/>',\
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',\
+  home:'<path d="M4 11.5L12 4.5l8 7M6.5 10v9.5h11V10"/>',\
+  term:'<path d="M4 5.5h16v13H4z"/><path d="M7.5 9.5l3 3-3 3M12.5 15.5h4"/>',\
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',\
+\};\
+function icon(name, size=18)\{\
+  const d = document.createElement('div');\
+  d.innerHTML = `<svg viewBox="0 0 24 24" width="$\{size\}" height="$\{size\}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">$\{IC[name]||''\}</svg>`;\
+  return d.firstChild;\
+\}\
+\
+/* ===================== mascot & colored app tiles ===================== */\
+function mascotSVG(o=\{\})\{\
+  const w = o.w || 120, ht = o.h || 160, a = o.alpha == null ? 1 : o.alpha;\
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="$\{w\}" height="$\{ht\}" viewBox="0 0 120 160">\
+  <g opacity="$\{a\}">\
+    <ellipse cx="60" cy="150" rx="33" ry="6" fill="rgba(0,0,0,.22)"/>\
+    <rect x="26" y="12" width="68" height="126" rx="30" fill="#c98d54" stroke="#5d3a1a" stroke-width="5"/>\
+    <rect x="33" y="20" width="11" height="110" rx="5.5" fill="rgba(255,255,255,.16)"/>\
+    <path d="M78 30q3 22 0 46M64 24q-2 32 1 64M50 28q-3 24 0 50" fill="none" stroke="#9c6a33" stroke-width="3" stroke-linecap="round" opacity=".5"/>\
+    <path d="M30 92q-16 4-20 18M90 92q16 4 20 18" stroke="#8a5527" stroke-width="10" fill="none" stroke-linecap="round"/>\
+    <circle cx="10" cy="111" r="5.5" fill="#c98d54" stroke="#5d3a1a" stroke-width="3.5"/>\
+    <circle cx="110" cy="111" r="5.5" fill="#c98d54" stroke="#5d3a1a" stroke-width="3.5"/>\
+    <ellipse cx="46" cy="60" rx="9.5" ry="11.5" fill="#fdf6e9" stroke="#5d3a1a" stroke-width="4"/>\
+    <ellipse cx="74" cy="60" rx="9.5" ry="11.5" fill="#fdf6e9" stroke="#5d3a1a" stroke-width="4"/>\
+    <circle cx="47.5" cy="62" r="3.8" fill="#2a1c10"/><circle cx="75.5" cy="62" r="3.8" fill="#2a1c10"/>\
+    <path d="M35 44q9-6 17-2M68 42q9-4 17 2" stroke="#5d3a1a" stroke-width="4" fill="none" stroke-linecap="round"/>\
+    <path d="M46 82q14 11 28 0q-2 18-14 18t-14-18z" fill="#3a2412" stroke="#5d3a1a" stroke-width="4" stroke-linejoin="round"/>\
+    <path d="M52 84h16v4.5h-16z" fill="#fdf6e9"/>\
+  </g></svg>`;\
+\}\
+const svgURI = s => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);\
+const MASCOT_TILE = svgURI(mascotSVG(\{ w:170, h:227, alpha:.055 \}));\
+\
+function logoSVG(size=24, fg='#fdf6e9', eye='#2a1c10')\{\
+  return `<svg viewBox="0 0 24 24" width="$\{size\}" height="$\{size\}">\
+    <rect x="8.2" y="3.4" width="7.6" height="16.4" rx="3.8" fill="$\{fg\}"/>\
+    <circle cx="10.6" cy="9" r="1.2" fill="$\{eye\}"/><circle cx="13.6" cy="9" r="1.2" fill="$\{eye\}"/>\
+    <path d="M10.2 14.3q1.8 1.3 3.8 0" stroke="$\{eye\}" stroke-width="1.4" fill="none" stroke-linecap="round"/>\
+  </svg>`;\
+\}\
+\
+let _gid = 0;\
+function appIcon(kind, size=48)\{\
+  const g = 'ag' + (_gid++);\
+  switch(kind)\{\
+    case 'folder': case 'finder': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <defs><linearGradient id="$\{g\}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eab86b"/><stop offset="1" stop-color="#c07f3c"/></linearGradient></defs>\
+      <path d="M5 12.5A3.5 3.5 0 0 1 8.5 9h9.2l4.3 5h17.5A3.5 3.5 0 0 1 43 17.5v18A3.5 3.5 0 0 1 39.5 39h-31A3.5 3.5 0 0 1 5 35.5z" fill="url(#$\{g\})" stroke="#7a4c1e" stroke-width="1.6"/>\
+      <path d="M5 18.5h38" stroke="rgba(255,255,255,.28)" stroke-width="1.4"/>\
+      $\{kind==='finder' ? `<circle cx="34" cy="27" r="6" fill="#f6efe2" stroke="#7a4c1e" stroke-width="1.7"/><path d="M38.4 31.4l3.2 3.2" stroke="#7a4c1e" stroke-width="1.8" stroke-linecap="round"/>` : ''\}\
+    </svg>`;\
+    case 'text': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <path d="M11.5 5h17l8 8v30h-25z" fill="#f8f2e5" stroke="#a6967a" stroke-width="1.6"/>\
+      <path d="M28.5 5v8h8" fill="#e7dcc4" stroke="#a6967a" stroke-width="1.6"/>\
+      <path d="M16.5 20h15M16.5 26h15M16.5 32h15M16.5 38h9" stroke="#c4b291" stroke-width="2.2" stroke-linecap="round"/>\
+    </svg>`;\
+    case 'image': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <path d="M11.5 5h17l8 8v30h-25z" fill="#f8f2e5" stroke="#a6967a" stroke-width="1.6"/>\
+      <path d="M28.5 5v8h8" fill="#e7dcc4" stroke="#a6967a" stroke-width="1.6"/>\
+      <rect x="16" y="19" width="17" height="13.5" rx="2.5" fill="#9ec8cc"/>\
+      <circle cx="21.5" cy="23.5" r="2.3" fill="#f2c969"/>\
+      <path d="M17 30.5l4.6-5.4 3.6 4 3-3.2 4.8 5.4" stroke="#3f6e58" stroke-width="2" fill="none" stroke-linejoin="round"/>\
+    </svg>`;\
+    case 'paint': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <rect x="4.5" y="4.5" width="39" height="39" rx="11" fill="#f4ecd9" stroke="#c7b58e" stroke-width="1.6"/>\
+      <path d="M14 34L31 17" stroke="#8a5527" stroke-width="4.2" stroke-linecap="round"/>\
+      <path d="M29 15l4.5 4.5" stroke="#b9b2a4" stroke-width="5.5" stroke-linecap="round"/>\
+      <circle cx="37.5" cy="11.5" r="4.2" fill="#d9603b"/>\
+      <circle cx="13" cy="12" r="2.6" fill="#d9603b"/><circle cx="19" cy="12" r="2.6" fill="#3fa87e"/><circle cx="25" cy="12" r="2.6" fill="#e0a94f"/>\
+    </svg>`;\
+    case 'settings': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <rect x="4.5" y="4.5" width="39" height="39" rx="11" fill="#38322a" stroke="#57503f" stroke-width="1.6"/>\
+      <path d="M12 18h9M25 18h11M12 31h9M25 31h11" stroke="#d9cdb4" stroke-width="2.6" stroke-linecap="round"/>\
+      <circle cx="22" cy="18" r="3.4" fill="#e0913f" stroke="#38322a" stroke-width="1.6"/>\
+      <circle cx="30" cy="31" r="3.4" fill="#e0913f" stroke="#38322a" stroke-width="1.6"/>\
+    </svg>`;\
+    case 'term': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <rect x="4.5" y="4.5" width="39" height="39" rx="11" fill="#17110b" stroke="#4d4234" stroke-width="1.6"/>\
+      <path d="M13 18.5l6.5 5.5-6.5 5.5" stroke="#e0913f" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>\
+      <path d="M24 29.5h11" stroke="#efe7d7" stroke-width="3.2" stroke-linecap="round"/>\
+    </svg>`;\
+    case 'calc': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <rect x="4.5" y="4.5" width="39" height="39" rx="11" fill="#eae3d2" stroke="#b4a586" stroke-width="1.6"/>\
+      <rect x="11" y="10.5" width="26" height="8.5" rx="2.5" fill="#2d261e"/>\
+      <g fill="#8a7d68">$\{[25,31,37].map(y=>[14,21.5,29,36.5].map(x=>`<circle cx="$\{x\}" cy="$\{y\}" r="1.9"/>`).join('')).join('')\}</g>\
+      <circle cx="36.5" cy="37" r="1.9" fill="#d9603b"/>\
+    </svg>`;\
+    case 'notes': return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}">\
+      <path d="M8.5 6.5h31V29l-8 8h-23z" fill="#ffd968" stroke="#c39a3c" stroke-width="1.6"/>\
+      <path d="M31.5 37v-8h8" fill="#eec24f" stroke="#c39a3c" stroke-width="1.6"/>\
+      <path d="M15 17h17M15 23h17M15 29h10" stroke="#a97e22" stroke-width="2.2" stroke-linecap="round"/>\
+    </svg>`;\
+  \}\
+  return `<svg viewBox="0 0 48 48" width="$\{size\}" height="$\{size\}"><rect x="6" y="6" width="36" height="36" rx="9" fill="#c9b893"/></svg>`;\
+\}\
+const fileIconHTML = n => appIcon(n.type==='folder' ? 'folder' : (n.kind==='image' ? 'image' : 'text'), 46);\
+\
+/* ===================== sound (WebAudio, all synthesized) ===================== */\
+const Sound = \{\
+  ctx: null, master: null,\
+  init()\{\
+    if (!this.ctx)\{\
+      try \{ this.ctx = new (window.AudioContext || window.webkitAudioContext)(); \} catch(e)\{ return; \}\
+    \}\
+    if (this.ctx.state === 'suspended') this.ctx.resume();\
+    if (this.master)\{ this.master.gain.value = Store.state.settings.volume; \}\
+    else if (this.ctx)\{ this.master = this.ctx.createGain(); this.master.gain.value = Store.state.settings.volume; this.master.connect(this.ctx.destination); \}\
+  \},\
+  setVolume(v)\{ if (this.master) this.master.gain.value = v; \},\
+  tone(freq, t0, dur, type='sine', vol=0.08, glideTo=null)\{\
+    if (!this.ctx) return;\
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();\
+    o.type = type; o.frequency.setValueAtTime(freq, t0);\
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t0 + dur);\
+    g.gain.setValueAtTime(0.0001, t0);\
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);\
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);\
+    o.connect(g); g.connect(this.master);\
+    o.start(t0); o.stop(t0 + dur + 0.05);\
+  \},\
+  tung(at)\{\
+    if (!this.ctx) return;\
+    const t = at || this.ctx.currentTime;\
+    this.tone(185, t, 0.16, 'sine', 0.5, 70);\
+    // knock transient\
+    const len = this.ctx.sampleRate * 0.03, buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);\
+    const d = buf.getChannelData(0);\
+    for (let i=0;i<len;i++) d[i] = (Math.random()*2-1) * (1 - i/len);\
+    const src = this.ctx.createBufferSource(); src.buffer = buf;\
+    const bp = this.ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value = 1600; bp.Q.value = 1.2;\
+    const g = this.ctx.createGain(); g.gain.value = 0.22;\
+    src.connect(bp); bp.connect(g); g.connect(this.master);\
+    src.start(t);\
+  \},\
+  play(name)\{\
+    if (!Store.state.settings.sound) return;\
+    this.init(); if (!this.ctx) return;\
+    const t = this.ctx.currentTime;\
+    switch(name)\{\
+      case 'tung': this.tung(); break;\
+      case 'open': this.tone(520, t, .09, 'sine', .06, 660); this.tone(780, t+.06, .1, 'sine', .05); break;\
+      case 'close': this.tone(600, t, .1, 'sine', .06, 380); break;\
+      case 'min': this.tone(500, t, .16, 'sine', .06, 180); break;\
+      case 'tick': this.tone(1800, t, .03, 'square', .025); break;\
+      case 'error': this.tone(180, t, .12, 'square', .05); this.tone(150, t+.13, .14, 'square', .05); break;\
+      case 'startup':\
+        this.tung(t); this.tung(t+.28); this.tung(t+.56);\
+        [146.83, 220, 293.66, 440].forEach((f,i)=>this.tone(f, t+.92+i*.09, .5, 'triangle', .09));\
+        break;\
+    \}\
+  \}\
+\};\
+\
+/* ===================== store & settings ===================== */\
+const KEY = 'kirkos.v1';\
+const Store = \{\
+  state: null, firstRun: false, _t: null,\
+  defaults()\{\
+    return \{ v:1, settings:\{ theme:'dark', accent:'#e0913f', wallpaper:'sahur', customColor:'#e0913f',\
+              density:1, motion:true, sound:true, volume:0.6 \},\
+             notes:[], fs:null \};\
+  \},\
+  load()\{\
+    try \{\
+      const raw = localStorage.getItem(KEY);\
+      if (raw)\{ const d = JSON.parse(raw); if (d && d.v===1 && d.fs)\{ this.state = d; return; \} \}\
+    \} catch(e)\{\}\
+    this.state = this.defaults();\
+    this.state.fs = seedFS();\
+    this.firstRun = true;\
+  \},\
+  save()\{ try \{ localStorage.setItem(KEY, JSON.stringify(this.state)); \} catch(e)\{\} \},\
+  schedule()\{ clearTimeout(this._t); this._t = setTimeout(()=>this.save(), 350); \}\
+\};\
+const S = () => Store.state.settings;\
+\
+function rr(x, X, Y, W, H, R)\{\
+  x.beginPath();\
+  x.moveTo(X+R, Y); x.arcTo(X+W, Y, X+W, Y+H, R); x.arcTo(X+W, Y+H, X, Y+H, R);\
+  x.arcTo(X, Y+H, X, Y, R); x.arcTo(X, Y, X+W, Y, R); x.closePath();\
+\}\
+function makeTungArt()\{\
+  const c = document.createElement('canvas'); c.width = 640; c.height = 420;\
+  const x = c.getContext('2d');\
+  const g = x.createLinearGradient(0,0,0,420); g.addColorStop(0,'#2a2130'); g.addColorStop(1,'#191014');\
+  x.fillStyle = g; x.fillRect(0,0,640,420);\
+  const rg = x.createRadialGradient(320,230,40,320,230,330); rg.addColorStop(0,'rgba(224,145,63,.35)'); rg.addColorStop(1,'rgba(0,0,0,0)');\
+  x.fillStyle = rg; x.fillRect(0,0,640,420);\
+  const wg = x.createLinearGradient(286,0,354,0); wg.addColorStop(0,'#d99a58'); wg.addColorStop(.55,'#c07f3e'); wg.addColorStop(1,'#8a5527');\
+  rr(x, 286, 100, 68, 150, 32); x.fillStyle = wg; x.fill(); x.lineWidth = 5; x.strokeStyle = '#4a2f14'; x.stroke();\
+  x.fillStyle = '#fdf6e9'; x.strokeStyle = '#4a2f14'; x.lineWidth = 4;\
+  x.beginPath(); x.ellipse(306, 148, 9, 11, 0, 0, 7); x.fill(); x.stroke();\
+  x.beginPath(); x.ellipse(334, 148, 9, 11, 0, 0, 7); x.fill(); x.stroke();\
+  x.fillStyle = '#241a10';\
+  x.beginPath(); x.arc(307.5, 150, 3.6, 0, 7); x.fill();\
+  x.beginPath(); x.arc(335.5, 150, 3.6, 0, 7); x.fill();\
+  x.beginPath(); x.moveTo(303, 178); x.quadraticCurveTo(320, 194, 337, 178);\
+  x.quadraticCurveTo(335, 202, 320, 202); x.quadraticCurveTo(305, 202, 303, 178);\
+  x.closePath(); x.fillStyle = '#331f0e'; x.fill(); x.stroke();\
+  x.textAlign = 'center'; x.fillStyle = '#f3e9d8';\
+  x.font = '700 42px "Space Grotesk", sans-serif'; x.fillText('TUNG TUNG TUNG', 320, 306);\
+  x.fillStyle = '#e0913f'; x.font = '700 30px "Space Grotesk", sans-serif'; x.fillText('SAHUR', 320, 348);\
+  return c.toDataURL('image/png');\
+\}\
+function makeSwatchArt()\{\
+  const c = document.createElement('canvas'); c.width = 620; c.height = 380;\
+  const x = c.getContext('2d');\
+  x.fillStyle = '#1c1712'; x.fillRect(0,0,620,380);\
+  const cols = ['#e0913f','#d9603b','#c4524a','#3fa87e','#8fa54e','#a06fe0','#9ec8cc','#f2c969','#c98d54','#8a5527','#f4ecd9','#4a3f33'];\
+  cols.forEach((col,i)=>\{\
+    const gx = 30 + (i%4)*145, gy = 40 + Math.floor(i/4)*90;\
+    const g = x.createLinearGradient(gx,gy,gx+125,gy+70); g.addColorStop(0,col); g.addColorStop(1,'#1c1712');\
+    rr(x, gx, gy, 125, 70, 12); x.fillStyle = g; x.fill();\
+    x.strokeStyle = 'rgba(255,255,255,.18)'; x.lineWidth = 1.5; x.stroke();\
+  \});\
+  x.fillStyle = '#f3e9d8'; x.textAlign='center'; x.font='600 22px "Space Grotesk", sans-serif';\
+  x.fillText('wallpaper studies, vol. tung', 310, 352);\
+  return c.toDataURL('image/png');\
+\}\
+\
+function seedFS()\{\
+  const now = Date.now();\
+  const mk = (name, type, parent, extra=\{\}) => \{\
+    const n = \{ id: uid(), name, type, kind: type==='folder' ? null : (extra.kind || 'text'),\
+                content: extra.content || '', children: [], parentId: parent ? parent.id : null,\
+                x: undefined, y: undefined, created: now, modified: now \};\
+    if (parent) parent.children.push(n);\
+    return n;\
+  \};\
+  const root  = mk('Kirk Disk', 'folder', null);\
+  const desk  = mk('Desktop',   'folder', root);\
+  const docs  = mk('Documents', 'folder', root);\
+  const downs = mk('Downloads', 'folder', root);\
+  const pics  = mk('Pictures',  'folder', root);\
+  mk('read me.txt', 'file', desk, \{ content:\
+`<div style="font-family:Georgia,serif"><b>CHARLIE KIRK OS &mdash; READ ME</b><br><br>Congratulations. You have booted the most unnecessary operating system on the internet. The log approves.<br><br><b>QUICK TOUR</b><br>1. Right-click the desktop. Everything lives on the right-click.<br>2. Files is a real file system that lives in your browser. Make folders, rename things, drag files into folders &mdash; even between windows.<br>3. Text Edit saves back to the disk. Ctrl+S. Use it.<br>4. Tung Paint has a stamp tool. You already know what it stamps.<br>5. The Terminal understands: ls, cd, cat, mkdir, touch, rm, tung.<br>6. System Settings has wallpapers, themes, accents, and a big scary reset button.<br><br><b>WARNING</b><br>If you hear "tung tung tung" at 3 AM, that is normal. Eat something. It is almost sunrise.<br><br>&mdash; The Management (a wooden bat)</div>` \});\
+  mk('field notes.txt', 'file', desk, \{ content:\
+`<div style="font-family:Georgia,serif"><b>field observations, night 47</b><br><br>03:04 &nbsp;drum. woke up.<br>03:07 &nbsp;confirmed: it is a log<br>03:09 &nbsp;it is holding a smaller log<br>03:12 &nbsp;the smaller log is also holding a log<br>04:30 &nbsp;sahur complete. hydrated. unstoppable.<br>05:00 &nbsp;sunrise. log went quiet. suspicious.</div>` \});\
+  mk('todo.txt', 'file', desk, \{ content:\
+`<div style="font-family:'JetBrains Mono',monospace">[x] wake up at 3:04 AM<br>[x] hear the drum<br>[x] become the drum<br>[x] ship Charlie Kirk OS<br>[ ] sleep (blocked)</div>` \});\
+  const vault = mk('Meme Vault', 'folder', desk);\
+  mk('tung tung tung.png', 'file', vault, \{ kind:'image', content: makeTungArt() \});\
+  mk('manifesto.txt', 'file', docs, \{ content:\
+`<div style="font-family:Georgia,serif"><b>THE SAHUR PROTOCOL</b><br><br>1. When the drum sounds, you wake up. No snooze. The log does not respect snooze.<br>2. You eat. You hydrate. You do not ask who set the drum schedule.<br>3. "Tung" means one more minute. "Tung tung" means now.<br>"Tung tung tung" means you are already late.<br>4. Ship it before sunrise. The rest is commentary.</div>` \});\
+  mk('recipes.txt', 'file', docs, \{ content:\
+`<div style="font-family:Georgia,serif"><b>SAHUR FIELD RATIONS</b><br><br>- dates, 6 pieces<br>- water, 2 glasses<br>- ambition, unlimited<br>- regret, optional<br><br>Preparation: consume in the dark. Do not wake the others.</div>` \});\
+  mk('definitely-not-a-virus.txt', 'file', downs, \{ content:\
+`this is definitely not a virus.<br>it is a text file.<br>you can read it.<br>see? harmless.<br><br>&mdash; absolutely_legitimate_setup.exe` \});\
+  mk('tung tung tung.png', 'file', pics, \{ kind:'image', content: makeTungArt() \});\
+  mk('wallpaper studies.png', 'file', pics, \{ kind:'image', content: makeSwatchArt() \});\
+  return root;\
+\}\
+\
+/* ===================== event bus ===================== */\
+const Bus = \{\
+  _m: \{\},\
+  on(t, f)\{ (this._m[t] ||= []).push(f); return () => \{ this._m[t] = (this._m[t]||[]).filter(x => x !== f); \}; \},\
+  emit(t, p)\{ (this._m[t] || []).slice().forEach(f => \{ try \{ f(p); \} catch(e)\{ console.warn(e); \} \}); \}\
+\};\
+\
+/* ===================== virtual file system ===================== */\
+const rootN = () => Store.state.fs;\
+const folderId = name => \{ const n = rootN().children.find(c => c.name === name); return n ? n.id : null; \};\
+const deskId = () => folderId('Desktop');\
+\
+function findNode(id, from = rootN())\{\
+  if (!id) return null;\
+  if (from.id === id) return from;\
+  for (const c of from.children)\{ const r = findNode(id, c); if (r) return r; \}\
+  return null;\
+\}\
+function childrenOf(id)\{\
+  const n = findNode(id);\
+  if (!n || n.type !== 'folder') return [];\
+  return [...n.children].sort((a,b) => a.type === b.type\
+    ? a.name.localeCompare(b.name, undefined, \{ numeric:true, sensitivity:'base' \})\
+    : (a.type === 'folder' ? -1 : 1));\
+\}\
+function pathOf(n)\{\
+  if (!n || !n.parentId) return '/';\
+  const parts = []; let c = n;\
+  while (c && c.parentId)\{ parts.unshift(c.name); c = findNode(c.parentId); \}\
+  return '/' + parts.join('/');\
+\}\
+function resolvePath(str, cwdId)\{\
+  str = (str || '').trim();\
+  if (!str) return findNode(cwdId) || rootN();\
+  let base;\
+  if (str === '~' || str === '/') return rootN();\
+  if (str.startsWith('~/'))\{ base = rootN(); str = str.slice(2); \}\
+  else if (str.startsWith('/'))\{ base = rootN(); str = str.slice(1); \}\
+  else base = findNode(cwdId) || rootN();\
+  let cur = base;\
+  for (const p of str.split('/').filter(s => s && s !== '.'))\{\
+    if (p === '..')\{ cur = cur.parentId ? findNode(cur.parentId) : cur; continue; \}\
+    const nx = cur.children.find(c => c.name === p);\
+    if (!nx) return null;\
+    cur = nx;\
+  \}\
+  return cur;\
+\}\
+function uniqueName(parentId, base, ext='')\{\
+  const sibs = childrenOf(parentId).map(c => c.name);\
+  if (!sibs.includes(base + ext)) return base + ext;\
+  let i = 2;\
+  while (sibs.includes(`$\{base\} $\{i\}$\{ext\}`)) i++;\
+  return `$\{base\} $\{i\}$\{ext\}`;\
+\}\
+function isDescendant(anc, id)\{\
+  let c = findNode(id);\
+  while (c && c.parentId)\{\
+    if (c.parentId === anc.id) return true;\
+    c = findNode(c.parentId);\
+  \}\
+  return false;\
+\}\
+function fsChanged()\{ Store.schedule(); Bus.emit('fs'); \}\
+\
+function createFolder(parentId, name)\{\
+  const p = findNode(parentId);\
+  if (!p || p.type !== 'folder') return null;\
+  const n = \{ id: uid(), name, type:'folder', kind:null, content:'', children:[], parentId, x:undefined, y:undefined, created:Date.now(), modified:Date.now() \};\
+  p.children.push(n); fsChanged(); return n;\
+\}\
+function createFile(parentId, name, kind, content='')\{\
+  const p = findNode(parentId);\
+  if (!p || p.type !== 'folder') return null;\
+  const n = \{ id: uid(), name, type:'file', kind, content, children:[], parentId, x:undefined, y:undefined, created:Date.now(), modified:Date.now() \};\
+  p.children.push(n); fsChanged(); return n;\
+\}\
+function renameNode(id, name)\{\
+  const n = findNode(id); if (!n) return;\
+  const v = (name || '').trim();\
+  if (!v) throw new Error('Name cannot be empty');\
+  if (v.includes('/')) throw new Error('Name cannot contain "/"');\
+  if (n.parentId)\{\
+    const clash = childrenOf(n.parentId).find(c => c.id !== id && c.name === v);\
+    if (clash) throw new Error(`"$\{v\}" already exists here`);\
+  \}\
+  n.name = v; n.modified = Date.now(); fsChanged();\
+\}\
+function moveNode(id, newParentId)\{\
+  const n = findNode(id), p = findNode(newParentId);\
+  if (!n || !p || p.type !== 'folder') return false;\
+  if (n.id === newParentId || isDescendant(n, newParentId)) return false;\
+  const old = findNode(n.parentId);\
+  if (old) old.children = old.children.filter(c => c.id !== id);\
+  p.children.push(n); n.parentId = newParentId; n.modified = Date.now();\
+  fsChanged(); return true;\
+\}\
+function deleteNode(id)\{\
+  const n = findNode(id); if (!n || !n.parentId) return;\
+  const p = findNode(n.parentId);\
+  p.children = p.children.filter(c => c.id !== id);\
+  fsChanged();\
+\}\
+function writeFile(id, content)\{\
+  const n = findNode(id); if (!n) return;\
+  n.content = content; n.modified = Date.now(); fsChanged();\
+\}\
+function openNode(n)\{\
+  if (!n) return;\
+  if (n.type === 'folder') openApp('finder', \{ cwd: n.id \});\
+  else if (n.kind === 'text') openApp('textedit', \{ fileId: n.id \});\
+  else if (n.kind === 'image') openApp('viewer', \{ fileId: n.id \});\
+  else toast('No app can open this file', 'info');\
+\}\
+\
+/* ===================== wallpapers ===================== */\
+const WALLS = \{\
+  sahur: \{ name:'Sahur Night', style:\{ backgroundColor:'#171221',\
+    backgroundImage:`url($\{MASCOT_TILE\}), radial-gradient(1000px 600px at 85% -10%, rgba(190,120,60,.18), transparent 60%), linear-gradient(165deg,#231a2c 0%,#1b1524 45%,#14100d 100%)`,\
+    backgroundSize:'360px, auto, auto', backgroundRepeat:'repeat, no-repeat, no-repeat' \} \},\
+  wood: \{ name:'Tung Grain', style:\{ backgroundColor:'#2b1c0f',\
+    backgroundImage:`repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 2px, transparent 2px 18px, rgba(255,243,226,.03) 18px 20px, transparent 20px 54px), radial-gradient(1200px 700px at 50% 0%, rgba(255,200,120,.13), transparent 55%), linear-gradient(170deg,#4a3018,#241608 75%)`,\
+    backgroundSize:'auto, auto, auto', backgroundRepeat:'repeat, no-repeat, no-repeat' \} \},\
+  ember: \{ name:'Ember Dusk', style:\{ backgroundColor:'#1c1412',\
+    backgroundImage:`radial-gradient(900px 620px at 50% 112%, rgba(217,96,59,.35), transparent 65%), radial-gradient(700px 500px at 20% -10%, rgba(224,145,63,.2), transparent 60%), linear-gradient(180deg,#241a16,#120c0a)`,\
+    backgroundSize:'auto, auto, auto', backgroundRepeat:'no-repeat, no-repeat, no-repeat' \} \},\
+  nebula: \{ name:'Brainrot Nebula', style:\{ backgroundColor:'#0f1420',\
+    backgroundImage:`url($\{MASCOT_TILE\}), radial-gradient(900px 600px at 15% 20%, rgba(64,150,140,.25), transparent 60%), radial-gradient(700px 500px at 85% 80%, rgba(160,70,120,.22), transparent 60%), linear-gradient(180deg,#10141d,#0c0f16)`,\
+    backgroundSize:'320px, auto, auto, auto', backgroundRepeat:'repeat, no-repeat, no-repeat, no-repeat' \} \},\
+  slate: \{ name:'Graphite', style:\{ backgroundColor:'#15161a',\
+    backgroundImage:`radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.6px), radial-gradient(1000px 600px at 70% 10%, rgba(255,255,255,.05), transparent 60%), linear-gradient(180deg,#1a1b20,#101114)`,\
+    backgroundSize:'26px 26px, auto, auto', backgroundRepeat:'repeat, no-repeat, no-repeat' \} \},\
+  dawn: \{ name:'Dawn Paper', light:true, style:\{ backgroundColor:'#f2e7d8',\
+    backgroundImage:`radial-gradient(800px 500px at 80% -10%, rgba(224,145,63,.28), transparent 60%), linear-gradient(180deg,#f6efe3,#ead9bf)`,\
+    backgroundSize:'auto, auto', backgroundRepeat:'no-repeat, no-repeat' \} \},\
+\};\
+if (ASSETS.wallpaper) WALLS.yourart = \{ name:'Your Art', style:\{ backgroundColor:'#111', backgroundImage:`url($\{ASSETS.wallpaper\})`, backgroundSize:'cover', backgroundRepeat:'no-repeat' \} \};\
+\
+function applyWallpaper()\{\
+  const wall = $('#wallpaper');\
+  let st = WALLS.sahur.style;\
+  if (S().wallpaper === 'custom') st = \{ backgroundColor:S().customColor \};\
+  else if (WALLS[S().wallpaper]) st = WALLS[S().wallpaper].style;\
+  wall.style.opacity = '0';\
+  requestAnimationFrame(() => requestAnimationFrame(() => \{\
+    wall.style.cssText = '';\
+    Object.assign(wall.style, st);\
+    wall.style.position = 'absolute'; wall.style.inset = '0';\
+    wall.style.zIndex = '0'; wall.style.transition = 'opacity .35s';\
+    wall.style.opacity = '1';\
+  \}));\
+\}\
+function applySettings()\{\
+  const s = S();\
+  document.documentElement.dataset.theme = s.theme;\
+  document.documentElement.style.setProperty('--accent', s.accent);\
+  document.documentElement.style.setProperty('--accent-fg', hexLum(s.accent) > 0.6 ? '#241a0d' : '#ffffff');\
+  document.documentElement.style.fontSize = (16 * s.density) + 'px';\
+  document.body.classList.toggle('no-anim', !s.motion);\
+  Sound.setVolume(s.volume);\
+  applyWallpaper();\
+\}\
+\
+/* ===================== toasts ===================== */\
+function toast(msg, ico)\{\
+  const t = h('div', \{ class:'toast' \},\
+    ico ? h('span', \{ class:'ci' \}, icon(ico, 15)) : null, h('span', \{\}, msg));\
+  $('#toasts').append(t);\
+  setTimeout(() => \{ t.classList.add('out'); setTimeout(() => t.remove(), 260); \}, 3400);\
+\}\
+\
+/* ===================== context menus ===================== */\
+let menuEl = null;\
+function closeMenu()\{\
+  if (!menuEl) return;\
+  menuEl.remove(); menuEl = null;\
+  document.removeEventListener('pointerdown', menuOutside, true);\
+\}\
+function menuOutside(e)\{ if (menuEl && !menuEl.contains(e.target)) closeMenu(); \}\
+function showMenu(x, y, items)\{\
+  closeMenu();\
+  menuEl = h('div', \{ class:'ctx' \});\
+  for (const it of items)\{\
+    if (it === 'sep' || it && it.sep)\{ menuEl.append(h('div', \{ class:'ctx-sep' \})); continue; \}\
+    const b = h('div', \{ class:'ctx-item' + (it.danger ? ' danger' : '') + (it.disabled ? ' dis' : '') \},\
+      h('span', \{ class:'ci' \}, it.icon ? icon(it.icon, 15) : null), h('span', \{\}, it.label));\
+    if (!it.disabled) b.addEventListener('click', () => \{ closeMenu(); it.action && it.action(); \});\
+    menuEl.append(b);\
+  \}\
+  document.body.append(menuEl);\
+  const r = menuEl.getBoundingClientRect();\
+  menuEl.style.left = clamp(x, 6, innerWidth - r.width - 6) + 'px';\
+  menuEl.style.top  = clamp(y, 6, innerHeight - r.height - 6) + 'px';\
+  document.addEventListener('pointerdown', menuOutside, true);\
+\}\
+\
+/* ===================== dialogs ===================== */\
+const dialogStack = [];\
+function dialog(\{ title, body, buttons, wide \})\{\
+  return new Promise(res => \{\
+    const veil = h('div', \{ class:'modal-veil' \});\
+    const m = h('div', \{ class:'modal' + (wide ? ' wide' : '') \},\
+      h('div', \{ class:'modal-title' \}, title),\
+      h('div', \{ class:'modal-body' \}, body),\
+      h('div', \{ class:'modal-actions' \},\
+        buttons.map(b => h('button', \{ class:'btn' + (b.primary ? ' primary' : '') + (b.danger ? ' danger' : ''),\
+          onclick: () => finish(b.value) \}, b.label))));\
+    veil.append(m); document.body.append(veil);\
+    dialogStack.push(veil);\
+    const esc = e => \{ if (e.key === 'Escape' && dialogStack[dialogStack.length-1] === veil) finish(null); \};\
+    document.addEventListener('keydown', esc, true);\
+    function finish(v)\{\
+      const i = dialogStack.indexOf(veil); if (i > -1) dialogStack.splice(i, 1);\
+      document.removeEventListener('keydown', esc, true);\
+      veil.remove(); res(v);\
+    \}\
+    const prim = m.querySelector('.btn.primary'); if (prim) setTimeout(() => prim.focus(), 40);\
+  \});\
+\}\
+const confirmDialog = (title, msg, ok='OK', danger=false) =>\
+  dialog(\{ title, body:msg, buttons:[\{ label:'Cancel', value:'cancel' \}, \{ label:ok, value:'ok', primary:true, danger \}] \});\
+\
+function renameDialog(n)\{\
+  const inp = h('input', \{ class:'fp-name', value:n.name, spellcheck:'false' \});\
+  inp.addEventListener('keydown', e => \{ e.stopPropagation(); if (e.key === 'Enter') m.querySelector('.btn.primary').click(); \});\
+  dialog(\{ title:'Rename', body:h('div', \{\}, inp), buttons:[\
+    \{ label:'Cancel', value:'cancel' \},\
+    \{ label:'Rename', value:'ok', primary:true \} ]\
+  \}).then(r => \{\
+    if (r !== 'ok') return;\
+    try \{ renameNode(n.id, inp.value); \} catch(err)\{ toast(err.message, 'info'); \}\
+  \});\
+\}\
+function infoDialog(n)\{\
+  const rows = [\
+    ['Name', n.name],\
+    ['Kind', n.type === 'folder' ? 'Folder' : (n.kind === 'image' ? 'Image file' : 'Plain text')],\
+    ['Size', n.type === 'folder' ? childrenOf(n.id).length + ' items' : fmtBytes((n.content||'').length)],\
+    ['Where', n.parentId ? pathOf(findNode(n.parentId)) : '/'],\
+    ['Created', fmtDate(n.created)], ['Modified', fmtDate(n.modified)],\
+  ];\
+  dialog(\{ title:'Info', body:h('div', \{\}, rows.map(([k,v]) =>\
+    h('div', \{ class:'spec-row' \}, h('span', \{\}, k), h('span', \{\}, v)))),\
+    buttons:[\{ label:'OK', value:1, primary:true \}] \});\
+\}\
+\
+/* ===================== file picker (open/save) ===================== */\
+function filePicker(\{ mode='open', kinds=['text'], defaultName='untitled.txt', defaultParentId, title \})\{\
+  return new Promise(res => \{\
+    let curId = defaultParentId && findNode(defaultParentId) ? defaultParentId : deskId();\
+    let selId = null;\
+    const veil = h('div', \{ class:'modal-veil' \});\
+    const list = h('div', \{ class:'fp-list' \});\
+    const locLabel = h('div', \{ class:'fp-empty' \});\
+    const side = h('div', \{ class:'fp-side' \});\
+    const nameInp = mode === 'save' ? h('input', \{ class:'fp-name', value: defaultName, spellcheck:'false' \}) : null;\
+\
+    function places()\{\
+      side.innerHTML = '';\
+      side.append(h('div', \{ class:'side-h' \}, 'Places'));\
+      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Kirk Disk','folder']].forEach(([nm, ic]) => \{\
+        const id = nm === 'Kirk Disk' ? rootN().id : folderId(nm);\
+        if (!id) return;\
+        const row = h('button', \{ class:'place' + (curId === id ? ' cur' : ''), 'data-drop':id,\
+          onclick:() => \{ curId = id; selId = null; render(); \} \},\
+          icon(ic, 15), nm);\
+        side.append(row);\
+      \});\
+    \}\
+    function render()\{\
+      places();\
+      locLabel.textContent = pathOf(findNode(curId)) || '/';\
+      list.innerHTML = '';\
+      const kids = childrenOf(curId);\
+      if (!kids.length) list.append(h('div', \{ class:'fp-empty' \}, 'This folder is empty.'));\
+      for (const n of kids)\{\
+        if (n.type === 'file' && !kinds.includes(n.kind)) continue;\
+        const row = h('div', \{ class:'fp-row' + (selId === n.id ? ' sel' : '') \},\
+          h('span', \{ class:'icn', html: appIcon(n.type === 'folder' ? 'folder' : (n.kind === 'image' ? 'image' : 'text'), 22) \}),\
+          h('span', \{\}, n.name + (n.type === 'folder' ? ' /' : '')));\
+        row.addEventListener('click', () => \{\
+          if (n.type === 'folder')\{ curId = n.id; selId = null; render(); \}\
+          else if (mode === 'open')\{ selId = n.id; $$('.fp-row', list).forEach(r => r.classList.remove('sel')); row.classList.add('sel'); okBtn.disabled = false; \}\
+          else \{ nameInp.value = n.name; \}\
+        \});\
+        row.addEventListener('dblclick', () => \{ if (n.type !== 'folder' && mode === 'open') finish(n); \});\
+        list.append(row);\
+      \}\
+      if (mode === 'save') validate();\
+    \}\
+    function validate()\{\
+      const v = nameInp.value.trim();\
+      const clash = v ? childrenOf(curId).find(c => c.name === v) : null;\
+      okBtn.disabled = !v || (clash && clash.type === 'folder');\
+    \}\
+    function finish(v)\{ veil.remove(); document.removeEventListener('keydown', esc, true); res(v); \}\
+    const esc = e => \{ if (e.key === 'Escape') finish(null); \};\
+\
+    let okBtn;\
+    if (mode === 'save')\{\
+      okBtn = h('button', \{ class:'btn primary', onclick: async () => \{\
+        const v = nameInp.value.trim();\
+        if (!v) return;\
+        const clash = childrenOf(curId).find(c => c.name === v);\
+        if (clash && clash.type === 'folder') return;\
+        if (clash)\{\
+          const r = await confirmDialog('Replace file?', `"$\{v\}" already exists in this folder. Replace it?`, 'Replace', true);\
+          if (r !== 'ok') return;\
+          finish(\{ parent: findNode(curId), name: v, existing: clash \});\
+        \} else finish(\{ parent: findNode(curId), name: v, existing: null \});\
+      \}\}, 'Save');\
+      nameInp.addEventListener('input', validate);\
+      nameInp.addEventListener('keydown', e => \{ e.stopPropagation(); if (e.key === 'Enter') okBtn.click(); \});\
+    \} else \{\
+      okBtn = h('button', \{ class:'btn primary', disabled:true, onclick:() => \{ const n = findNode(selId); if (n) finish(n); \} \}, 'Open');\
+    \}\
+    const m = h('div', \{ class:'modal wide' \},\
+      h('div', \{ class:'modal-title' \}, title || (mode === 'open' ? 'Open file' : 'Save file')),\
+      h('div', \{ class:'modal-body' \},\
+        h('div', \{ class:'fp' \}, h('div', \{\}, locLabel),\
+          h('div', \{ class:'fp-main' \}, side, list),\
+          h('div', \{ class:'fp-foot' \}, nameInp, okBtn,\
+            h('button', \{ class:'btn', onclick:() => finish(null) \}, 'Cancel')))));\
+    veil.append(m); document.body.append(veil);\
+    dialogStack.push(veil);\
+    document.addEventListener('keydown', esc, true);\
+    render();\
+    setTimeout(() => (nameInp || list.querySelector('.fp-row') || m).focus && (nameInp || m).focus(), 40);\
+    if (nameInp) nameInp.focus();\
+  \});\
+\}\
+\
+/* ===================== window manager ===================== */\
+const WM = \{ wins: [], z: 20, focused: null \};\
+function workArea()\{\
+  const dockH = ($('#dock') ? $('#dock').offsetHeight : 60) + 24;\
+  return \{ x: 8, y: 8, w: innerWidth - 16, h: innerHeight - 8 - dockH \};\
+\}\
+function topWindow()\{\
+  let best = null;\
+  for (const w of WM.wins) if (!w.minimized && (!best || +w.el.style.zIndex > +best.el.style.zIndex)) best = w;\
+  return best;\
+\}\
+function focusWin(w)\{\
+  if (!w || w.closing) return;\
+  WM.z++; w.el.style.zIndex = WM.z;\
+  WM.focused = w;\
+  WM.wins.forEach(x => x.el.classList.toggle('focused', x === w));\
+  renderDock();\
+\}\
+function dockTargetRect(appId)\{\
+  const el = $(`#dock [data-app="$\{appId\}"]`) || $('#start-btn');\
+  return el ? el.getBoundingClientRect() : \{ left:innerWidth/2, top:innerHeight, width:50, height:50 \};\
+\}\
+function setRect(w, x, y, wd, ht)\{\
+  const s = w.el.style;\
+  s.left = x + 'px'; s.top = y + 'px'; s.width = wd + 'px'; s.height = ht + 'px';\
+\}\
+function animateRect(w, r)\{\
+  w.el.style.transition = 'left .24s cubic-bezier(.2,.8,.3,1), top .24s cubic-bezier(.2,.8,.3,1), width .24s cubic-bezier(.2,.8,.3,1), height .24s cubic-bezier(.2,.8,.3,1)';\
+  setRect(w, r.x, r.y, r.w, r.h);\
+  setTimeout(() => \{ if (w.el) w.el.style.transition = ''; \}, 280);\
+\}\
+function toggleMax(w)\{\
+  if (w.maximized)\{\
+    w.maximized = false; w.el.classList.remove('maximized');\
+    animateRect(w, w.prev);\
+  \} else \{\
+    w.prev = \{ x: w.el.offsetLeft, y: w.el.offsetTop, w: w.el.offsetWidth, h: w.el.offsetHeight \};\
+    w.maximized = true; w.el.classList.add('maximized');\
+    const a = workArea(); animateRect(w, a);\
+  \}\
+\}\
+function minimizeWin(w)\{\
+  if (w.minimized || w.closing) return;\
+  w.minimized = true; Sound.play('min');\
+  const from = w.el.getBoundingClientRect(), to = dockTargetRect(w.appId);\
+  const dx = (to.left + to.width/2) - (from.left + from.width/2);\
+  const dy = (to.top + to.height/2) - (from.top + from.height/2);\
+  const sc = Math.max(0.05, Math.min(to.width/from.width, to.height/from.height));\
+  w.el.style.transition = 'transform .26s cubic-bezier(.5,0,.8,.4), opacity .26s';\
+  w.el.style.transform = `translate($\{dx\}px,$\{dy\}px) scale($\{sc\})`;\
+  w.el.style.opacity = '0';\
+  setTimeout(() => \{\
+    w.el.classList.add('minimized');\
+    w.el.style.transition = ''; w.el.style.transform = ''; w.el.style.opacity = '';\
+  \}, 270);\
+  if (WM.focused === w)\{ WM.focused = topWindow(); if (WM.focused) focusWin(WM.focused); \}\
+  renderDock();\
+\}\
+function restoreWin(w)\{\
+  if (!w.minimized) return;\
+  w.minimized = false;\
+  w.el.classList.remove('minimized');\
+  const from = dockTargetRect(w.appId), r = w.el.getBoundingClientRect();\
+  const dx = (from.left + from.width/2) - (r.left + r.width/2);\
+  const dy = (from.top + from.height/2) - (r.top + r.height/2);\
+  w.el.style.transition = 'none';\
+  w.el.style.transform = `translate($\{dx\}px,$\{dy\}px) scale(.06)`;\
+  w.el.style.opacity = '0';\
+  w.el.getBoundingClientRect();\
+  w.el.style.transition = 'transform .28s cubic-bezier(.2,.7,.3,1), opacity .28s';\
+  w.el.style.transform = ''; w.el.style.opacity = '';\
+  setTimeout(() => \{ if (w.el) w.el.style.transition = ''; \}, 300);\
+  focusWin(w);\
+\}\
+async function closeWin(w)\{\
+  if (w.closing) return;\
+  const app = Apps[w.appId];\
+  try \{ if (app.onClose)\{ const r = await app.onClose(w); if (r === false) return; \} \} catch(e)\{\}\
+  w.closing = true;\
+  w.subs.forEach(off => off()); w.timers.forEach(clearInterval);\
+  w.el.classList.add('closing');\
+  Sound.play('close');\
+  setTimeout(() => \{\
+    w.el.remove();\
+    WM.wins = WM.wins.filter(x => x !== w);\
+    if (WM.focused === w)\{ WM.focused = topWindow(); if (WM.focused) focusWin(WM.focused); \}\
+    renderDock();\
+  \}, 210);\
+  renderDock();\
+\}\
+const RSDIRS = ['n','s','e','w','ne','nw','se','sw'];\
+function createWindow(app, opts=\{\})\{\
+  const w = \{ id: uid('w'), appId: app.id, minimized:false, maximized:false, prev:null, closing:false, state:\{\}, subs:[], timers:[], opts \};\
+  const dw = Math.min(app.w, innerWidth - 30), dh = Math.min(app.h, innerHeight - 110);\
+  const off = WM.wins.length % 7;\
+  let x = Math.round((innerWidth - dw)/2 + (off - 3) * 34);\
+  let y = Math.round(Math.max(10, (innerHeight - dh - 84)/2 + (off % 3 - 1) * 24));\
+  x = clamp(x, 8, Math.max(8, innerWidth - dw - 8));\
+  y = clamp(y, 8, Math.max(8, innerHeight - dh - 60));\
+\
+  const el = h('div', \{ class:'win opening' \});\
+  Object.assign(el.style, \{ left:x+'px', top:y+'px', width:dw+'px', height:dh+'px', zIndex:++WM.z \});\
+  const titleEl = h('div', \{ class:'tb-title' \}, app.name);\
+  const tb = h('div', \{ class:'titlebar' \},\
+    h('span', \{ class:'tb-icon', html: appIcon(app.tile, 18) \}),\
+    titleEl,\
+    h('div', \{ class:'tb-controls' \},\
+      h('button', \{ class:'wc wc-min', title:'Minimize', onclick:() => minimizeWin(w) \}, icon('minus', 14)),\
+      h('button', \{ class:'wc wc-max', title: w=>'' || 'Maximize', onclick:() => toggleMax(w) \}, icon('square', 12)),\
+      h('button', \{ class:'wc wc-close', title:'Close', onclick:() => closeWin(w) \}, icon('close', 14))));\
+  const body = h('div', \{ class:'win-body' \});\
+  el.append(tb, body);\
+  RSDIRS.forEach(dir => \{\
+    const hd = h('div', \{ class:'rs rs-' + dir \});\
+    hd.addEventListener('pointerdown', e => startResize(w, e, dir, app));\
+    el.append(hd);\
+  \});\
+  el.addEventListener('pointerdown', () => focusWin(w), true);\
+  // drag\
+  tb.addEventListener('pointerdown', e => \{\
+    if (e.button !== 0 || e.target.closest('.wc')) return;\
+    startWinDrag(w, e);\
+  \});\
+  tb.addEventListener('dblclick', e => \{ if (!e.target.closest('.wc')) toggleMax(w); \});\
+  $('#win-layer').append(el);\
+  setTimeout(() => el.classList.remove('opening'), 340);\
+\
+  w.el = el; w.body = body;\
+  w.setTitle = t => \{ titleEl.textContent = t; \};\
+  w.subscribe = (evt, fn) => \{ const off = Bus.on(evt, fn); w.subs.push(off); return off; \};\
+  w.addInterval = (fn, ms) => \{ const id = setInterval(fn, ms); w.timers.push(id); return id; \};\
+\
+  WM.wins.push(w);\
+  try \{ app.render(w, opts); \} catch(e)\{ console.error(e); body.append(h('div', \{ class:'empty-note' \}, 'This app crashed. It happens.')); \}\
+  focusWin(w);\
+  Sound.play('open');\
+  return w;\
+\}\
+function startWinDrag(w, e)\{\
+  w.el.style.transition = '';\
+  let ax = e.clientX - w.el.offsetLeft, ay = e.clientY - w.el.offsetTop;\
+  const sx = e.clientX, sy = e.clientY;\
+  let moved = false;\
+  const tb = e.currentTarget;\
+  tb.setPointerCapture(e.pointerId);\
+  const mv = ev => \{\
+    if (!moved)\{\
+      if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) < 4) return;\
+      moved = true;\
+      if (w.maximized)\{\
+        const gr = (ev.clientX - w.el.getBoundingClientRect().left) / w.el.offsetWidth;\
+        w.maximized = false; w.el.classList.remove('maximized');\
+        const pw = w.prev.w, ph = w.prev.h;\
+        setRect(w, Math.round(ev.clientX - pw*gr), Math.max(0, Math.round(ev.clientY - 18)), pw, ph);\
+        ax = pw * gr; ay = 18;\
+        return;\
+      \}\
+    \}\
+    w.el.style.left = clamp(ev.clientX - ax, 150 - w.el.offsetWidth, innerWidth - 150) + 'px';\
+    w.el.style.top  = clamp(ev.clientY - ay, 0, innerHeight - 48) + 'px';\
+  \};\
+  const up = () => \{ tb.removeEventListener('pointermove', mv); \};\
+  tb.addEventListener('pointermove', mv);\
+  tb.addEventListener('pointerup', up, \{ once:true \});\
+  tb.addEventListener('pointercancel', up, \{ once:true \});\
+\}\
+function startResize(w, e, dir, app)\{\
+  if (w.maximized) return;\
+  e.stopPropagation(); focusWin(w);\
+  w.el.style.transition = '';\
+  const s = \{ x:e.clientX, y:e.clientY, l:w.el.offsetLeft, t:w.el.offsetTop, w:w.el.offsetWidth, h:w.el.offsetHeight \};\
+  const minW = app.minW || 340, minH = app.minH || 220;\
+  const hd = e.currentTarget;\
+  hd.setPointerCapture(e.pointerId);\
+  const mv = ev => \{\
+    const dx = ev.clientX - s.x, dy = ev.clientY - s.y;\
+    let L = s.l, T = s.t, W = s.w, H = s.h;\
+    if (dir.includes('e')) W = s.w + dx;\
+    if (dir.includes('s')) H = s.h + dy;\
+    if (dir.includes('w'))\{ W = s.w - dx; L = s.l + dx; \}\
+    if (dir.includes('n'))\{ H = s.h - dy; T = s.t + dy; \}\
+    if (W < minW)\{ if (dir.includes('w')) L = s.l + s.w - minW; W = minW; \}\
+    if (H < minH)\{ if (dir.includes('n')) T = s.t + s.h - minH; H = minH; \}\
+    if (T < 0)\{ H += T; T = 0; \}\
+    setRect(w, L, T, W, H);\
+  \};\
+  const up = () => hd.removeEventListener('pointermove', mv);\
+  hd.addEventListener('pointermove', mv);\
+  hd.addEventListener('pointerup', up, \{ once:true \});\
+\}\
+\
+/* ===================== app registry ===================== */\
+const Apps = \{\};\
+const registerApp = a => \{ Apps[a.id] = a; \};\
+function openApp(appId, opts=\{\})\{\
+  const app = Apps[appId];\
+  if (!app) return null;\
+  if (app.single)\{\
+    const ex = WM.wins.find(w => w.appId === appId);\
+    if (ex)\{\
+      if (ex.minimized) restoreWin(ex); else focusWin(ex);\
+      if (app.onReopen) app.onReopen(ex, opts);\
+      return ex;\
+    \}\
+  \}\
+  return createWindow(app, opts);\
+\}\
+\
+/* ===================== dock / launcher / tray ===================== */\
+const PINNED = ['finder','textedit','paint','notes','terminal','calc','settings'];\
+function renderDock()\{\
+  const wrap = $('#dock-apps');\
+  wrap.innerHTML = '';\
+  const running = [...new Set(WM.wins.map(w => w.appId))];\
+  const ids = [...PINNED, ...running.filter(id => !PINNED.includes(id))];\
+  for (const id of ids)\{\
+    const app = Apps[id]; if (!app) continue;\
+    const b = h('button', \{ class:'dock-btn' + (WM.wins.some(w=>w.appId===id) ? ' running' : '')\
+      + (WM.focused && WM.focused.appId === id && !WM.focused.minimized ? ' active' : ''),\
+      'data-app':id, title:app.name, html: appIcon(app.tile, 30),\
+      onclick:() => dockClick(id) \});\
+    wrap.append(b);\
+  \}\
+  const s = S();\
+  $('#sound-btn').innerHTML = '';\
+  $('#sound-btn').append(icon(s.sound ? 'volOn' : 'volOff', 17));\
+  $('#qs-btn').innerHTML = '';\
+  $('#qs-btn').append(icon('sliders', 17));\
+\}\
+function dockClick(appId)\{\
+  const wins = WM.wins.filter(w => w.appId === appId);\
+  if (!wins.length) return openApp(appId);\
+  const top = topWindowOf(wins);\
+  if (top === WM.focused && !top.minimized) minimizeWin(top);\
+  else if (top.minimized) restoreWin(top);\
+  else focusWin(top);\
+\}\
+const topWindowOf = wins => wins.reduce((a,b) => +b.el.style.zIndex > +a.el.style.zIndex ? b : a);\
+function dockMenu(appId, x, y)\{\
+  const app = Apps[appId], wins = WM.wins.filter(w => w.appId === appId);\
+  const items = [];\
+  if (!app.single) items.push(\{ label:'New Window', icon:'plus', action:() => openApp(appId) \});\
+  if (wins.length) items.push(\{ label: wins.length > 1 ? `Close $\{wins.length\} Windows` : 'Close Window', icon:'close', danger:true, action:() => wins.forEach(w => closeWin(w)) \});\
+  if (!items.length) items.push(\{ label: app.name, disabled:true \});\
+  showMenu(x, y, items);\
+\}\
+function powerMenu(x, y)\{\
+  showMenu(x, y, [\
+    \{ label:'Restart', icon:'refresh', action:() => location.reload() \},\
+    \{ label:'Factory Reset', icon:'trash', danger:true, action:async () => \{\
+        const r = await confirmDialog('Factory reset?', 'This erases the whole disk, settings and notes, then reboots. There is no undo.', 'Erase', true);\
+        if (r === 'ok')\{ localStorage.removeItem(KEY); location.reload(); \}\
+      \} \},\
+    'sep',\
+    \{ label:'About This OS', icon:'info', action:() => openApp('settings', \{ panel:'about' \}) \},\
+  ]);\
+\}\
+\
+/* ---- launcher ---- */\
+let launcher = null;\
+function closeLauncher()\{ if (launcher)\{ launcher.veil.remove(); launcher.panel.remove(); launcher = null; \} \}\
+function toggleLauncher()\{ launcher ? closeLauncher() : openLauncher(); \}\
+function openLauncher()\{\
+  closePopovers();\
+  const veil = h('div', \{ class:'launch-veil', onclick:closeLauncher \});\
+  const grid = h('div', \{ class:'lgrid' \});\
+  const input = h('input', \{ type:'text', placeholder:'Search apps\'85', spellcheck:'false' \});\
+  const panel = h('div', \{ id:'launcher' \}, input, grid);\
+  document.body.append(veil, panel);\
+  let items = [], hl = 0;\
+  const mark = () => $$('.ltile', grid).forEach((t,i) => t.classList.toggle('hl', i === hl));\
+  const renderList = f => \{\
+    grid.innerHTML = '';\
+    items = Object.values(Apps).filter(a => !a.hidden &&\
+      a.name.toLowerCase().includes(f) && f || (!f && !a.hidden) &&\
+      (!f || a.name.toLowerCase().includes(f) || (a.kw||'').includes(f)));\
+    hl = clamp(hl, 0, Math.max(0, items.length - 1));\
+    items.forEach((a,i) => grid.append(h('div', \{ class:'ltile' + (i===hl?' hl':''),\
+      onclick:() => \{ closeLauncher(); openApp(a.id); \} \},\
+      h('div', \{ class:'icn', html: appIcon(a.tile, 42) \}), h('span', \{\}, a.name))));\
+    if (!items.length) grid.append(h('div', \{ class:'empty-note' \}, 'Nothing matches that.'));\
+    mark();\
+  \};\
+  input.addEventListener('input', () => \{ hl = 0; renderList(input.value.trim().toLowerCase()); \});\
+  input.addEventListener('keydown', e => \{\
+    if (e.key === 'Escape') return closeLauncher();\
+    if (['ArrowDown','ArrowRight'].includes(e.key))\{ e.preventDefault(); hl = Math.min(hl+1, items.length-1); mark(); \}\
+    if (['ArrowUp','ArrowLeft'].includes(e.key))\{ e.preventDefault(); hl = Math.max(hl-1, 0); mark(); \}\
+    if (e.key === 'Enter' && items[hl])\{ const a = items[hl]; closeLauncher(); openApp(a.id); \}\
+  \});\
+  renderList('');\
+  launcher = \{ veil, panel \};\
+  setTimeout(() => input.focus(), 30);\
+\}\
+\
+/* ---- popovers ---- */\
+let pop = null;\
+function closePopovers()\{ if (pop)\{ pop.p.remove(); pop = null; \} \}\
+function popover(anchor, build)\{\
+  closePopovers(); closeLauncher();\
+  const p = h('div', \{ class:'pop' \});\
+  document.body.append(p);\
+  build(p);\
+  const ar = anchor.getBoundingClientRect();\
+  p.style.left = clamp(ar.left + ar.width/2 - p.offsetWidth/2, 8, innerWidth - p.offsetWidth - 8) + 'px';\
+  p.style.top  = Math.max(8, ar.top - p.offsetHeight - 12) + 'px';\
+  pop = \{ p, anchor \};\
+\}\
+function buildCalendar(p)\{\
+  const now = new Date();\
+  p.append(h('div', \{ style:\{ fontSize:'1.5rem', fontWeight:'700', textAlign:'center', marginBottom:'.15rem' \} \},\
+    now.toLocaleTimeString([], \{ hour:'2-digit', minute:'2-digit', second:'2-digit' \})));\
+  p.append(h('div', \{ style:\{ fontSize:'.72rem', color:'var(--fg-dim)', textAlign:'center', marginBottom:'.6rem' \} \},\
+    now.toLocaleDateString([], \{ weekday:'long', year:'numeric', month:'long', day:'numeric' \})));\
+  const y = now.getFullYear(), m = now.getMonth();\
+  const head = h('div', \{ style:\{ fontWeight:'700', fontSize:'.8rem', textAlign:'center', marginBottom:'.4rem' \} \},\
+    now.toLocaleDateString([], \{ month:'long', year:'numeric' \}));\
+  const grid = h('div', \{ style:\{ display:'grid', gridTemplateColumns:'repeat(7,1.9rem)', gap:'.15rem', textAlign:'center' \} \});\
+  for (let i=0;i<7;i++) grid.append(h('div', \{ style:\{ fontSize:'.6rem', color:'var(--fg-faint)', padding:'.15rem 0' \} \},\
+    new Date(2024, 0, i+1).toLocaleDateString([], \{ weekday:'narrow' \})));\
+  const first = new Date(y, m, 1).getDay(), days = new Date(y, m+1, 0).getDate();\
+  for (let i=0;i<first;i++) grid.append(h('div'));\
+  for (let d=1; d<=days; d++)\{\
+    const today = d === now.getDate();\
+    grid.append(h('div', \{ style:\{ fontSize:'.72rem', padding:'.22rem 0', borderRadius:'.4rem',\
+      background: today ? 'var(--accent)' : 'none', color: today ? 'var(--accent-fg)' : 'var(--fg)', fontWeight: today ? '700' : '400' \} \}, d));\
+  \}\
+  p.append(head, grid);\
+\}\
+function buildQuickSettings(p)\{\
+  const s = S();\
+  const themeSeg = h('div', \{ class:'seg' \},\
+    h('button', \{ onclick:apply \}, icon('moon',13)), h('button', \{ onclick:apply \}, icon('sun',13)));\
+  const btns = $$('button', themeSeg);\
+  const apply = () => \{\};\
+  btns[0].textContent = ''; btns[0].append(icon('moon',13),' Dark');\
+  btns[1].textContent = ''; btns[1].append(icon('sun',13),' Light');\
+  const sync = () => btns.forEach((b,i) => b.classList.toggle('on', (i===0) === (s.theme==='dark')));\
+  btns[0].addEventListener('click', () => \{ s.theme='dark'; sync(); applySettings(); Store.schedule(); \});\
+  btns[1].addEventListener('click', () => \{ s.theme='light'; sync(); applySettings(); Store.schedule(); \});\
+  sync();\
+  p.append(h('div', \{ class:'side-h' \}, 'Appearance'));\
+  p.append(themeSeg);\
+  p.append(h('div', \{ class:'side-h', style:\{ marginTop:'.6rem' \} \}, 'Wallpaper'));\
+  const row = h('div', \{ style:\{ display:'flex', flexWrap:'wrap', gap:'.35rem' \} \});\
+  Object.entries(WALLS).forEach(([id, wp]) => \{\
+    const chip = h('div', \{ class:'wp-chip' + (wp.light ? ' dk' : ''), style:Object.assign(\{ width:'4.4rem', height:'2.7rem' \},\
+      id === 'yourart' ? \{\} : wp.style, \{ backgroundSize:'auto, auto, auto', backgroundPosition:'center' \}) \},\
+      h('span', \{\}, wp.name));\
+    if (S().wallpaper === id) chip.style.outline = '2px solid var(--accent)';\
+    chip.addEventListener('click', () => \{ S().wallpaper = id; applySettings(); Store.schedule(); closePopovers(); \});\
+    row.append(chip);\
+  \});\
+  const custom = h('input', \{ type:'color', value:s.customColor, title:'Custom color',\
+    style:\{ width:'2.7rem', height:'2.7rem', border:'2px dashed var(--fg-faint)', borderRadius:'.65rem', background:'none', padding:'0', cursor:'pointer' \} \});\
+  custom.addEventListener('input', () => \{ S().wallpaper='custom'; S().customColor = custom.value; applySettings(); Store.schedule(); \});\
+  row.append(custom);\
+  p.append(row);\
+  p.append(h('div', \{ class:'side-h', style:\{ marginTop:'.6rem' \} \}, 'Sound'));\
+  const sndSeg = h('div', \{ class:'seg', style:\{ width:'100%' \} \},\
+    h('button', \{\}, 'On'), h('button', \{\}, 'Off'));\
+  const sb = $$('button', sndSeg);\
+  const syncS = () => sb.forEach((b,i) => b.classList.toggle('on', (i===0) === s.sound));\
+  sb[0].addEventListener('click', () => \{ s.sound = true; syncS(); Store.schedule(); Sound.play('tung'); \});\
+  sb[1].addEventListener('click', () => \{ s.sound = false; syncS(); Store.schedule(); \});\
+  syncS();\
+  p.append(sndSeg);\
+  p.append(h('button', \{ class:'btn', style:\{ marginTop:'.7rem', width:'100%' \}, onclick:() => \{ closePopovers(); openApp('settings'); \} \},\
+    'Open System Settings'));\
+\}\
+\
+/* ===================== desktop icons & file dragging ===================== */\
+const Desk = \{ sel: null \};\
+function updateSelClasses()\{\
+  $$('#icons .dicon').forEach(el => el.classList.toggle('selected', el.dataset.node === Desk.sel));\
+\}\
+function autoPositions(kids)\{\
+  const taken = new Set();\
+  kids.forEach(n => \{ if (n.x != null) taken.add(Math.round(n.x/96) + ':' + Math.round(n.y/106)); \});\
+  let cell = 0;\
+  return kids.map(n => \{\
+    if (n.x != null) return \{ x:n.x, y:n.y \};\
+    while (true)\{\
+      const col = cell % 6, rowI = Math.floor(cell/6); cell++;\
+      const key = col + ':' + rowI;\
+      if (!taken.has(key))\{ taken.add(key); return \{ x: 16 + col*96, y: 14 + rowI*106 \}; \}\
+    \}\
+  \});\
+\}\
+function renderDesktop()\{\
+  const layer = $('#icons');\
+  layer.innerHTML = '';\
+  if (!rootN()) return;\
+  const kids = childrenOf(deskId());\
+  const pos = autoPositions(kids);\
+  kids.forEach((n, i) => \{\
+    const el = h('div', \{ class:'dicon' + (Desk.sel === n.id ? ' selected' : ''), 'data-node':n.id,\
+      style:\{ left:pos[i].x + 'px', top:pos[i].y + 'px' \} \},\
+      h('div', \{ class:'icn', html: fileIconHTML(n) \}),\
+      h('div', \{ class:'lbl' \}, n.name));\
+    el.addEventListener('pointerdown', e => \{\
+      if (Desk.sel !== n.id)\{ Desk.sel = n.id; updateSelClasses(); \}\
+    \});\
+    el.addEventListener('dblclick', () => openNode(n));\
+    if (n.type === 'folder') el.dataset.drop = n.id;\
+    makeDraggable(el, n, \{ freeDrop:true \});\
+    layer.append(el);\
+  \});\
+  updateSelClasses();\
+\}\
+function makeGhost(node)\{\
+  return h('div', \{ class:'drag-ghost' \}, h('div', \{ html: fileIconHTML(node), style:\{ width:'2.8rem', height:'2.8rem' \} \}));\
+\}\
+function dropTargetAt(x, y, node)\{\
+  const els = document.elementsFromPoint(x, y);\
+  for (const el of els)\{\
+    const de = el.closest && el.closest('[data-drop]');\
+    if (!de) continue;\
+    const tid = de.dataset.drop;\
+    if (tid === node.id) continue;\
+    const tn = findNode(tid);\
+    if (!tn || tn.type !== 'folder') continue;\
+    return de;\
+  \}\
+  return null;\
+\}\
+function handleDrop(node, targetId)\{\
+  if (node.id === targetId || node.parentId === targetId) return;\
+  if (isDescendant(node, targetId)) return toast("A folder can't move inside itself", 'info');\
+  if (moveNode(node.id, targetId))\{\
+    const tgt = findNode(targetId);\
+    toast(`Moved "$\{node.name\}" to "$\{tgt.name\}"`, 'folder');\
+  \}\
+\}\
+function makeDraggable(el, node, opts=\{\})\{\
+  el.addEventListener('pointerdown', e => \{\
+    if (e.button !== 0) return;\
+    e.preventDefault();\
+    const sx = e.clientX, sy = e.clientY;\
+    let dragging = false, ghost = null, target = null;\
+    const move = ev => \{\
+      if (!dragging)\{\
+        if (Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) < 6) return;\
+        dragging = true;\
+        ghost = makeGhost(node); document.body.append(ghost);\
+      \}\
+      ghost.style.left = (ev.clientX + 10) + 'px';\
+      ghost.style.top  = (ev.clientY + 8)  + 'px';\
+      const t = dropTargetAt(ev.clientX, ev.clientY, node);\
+      if (t !== target)\{\
+        if (target) target.classList.remove('drop-hint');\
+        target = t;\
+        if (target) target.classList.add('drop-hint');\
+      \}\
+    \};\
+    const up = ev => \{\
+      window.removeEventListener('pointermove', move);\
+      window.removeEventListener('pointerup', up);\
+      if (ghost) ghost.remove();\
+      if (target) target.classList.remove('drop-hint');\
+      if (!dragging) return;\
+      if (target)\{ handleDrop(node, target.dataset.drop); return; \}\
+      if (opts.freeDrop)\{\
+        node.x = clamp(ev.clientX - 28, 4, innerWidth - 96);\
+        node.y = clamp(ev.clientY - 22, 4, innerHeight - 170);\
+        fsChanged();\
+      \}\
+    \};\
+    window.addEventListener('pointermove', move);\
+    window.addEventListener('pointerup', up);\
+  \});\
+\}\
+function startRename(n)\{\
+  const label = document.querySelector(`[data-node="$\{n.id\}"] .lbl`);\
+  if (!label) return renameDialog(n);\
+  beginRename(label, n);\
+\}\
+function beginRename(labelEl, node)\{\
+  const inp = h('input', \{ class:'rename-input', value: node.name, spellcheck:'false' \});\
+  labelEl.replaceWith(inp);\
+  inp.focus(); inp.select();\
+  let done = false;\
+  const commit = () => \{\
+    if (done) return; done = true;\
+    const v = inp.value.trim();\
+    inp.replaceWith(labelEl);\
+    if (!v || v === node.name) return;\
+    try \{ renameNode(node.id, v); \} catch(err)\{ toast(err.message, 'info'); Sound.play('error'); \}\
+  \};\
+  inp.addEventListener('keydown', e => \{\
+    e.stopPropagation();\
+    if (e.key === 'Enter') commit();\
+    if (e.key === 'Escape')\{ done = true; inp.replaceWith(labelEl); \}\
+  \});\
+  inp.addEventListener('blur', commit);\
+  inp.addEventListener('pointerdown', e => e.stopPropagation());\
+\}\
+\
+/* ===================== menus ===================== */\
+function nodeMenu(id, x, y)\{\
+  const n = findNode(id); if (!n) return;\
+  const items = [\
+    \{ label:'Open', icon: n.type === 'folder' ? 'folder' : 'doc', action:() => openNode(n) \},\
+  ];\
+  if (n.type === 'folder') items.push(\{ label:'Open in New Window', icon:'plus', action:() => openApp('finder', \{ cwd:n.id \}) \});\
+  items.push('sep',\
+    \{ label:'Get Info', icon:'info', action:() => infoDialog(n) \}, 'sep',\
+    \{ label:'Rename', icon:'pencil', action:() => startRename(n) \},\
+    \{ label:'Delete', icon:'trash', danger:true, action:() => \{ deleteNode(n.id); toast(`Deleted "$\{n.name\}"`, 'trash'); \} \});\
+  showMenu(x, y, items);\
+\}\
+function newOnDesktop(kind)\{\
+  if (kind === 'folder')\{\
+    const n = createFolder(deskId(), uniqueName(deskId(), 'Folder'));\
+    toast(`Created "$\{n.name\}"`, 'folder');\
+  \} else \{\
+    const n = createFile(deskId(), uniqueName(deskId(), 'untitled', '.txt'), 'text', '');\
+    toast(`Created "$\{n.name\}"`, 'doc');\
+  \}\
+\}\
+function desktopMenu(x, y)\{\
+  showMenu(x, y, [\
+    \{ label:'New Folder', icon:'folder', action:() => newOnDesktop('folder') \},\
+    \{ label:'New Text File', icon:'doc', action:() => newOnDesktop('text') \},\
+    'sep',\
+    \{ label:'Change Background\'85', icon:'image', action:() => openApp('settings', \{ panel:'appearance' \}) \},\
+    \{ label:'Sort Icons by Name', icon:'list', action:() => \{\
+        const kids = childrenOf(deskId()).slice().sort((a,b) => a.name.localeCompare(b.name));\
+        kids.forEach((n,i) => \{ n.x = 16 + (i % 6) * 96; n.y = 14 + Math.floor(i/6) * 106; \});\
+        fsChanged();\
+      \} \},\
+    \{ label:'Reset Icon Positions', icon:'refresh', action:() => \{ childrenOf(deskId()).forEach(n => \{ n.x = n.y = undefined; \}); fsChanged(); \} \},\
+    'sep',\
+    \{ label:'Display Settings', icon:'sliders', action:() => openApp('settings', \{ panel:'display' \}) \},\
+    \{ label:'About This OS', icon:'info', action:() => openApp('settings', \{ panel:'about' \}) \},\
+  ]);\
+\}\
+function powerMenu2()\{\}\
+document.addEventListener('contextmenu', e => \{\
+  e.preventDefault();\
+  const dockB = e.target.closest('#dock [data-app]');\
+  if (dockB) return dockMenu(dockB.dataset.app, e.clientX, e.clientY);\
+  if (e.target.closest('#start-btn')) return powerMenu(e.clientX, e.clientY);\
+  const nodeEl = e.target.closest('[data-node]');\
+  if (nodeEl)\{\
+    if (e.target.closest('#icons'))\{ Desk.sel = nodeEl.dataset.node; updateSelClasses(); \}\
+    return nodeMenu(nodeEl.dataset.node, e.clientX, e.clientY);\
+  \}\
+  if (e.target.closest('#desktop')) desktopMenu(e.clientX, e.clientY);\
+\});\
+\
+/* ===================== APP: Files (Finder) ===================== */\
+registerApp(\{\
+  id:'finder', name:'Files', tile:'finder', kw:'finder explorer files folders',\
+  w:760, h:500, minW:440, minH:300, single:false,\
+  render(win, opts)\{\
+    const st = win.state = \{ cwd: (opts.cwd && findNode(opts.cwd)) ? opts.cwd : deskId(),\
+                             view:'grid', hist:[], hi:-1, sel:null \};\
+    st.hist = [st.cwd]; st.hi = 0;\
+    const backB = h('button', \{ class:'ibtn', title:'Back' \}, icon('back', 16));\
+    const fwdB  = h('button', \{ class:'ibtn', title:'Forward' \}, icon('fwd', 16));\
+    const viewB = h('button', \{ class:'ibtn', title:'Toggle view' \}, icon('grid', 16));\
+    const newB  = h('button', \{ class:'ibtn', title:'New folder' \}, icon('plus', 16));\
+    const crumbs = h('div', \{ class:'crumbs' \});\
+    const side = h('div', \{ class:'fdr-side' \});\
+    const view = h('div', \{ class:'fdr-view grid' \});\
+    const status = h('div', \{ class:'fdr-status' \});\
+    const main = h('div', \{ class:'fdr-main' \}, side, view);\
+    const root = h('div', \{ class:'finder' \},\
+      h('div', \{ class:'fdr-bar' \}, backB, fwdB, crumbs, h('div', \{ style:\{ flex:1 \} \}), newB, viewB), main, status);\
+\
+    function nav(id, push=true)\{\
+      if (!findNode(id)) id = deskId() || rootN().id;\
+      st.cwd = id; st.sel = null;\
+      if (push)\{ st.hist = st.hist.slice(0, st.hi + 1); st.hist.push(id); st.hi++; \}\
+      renderAll();\
+    \}\
+    backB.addEventListener('click', () => \{ if (st.hi > 0)\{ st.hi--; nav(st.hist[st.hi], false); \} \});\
+    fwdB.addEventListener('click', () => \{ if (st.hi < st.hist.length - 1)\{ st.hi++; nav(st.hist[st.hi], false); \} \});\
+    viewB.addEventListener('click', () => \{ st.view = st.view === 'grid' ? 'list' : 'grid'; renderAll(); \});\
+    newB.addEventListener('click', () => \{\
+      const n = createFolder(st.cwd, uniqueName(st.cwd, 'Folder'));\
+      st.sel = n.id; renderAll();\
+      setTimeout(() => startRename(n), 60);\
+    \});\
+    view.addEventListener('pointerdown', e => \{\
+      if (e.target === view)\{ st.sel = null; markSel(); renderStatus(); \}\
+    \});\
+    view.addEventListener('contextmenu', e => \{\
+      e.preventDefault(); e.stopPropagation();\
+      showMenu(e.clientX, e.clientY, [\
+        \{ label:'New Folder', icon:'folder', action:() => \{ const n = createFolder(st.cwd, uniqueName(st.cwd, 'Folder')); st.sel = n.id; renderAll(); \} \},\
+        \{ label:'New Text File', icon:'doc', action:() => \{ const n = createFile(st.cwd, uniqueName(st.cwd, 'untitled', '.txt'), 'text', ''); st.sel = n.id; renderAll(); \} \},\
+        'sep',\
+        \{ label: st.view === 'grid' ? 'View as List' : 'View as Grid', icon: st.view === 'grid' ? 'list' : 'grid', action:() => \{ st.view = st.view === 'grid' ? 'list' : 'grid'; renderAll(); \} \},\
+        \{ label:'Open Terminal Here', icon:'term', action:() => openApp('terminal', \{ cwd: st.cwd \}) \},\
+      ]);\
+    \});\
+\
+    function markSel()\{ $$('.fi', view).forEach(x => x.classList.toggle('selected', x.dataset.node === st.sel)); \}\
+    function renderStatus()\{\
+      const kids = childrenOf(st.cwd);\
+      status.innerHTML = '';\
+      const sel = st.sel ? findNode(st.sel) : null;\
+      status.append(h('span', \{\}, kids.length + ' item' + (kids.length === 1 ? '' : 's')), h('span', \{\}, sel ? esc(sel.name) : ''));\
+    \}\
+    function renderCrumbs()\{\
+      crumbs.innerHTML = '';\
+      const chain = [];\
+      let c = findNode(st.cwd);\
+      while (c)\{ chain.unshift(c); c = c.parentId ? findNode(c.parentId) : null; \}\
+      chain.forEach((n, i) => \{\
+        if (i) crumbs.append(h('span', \{ class:'crumb-sep' \}, '/'));\
+        const b = h('button', \{ class:'crumb' + (i === chain.length - 1 ? ' cur' : ''), 'data-drop':n.id, 'data-node':n.id \}, n.name);\
+        b.addEventListener('click', () => nav(n.id));\
+        crumbs.append(b);\
+      \});\
+    \}\
+    function renderSide()\{\
+      side.innerHTML = '';\
+      side.append(h('div', \{ class:'side-h' \}, 'Places'));\
+      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Kirk Disk','folder']].forEach(([nm, ic]) => \{\
+        const id = nm === 'Kirk Disk' ? rootN().id : folderId(nm);\
+        if (!id) return;\
+        const row = h('button', \{ class:'place' + (st.cwd === id ? ' cur' : ''), 'data-drop':id, onclick:() => nav(id) \},\
+          icon(ic, 15), nm);\
+        side.append(row);\
+      \});\
+    \}\
+    function metaOf(n)\{\
+      if (n.type === 'folder') return childrenOf(n.id).length + ' items';\
+      return (n.kind === 'image' ? 'image' : 'text') + ' \'b7 ' + fmtBytes((n.content||'').length);\
+    \}\
+    function renderView()\{\
+      view.className = 'fdr-view ' + st.view;\
+      view.dataset.drop = st.cwd;\
+      view.innerHTML = '';\
+      const kids = childrenOf(st.cwd);\
+      if (!kids.length)\{\
+        view.append(h('div', \{ class:'empty-note' \}, 'This folder is empty.<br>Right-click to create something, or drag files here.'));\
+      \}\
+      for (const n of kids)\{\
+        const item = h('div', \{ class:'fi' + (st.sel === n.id ? ' selected' : ''), 'data-node':n.id \},\
+          h('span', \{ class:'icn', html: fileIconHTML(n) \}),\
+          h('span', \{ class:'lbl' \}, n.name),\
+          st.view === 'list' ? h('span', \{ class:'meta' \}, metaOf(n)) : null);\
+        if (n.type === 'folder') item.dataset.drop = n.id;\
+        item.addEventListener('pointerdown', () => \{\
+          if (st.sel !== n.id)\{ st.sel = n.id; markSel(); renderStatus(); \}\
+        \});\
+        item.addEventListener('dblclick', e => \{\
+          e.stopPropagation();\
+          if (n.type === 'folder') nav(n.id); else openNode(n);\
+        \});\
+        makeDraggable(item, n);\
+        view.append(item);\
+      \}\
+      markSel();\
+    \}\
+    function renderAll()\{\
+      if (!findNode(st.cwd)) st.cwd = deskId() || rootN().id;\
+      renderCrumbs(); renderSide(); renderView(); renderStatus();\
+      backB.disabled = st.hi <= 0;\
+      fwdB.disabled = st.hi >= st.hist.length - 1;\
+      viewB.innerHTML = ''; viewB.append(icon(st.view === 'grid' ? 'grid' : 'list', 16));\
+      const cur = findNode(st.cwd);\
+      win.setTitle(cur.name + ' \'97 Files');\
+    \}\
+    win.subscribe('fs', renderAll);\
+    renderAll();\
+    win.body.append(root);\
+  \},\
+  onKey(win, e)\{\
+    if (e.key === 'Delete' && win.state.sel)\{\
+      const n = findNode(win.state.sel);\
+      if (n)\{ deleteNode(n.id); toast(`Deleted "$\{n.name\}"`, 'trash'); win.state.sel = null; \}\
+    \}\
+    if (e.key === 'F2' && win.state.sel) startRename(findNode(win.state.sel));\
+  \},\
+\});\
+\
+/* ===================== APP: Text Edit ===================== */\
+registerApp(\{\
+  id:'textedit', name:'Text Edit', tile:'text', kw:'text editor write notepad',\
+  w:680, h:520, minW:420, minH:300, single:false,\
+  render(win, opts)\{\
+    const st = win.state = \{ fileId:null, dirty:false, paper:true \};\
+    const editor = h('div', \{ class:'editor sahur-paper', contenteditable:'true', 'data-ph':'Start typing. The log is watching. Ctrl+S saves.' \});\
+    const scroll = h('div', \{ class:'te-scroll sahur-paper' \}, editor);\
+    const banner = h('div', \{ class:'te-banner', style:\{ display:'none' \} \});\
+    scroll.addEventListener('mousedown', e => \{ if (e.target === scroll) setTimeout(() => editor.focus(), 0); \});\
+\
+    const cmd = (name, val=null) => \{ editor.focus(); try\{ document.execCommand(name, false, val); \}catch(e)\{\} setDirty(true); refreshToolbar(); \};\
+    const mkT = (ic, name, title) => \{\
+      const b = h('button', \{ class:'tbtn', title \});\
+      b.append(icon(ic, 15));\
+      b.addEventListener('mousedown', e => e.preventDefault());\
+      b.addEventListener('click', () => cmd(name));\
+      return b;\
+    \};\
+    const bB = mkT('bold','bold','Bold'), bI = mkT('italic','italic','Italic'), bU = mkT('underline','underline','Underline');\
+    const sizeSel = h('select', \{ class:'te-sel', title:'Font size' \},\
+      [['1','12'],['2','14'],['3','16'],['4','19'],['5','24'],['6','32'],['7','42']].map(([v,l]) => h('option', \{ value:v \}, l)));\
+    sizeSel.value = '3';\
+    sizeSel.addEventListener('mousedown', e => e.preventDefault());\
+    sizeSel.addEventListener('change', () => cmd('fontSize', sizeSel.value));\
+    const fontSel = h('select', \{ class:'te-sel', title:'Font' \},\
+      ['Georgia','Space Grotesk','JetBrains Mono','Times New Roman','Courier New','Trebuchet MS'].map(f => h('option', \{ value:f \}, f)));\
+    fontSel.addEventListener('mousedown', e => e.preventDefault());\
+    fontSel.addEventListener('change', () => cmd('fontName', fontSel.value));\
+    const paperB = h('button', \{ class:'tbtn on', title:'Sahur paper texture' \}, icon('grain', 15));\
+    paperB.addEventListener('click', () => \{\
+      st.paper = !st.paper;\
+      editor.classList.toggle('sahur-paper', st.paper);\
+      paperB.classList.toggle('on', st.paper);\
+    \});\
+    const openB = h('button', \{ class:'te-txt', title:'Open a file' \}, 'Open');\
+    const saveB = h('button', \{ class:'te-txt', title:'Save (Ctrl+S)' \}, 'Save');\
+    const saveAsB = h('button', \{ class:'te-txt', title:'Save as\'85' \}, 'Save As');\
+    const bar = h('div', \{ class:'te-bar' \},\
+      h('div', \{ class:'te-group' \}, bB, bI, bU),\
+      h('div', \{ class:'te-group' \}, sizeSel, fontSel, paperB),\
+      h('div', \{ class:'te-spring' \}),\
+      h('div', \{ class:'te-group' \}, openB, saveB, saveAsB));\
+    win.body.append(h('div', \{ class:'tedit' \}, bar, banner, scroll));\
+\
+    function setDirty(v)\{\
+      st.dirty = v;\
+      const n = st.fileId ? findNode(st.fileId) : null;\
+      win.setTitle((v ? '\'95 ' : '') + (n ? n.name : 'Untitled') + ' \'97 Text Edit');\
+    \}\
+    editor.addEventListener('input', () => setDirty(true));\
+    function refreshToolbar()\{\
+      try \{\
+        bB.classList.toggle('on', document.queryCommandState('bold'));\
+        bI.classList.toggle('on', document.queryCommandState('italic'));\
+        bU.classList.toggle('on', document.queryCommandState('underline'));\
+      \} catch(e)\{\}\
+    \}\
+    editor.addEventListener('keyup', refreshToolbar);\
+    editor.addEventListener('mouseup', refreshToolbar);\
+\
+    function loadNode(n)\{\
+      editor.innerHTML = n.content || '';\
+      st.fileId = n.id; setDirty(false);\
+      banner.style.display = 'none';\
+    \}\
+    if (opts.fileId)\{\
+      const n = findNode(opts.fileId);\
+      if (n && n.type === 'file') loadNode(n);\
+    \}\
+    win.subscribe('fs', () => \{\
+      if (st.fileId)\{\
+        const n = findNode(st.fileId);\
+        if (!n)\{\
+          st.fileId = null;\
+          banner.textContent = 'The original file was moved or deleted. Use Save As to keep a copy.';\
+          banner.style.display = 'block';\
+          setDirty(st.dirty);\
+        \} else if (!st.dirty) win.setTitle(n.name + ' \'97 Text Edit');\
+      \}\
+    \});\
+\
+    async function saveDoc(forceAs=false)\{\
+      if (!forceAs && st.fileId && findNode(st.fileId))\{\
+        writeFile(st.fileId, editor.innerHTML);\
+        setDirty(false);\
+        toast(`Saved "$\{findNode(st.fileId).name\}"`, 'save');\
+        return true;\
+      \}\
+      const cur = st.fileId ? findNode(st.fileId) : null;\
+      const r = await filePicker(\{ mode:'save', kinds:['text'], defaultName: cur ? cur.name : 'untitled.txt',\
+        defaultParentId: cur ? cur.parentId : deskId(), title:'Save text file' \});\
+      if (!r) return false;\
+      let node;\
+      if (r.existing)\{ node = r.existing; writeFile(node.id, editor.innerHTML); \}\
+      else node = createFile(r.parent.id, r.name, 'text', editor.innerHTML);\
+      st.fileId = node.id;\
+      banner.style.display = 'none';\
+      setDirty(false);\
+      toast(`Saved "$\{node.name\}"`, 'save');\
+      return true;\
+    \}\
+    saveB.addEventListener('click', () => saveDoc());\
+    saveAsB.addEventListener('click', () => saveDoc(true));\
+    openB.addEventListener('click', async () => \{\
+      if (st.dirty)\{\
+        const r = await confirmDialog('Unsaved changes', 'Discard unsaved changes and open another file?', 'Discard', true);\
+        if (r !== 'ok') return;\
+      \}\
+      const n = await filePicker(\{ mode:'open', kinds:['text'], defaultParentId: deskId(), title:'Open text file' \});\
+      if (n)\{ loadNode(n); \}\
+    \});\
+    setTimeout(() => editor.focus(), 80);\
+  \},\
+  onKey(win, e)\{\
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's')\{\
+      e.preventDefault();\
+      const saveBtn = win.body.querySelector('.te-txt[title^="Save ("]') || win.body.querySelectorAll('.te-txt')[1];\
+      saveBtn && saveBtn.click();\
+    \}\
+  \},\
+  async onClose(win)\{\
+    if (!win.state.dirty) return true;\
+    const n = win.state.fileId ? findNode(win.state.fileId) : null;\
+    const r = await dialog(\{ title:'Unsaved changes',\
+      body:`Do you want to save the changes to "$\{n ? n.name : 'Untitled'\}" before closing?`,\
+      buttons:[ \{ label:'Cancel', value:'cancel' \}, \{ label:"Don't Save", value:'no', danger:true \}, \{ label:'Save', value:'save', primary:true \} ] \});\
+    if (r === 'save')\{\
+      const saveBtn = win.body.querySelectorAll('.te-txt')[1];\
+      saveBtn && saveBtn.click();\
+      return !win.state.dirty;\
+    \}\
+    return r !== 'cancel';\
+  \},\
+\});\
+\
+/* ===================== APP: Tung Paint ===================== */\
+let _stampImg = null;\
+function getStampImg()\{\
+  if (!_stampImg)\{\
+    _stampImg = new Image();\
+    _stampImg.src = ASSETS.mascot || svgURI(mascotSVG(\{ w:160, h:213 \}));\
+  \}\
+  return _stampImg;\
+\}\
+registerApp(\{\
+  id:'paint', name:'Tung Paint', tile:'paint', kw:'paint draw canvas brush art',\
+  w:880, h:620, minW:580, minH:440, single:false,\
+  render(win)\{\
+    const st = win.state = \{ tool:'brush', color:'#d9603b', size:8, undo:[], redo:[], busy:false \};\
+    const cv = document.createElement('canvas');\
+    cv.width = 960; cv.height = 600; cv.className = 'paint-cv';\
+    const ctx = cv.getContext('2d', \{ willReadFrequently:true \});\
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 960, 600);\
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';\
+\
+    const snapshot = () => \{\
+      st.undo.push(cv.toDataURL('image/png'));\
+      if (st.undo.length > 25) st.undo.shift();\
+      st.redo.length = 0;\
+    \};\
+    const drawSnap = (url, cb) => \{\
+      const img = new Image();\
+      img.onload = () => \{ ctx.clearRect(0,0,960,600); ctx.drawImage(img, 0, 0); st.busy = false; cb && cb(); \};\
+      img.src = url;\
+    \};\
+    const undo = () => \{ if (st.busy || !st.undo.length) return; st.busy = true;\
+      st.redo.push(cv.toDataURL('image/png')); drawSnap(st.undo.pop()); \};\
+    const redo = () => \{ if (st.busy || !st.redo.length) return; st.busy = true;\
+      st.undo.push(cv.toDataURL('image/png')); drawSnap(st.redo.pop()); \};\
+\
+    function canvasPos(e)\{\
+      const r = cv.getBoundingClientRect();\
+      return \{ x: Math.round((e.clientX - r.left) * cv.width / r.width), y: Math.round((e.clientY - r.top) * cv.height / r.height) \};\
+    \}\
+    let drawing = false, last = null;\
+    cv.addEventListener('pointerdown', e => \{\
+      if (e.button !== 0) return;\
+      e.preventDefault(); cv.setPointerCapture(e.pointerId);\
+      const p = canvasPos(e);\
+      if (st.tool === 'stamp')\{ placeStamp(p.x, p.y); return; \}\
+      if (st.tool === 'fill')\{ snapshot(); floodFill(p.x, p.y, st.color); return; \}\
+      snapshot();\
+      drawing = true; last = p;\
+      ctx.strokeStyle = st.tool === 'eraser' ? '#ffffff' : st.color;\
+      ctx.lineWidth = st.size;\
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + .01, p.y + .01); ctx.stroke();\
+    \});\
+    cv.addEventListener('pointermove', e => \{\
+      if (!drawing) return;\
+      const p = canvasPos(e);\
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();\
+      last = p;\
+    \});\
+    cv.addEventListener('pointerup', () => \{ drawing = false; \});\
+\
+    function placeStamp(x, y)\{\
+      snapshot();\
+      const img = getStampImg();\
+      const doDraw = () => \{\
+        const s = 50 + st.size * 4.5;\
+        ctx.save(); ctx.translate(x, y); ctx.rotate((Math.random() - .5) * .5);\
+        ctx.drawImage(img, -s/2, -s*.66, s, s*1.33);\
+        ctx.restore();\
+        Sound.play('tung');\
+      \};\
+      if (img.complete) doDraw(); else img.addEventListener('load', doDraw, \{ once:true \});\
+    \}\
+    function hexToRgb(hex)\{\
+      const n = parseInt(hex.slice(1), 16);\
+      return [(n>>16)&255, (n>>8)&255, n&255];\
+    \}\
+    function floodFill(x, y, hex)\{\
+      const W = cv.width, H = cv.height;\
+      if (x < 0 || y < 0 || x >= W || y >= H) return;\
+      const img = ctx.getImageData(0, 0, W, H), d = img.data;\
+      const i0 = (y*W + x) * 4;\
+      const tr = d[i0], tg = d[i0+1], tb = d[i0+2];\
+      const [fr, fg, fb] = hexToRgb(hex);\
+      if (tr === fr && tg === fg && tb === fb) return;\
+      const stack = [[x, y]];\
+      while (stack.length)\{\
+        const [cx, cy] = stack.pop();\
+        if (cx < 0 || cy < 0 || cx >= W || cy >= H) continue;\
+        const i = (cy*W + cx) * 4;\
+        if (d[i] !== tr || d[i+1] !== tg || d[i+2] !== tb) continue;\
+        d[i] = fr; d[i+1] = fg; d[i+2] = fb; d[i+3] = 255;\
+        stack.push([cx+1,cy], [cx-1,cy], [cx,cy+1], [cx,cy-1]);\
+      \}\
+      ctx.putImageData(img, 0, 0);\
+    \}\
+\
+    // tool rail\
+    const mkTool = (ic, tool, title) => \{\
+      const b = h('button', \{ class:'ptool' + (st.tool === tool ? ' on' : ''), title \}, icon(ic, 17));\
+      b.addEventListener('click', () => \{ st.tool = tool; $$('.ptool', rail).forEach(x => x.classList.remove('on')); b.classList.add('on'); \});\
+      return b;\
+    \};\
+    const rail = h('div', \{ class:'p-rail' \},\
+      mkTool('brush','brush','Brush'), mkTool('eraser','eraser','Eraser'),\
+      mkTool('fill','fill','Fill bucket'), mkTool('stamp','stamp','Tung stamp'),\
+      h('div', \{ class:'p-sep' \}),\
+      h('button', \{ class:'ptool', title:'Undo', onclick:undo \}, icon('undo', 16)),\
+      h('button', \{ class:'ptool', title:'Redo', onclick:redo \}, icon('redo', 16)),\
+      h('button', \{ class:'ptool', title:'Clear canvas', onclick:() => \{\
+        snapshot(); ctx.fillStyle = '#fff'; ctx.fillRect(0,0,960,600);\
+      \} \}, icon('trash', 16)));\
+\
+    // side panel\
+    const colorIn = h('input', \{ class:'p-color', type:'color', value:st.color, title:'Pick color' \});\
+    colorIn.addEventListener('input', () => \{ st.color = colorIn.value; syncSwatches(); \});\
+    const SWATCHES = ['#2c2118','#d9603b','#e0913f','#f2c969','#8a5527','#c98d54','#3fa87e','#9ec8cc','#a06fe0','#c4524a','#f4ecd9','#6b6257'];\
+    const swWrap = h('div', \{ class:'p-swatches' \});\
+    const syncSwatches = () => $$('.swatch', swWrap).forEach(s => s.classList.toggle('on', s.dataset.c === st.color));\
+    SWATCHES.forEach(c => \{\
+      const s = h('div', \{ class:'swatch', 'data-c':c, style:\{ background:c \}, title:c \});\
+      s.addEventListener('click', () => \{ st.color = c; colorIn.value = c; syncSwatches(); \});\
+      swWrap.append(s);\
+    \});\
+    const sizeRange = h('input', \{ type:'range', min:1, max:64, value:st.size, title:'Brush size' \});\
+    const dotPrev = h('div', \{ class:'p-dot-prev' \});\
+    const dot = h('div', \{\});\
+    dotPrev.append(dot);\
+    const syncSize = () => \{\
+      st.size = +sizeRange.value;\
+      const d = clamp(st.size, 3, 38);\
+      dot.style.cssText = `width:$\{d\}px;height:$\{d\}px;border-radius:50%;background:$\{st.tool==='eraser'?'#fff':st.color\};box-shadow:0 0 0 1px rgba(0,0,0,.2)`;\
+    \};\
+    sizeRange.addEventListener('input', syncSize);\
+    const saveB = h('button', \{ class:'btn primary', onclick:async () => \{\
+      const r = await filePicker(\{ mode:'save', kinds:['image'], defaultName:'untitled.png',\
+        defaultParentId: folderId('Pictures'), title:'Save image' \});\
+      if (!r) return;\
+      const data = cv.toDataURL('image/png');\
+      let node;\
+      if (r.existing)\{ node = r.existing; writeFile(node.id, data); \}\
+      else node = createFile(r.parent.id, r.name, 'image', data);\
+      toast(`Saved "$\{node.name\}" \'97 open it from Files`, 'image');\
+    \} \}, 'Save to Disk');\
+    const exportB = h('button', \{ class:'btn', onclick:() => \{\
+      const a = h('a', \{ href: cv.toDataURL('image/png'), download:'tung-paint.png' \});\
+      document.body.append(a); a.click(); a.remove();\
+    \} \}, 'Export PNG');\
+    const panel = h('div', \{ class:'p-panel' \},\
+      h('div', \{ class:'p-lbl' \}, 'Color'), colorIn, swWrap,\
+      h('div', \{ class:'p-lbl' \}, 'Brush size'), sizeRange, dotPrev,\
+      h('div', \{ class:'p-lbl' \}, 'Canvas'), h('div', \{ style:\{ fontSize:'.68rem', color:'var(--fg-dim)' \} \}, '960 \'d7 600 px'),\
+      h('div', \{ class:'p-actions' \}, saveB, exportB));\
+\
+    win.body.append(h('div', \{ class:'paint' \}, rail,\
+      h('div', \{ class:'p-canvas-wrap' \}, cv), panel));\
+    syncSwatches(); syncSize();\
+    win.setTitle('Untitled \'97 Tung Paint');\
+  \},\
+\});\
+\
+/* ===================== APP: Preview (image viewer) ===================== */\
+registerApp(\{\
+  id:'viewer', name:'Preview', tile:'image', hidden:true,\
+  w:720, h:520, minW:380, minH:280, single:false,\
+  render(win, opts)\{\
+    const st = win.state = \{ fileId:opts.fileId, zoom:1, fit:true, natW:0, natH:0 \};\
+    const zoomLbl = h('span', \{ style:\{ minWidth:'3rem', textAlign:'center' \} \}, 'Fit');\
+    const img = h('img', \{ alt:'' \});\
+    const area = h('div', \{ class:'vw-area' \}, img);\
+    function apply()\{\
+      if (st.fit && st.natW)\{\
+        const r = area.getBoundingClientRect();\
+        st.zoom = Math.min(1, (r.width - 32)/st.natW, (r.height - 32)/st.natH);\
+        img.style.width = (st.natW * st.zoom) + 'px';\
+        zoomLbl.textContent = Math.round(st.zoom * 100) + '%';\
+      \} else \{\
+        img.style.width = (st.natW * st.zoom) + 'px';\
+        zoomLbl.textContent = Math.round(st.zoom * 100) + '%';\
+      \}\
+    \}\
+    img.addEventListener('load', () => \{ st.natW = img.naturalWidth; st.natH = img.naturalHeight; apply(); \});\
+    const zoomBtn = (label, f) => h('button', \{ class:'ibtn', onclick:() => \{ st.fit = false; fitB.classList.remove('on'); st.zoom = clamp(f(st.zoom), .05, 8); apply(); \} \}, label);\
+    const fitB = h('button', \{ class:'ibtn on', title:'Fit to window', onclick:() => \{ st.fit = true; fitB.classList.add('on'); apply(); \} \}, icon('check', 15));\
+    win.body.append(h('div', \{ class:'viewer' \},\
+      h('div', \{ class:'vw-bar' \},\
+        h('span', \{ class:'vw-name', style:\{ flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' \} \}, ''),\
+        zoomBtn(h => '', z => z / 1.25) , zoomLbl, zoomBtn(h => '', z => z * 1.25), fitB),\
+      area));\
+    // fix anonymous zoom buttons\
+    const zbtns = win.body.querySelectorAll('.vw-bar .ibtn');\
+    zbtns[0].innerHTML = ''; zbtns[0].append(icon('minus', 14));\
+    zbtns[1].innerHTML = ''; zbtns[1].append(icon('plus', 14));\
+    function refresh()\{\
+      const n = st.fileId ? findNode(st.fileId) : null;\
+      if (!n)\{ area.innerHTML = ''; area.append(h('div', \{ class:'empty-note' \}, 'This file no longer exists on the disk.')); return; \}\
+      win.setTitle(n.name + ' \'97 Preview');\
+      const nameEl = win.body.querySelector('.vw-name'); if (nameEl) nameEl.textContent = n.name;\
+      if (img.src !== n.content)\{ img.src = n.content || ''; area.innerHTML = ''; area.append(img); \}\
+    \}\
+    win.subscribe('fs', refresh);\
+    refresh();\
+  \},\
+\});\
+\
+/* ===================== APP: System Settings ===================== */\
+registerApp(\{\
+  id:'settings', name:'System Settings', tile:'settings', kw:'settings preferences theme wallpaper accent',\
+  w:780, h:540, minW:520, minH:380, single:true,\
+  onReopen(win, opts)\{ if (opts && opts.panel)\{ win.state.panel = opts.panel; win.rerender(); \} \},\
+  render(win, opts)\{\
+    const st = win.state = \{ panel: (opts && opts.panel) || 'appearance' \};\
+    const body = h('div', \{ class:'set-body' \});\
+    const nav = h('div', \{ class:'set-nav' \});\
+    const NAVS = [['appearance','Appearance','image'],['display','Display','sliders'],['sound','Sound','volOn'],\
+                   ['storage','Storage','folder'],['about','About','info']];\
+    NAVS.forEach(([id, nm, ic]) => \{\
+      const b = h('button', \{ class:'place' + (st.panel === id ? ' cur' : ''), onclick:() => \{ st.panel = id; win.rerender(); \} \},\
+        icon(ic, 15), nm);\
+      nav.append(b);\
+    \});\
+    win.body.append(h('div', \{ class:'settings' \}, nav, body));\
+\
+    const card = (...kids) => h('div', \{ class:'set-card' \}, ...kids);\
+    const seg = (opts2, cur, set) => \{\
+      const s = h('div', \{ class:'seg' \}, opts2.map(([v, l]) => \{\
+        const b = h('button', \{ class: v === cur ? 'on' : '', onclick:() => \{ set(v); win.rerender(); \} \}, l);\
+        return b;\
+      \}));\
+      return s;\
+    \};\
+    const toggle = (cur, set) => \{\
+      const t = h('button', \{ class:'tgl' + (cur ? ' on' : ''), onclick:() => \{ set(!cur); \} \});\
+      return t;\
+    \};\
+    function renderPanel()\{\
+      body.innerHTML = '';\
+      const s = S();\
+      if (st.panel === 'appearance')\{\
+        body.append(h('div', \{ class:'set-h' \}, 'Appearance'), h('div', \{ class:'set-sub' \}, 'Wallpaper, theme and accent. The log has opinions.'));\
+        const wpg = h('div', \{ class:'wp-grid' \});\
+        Object.entries(WALLS).forEach(([id, wp]) => \{\
+          const chip = h('div', \{ class:'wp-chip' + (wp.light ? ' dk' : '') + (s.wallpaper === id ? ' on' : ''),\
+            style:Object.assign(\{\}, wp.style, \{ backgroundSize:'auto, auto, auto' \}) \}, h('span', \{\}, wp.name));\
+          chip.addEventListener('click', () => \{ s.wallpaper = id; applySettings(); Store.schedule(); win.rerender(); \});\
+          wpg.append(chip);\
+        \});\
+        const customChip = h('div', \{ class:'wp-chip' + (s.wallpaper === 'custom' ? ' on' : ''),\
+          style:\{ background:s.customColor \} \}, h('span', \{\}, 'Custom'));\
+        const cIn = h('input', \{ type:'color', value:s.customColor, style:\{ position:'absolute', inset:0, opacity:0, cursor:'pointer' \} \});\
+        cIn.addEventListener('input', () => \{ s.wallpaper = 'custom'; s.customColor = cIn.value; applySettings(); Store.schedule(); win.rerender(); \});\
+        customChip.append(cIn); wpg.append(customChip);\
+        body.append(card(h('h4', \{\}, 'Wallpaper'), wpg));\
+        body.append(card(h('h4', \{\}, 'Theme'),\
+          h('div', \{ class:'set-row' \}, h('span', \{\}, 'Interface mode'), seg([['dark','Dark'],['light','Light']], s.theme, v => \{ s.theme = v; applySettings(); Store.schedule(); \}))));\
+        const PRESETS = ['#e0913f','#d9603b','#c4524a','#3fa87e','#8fa54e','#a06fe0'];\
+        const accRow = h('div', \{ class:'acc-row' \});\
+        PRESETS.forEach(c => \{\
+          const d = h('button', \{ class:'acc-dot' + (s.accent === c ? ' on' : ''), style:\{ background:c \}, title:c \});\
+          d.addEventListener('click', () => \{ s.accent = c; applySettings(); Store.schedule(); win.rerender(); \});\
+          accRow.append(d);\
+        \});\
+        const cIn2 = h('input', \{ class:'acc-custom', type:'color', value:s.accent, title:'Custom accent' \});\
+        cIn2.addEventListener('input', () => \{ s.accent = cIn2.value; applySettings(); Store.schedule(); \});\
+        accRow.append(cIn2);\
+        body.append(card(h('h4', \{\}, 'Accent color'), accRow));\
+      \}\
+      if (st.panel === 'display')\{\
+        body.append(h('div', \{ class:'set-h' \}, 'Display'), h('div', \{ class:'set-sub' \}, 'Density, motion and the resolution you are pretending to have.'));\
+        const dl = h('span', \{\}, s.density.toFixed(2) + '\'d7');\
+        const dr = h('input', \{ type:'range', min:0.85, max:1.15, step:0.05, value:s.density \});\
+        dr.addEventListener('input', () => \{ s.density = +dr.value; dl.textContent = s.density.toFixed(2) + '\'d7'; applySettings(); Store.schedule(); \});\
+        body.append(card(h('h4', \{\}, 'UI density'), h('div', \{ class:'set-row' \}, h('span', \{\}, 'Text and spacing scale'), dl), dr));\
+        body.append(card(h('h4', \{\}, 'Motion'),\
+          h('div', \{ class:'set-row' \}, h('span', \{\}, 'Window animations'), toggle(s.motion, v => \{ s.motion = v; applySettings(); Store.schedule(); win.rerender(); \}))));\
+        body.append(card(h('h4', \{\}, 'Display'),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Resolution'), h('span', \{\}, `$\{innerWidth\} \'d7 $\{innerHeight\} @ $\{devicePixelRatio\}x`)),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Panel'), h('span', \{\}, 'KirkGlass Retina-ish'))));\
+      \}\
+      if (st.panel === 'sound')\{\
+        body.append(h('div', \{ class:'set-h' \}, 'Sound'), h('div', \{ class:'set-sub' \}, 'Every sound is synthesized live. Including the drum. Especially the drum.'));\
+        body.append(card(h('h4', \{\}, 'Output'),\
+          h('div', \{ class:'set-row' \}, h('span', \{\}, 'System sounds'), toggle(s.sound, v => \{ s.sound = v; applySettings(); Store.schedule(); win.rerender(); \}))));\
+        const vr = h('input', \{ type:'range', min:0, max:1, step:0.05, value:s.volume \});\
+        vr.addEventListener('input', () => \{ s.volume = +vr.value; Sound.setVolume(s.volume); Store.schedule(); \});\
+        body.append(card(h('h4', \{\}, 'Volume'), vr,\
+          h('button', \{ class:'btn', style:\{ marginTop:'.6rem' \}, onclick:() => Sound.play('tung') \}, 'Test the tung')));\
+      \}\
+      if (st.panel === 'storage')\{\
+        body.append(h('div', \{ class:'set-h' \}, 'Storage'), h('div', \{ class:'set-sub' \}, 'Everything lives in localStorage. The bat keeps no backups.'));\
+        let files = 0, folders = 0;\
+        (function walk(n)\{ if (n.type === 'folder')\{ folders++; n.children.forEach(walk); \} else files++; \})(rootN());\
+        const used = fmtBytes(new Blob([JSON.stringify(Store.state)]).size);\
+        const pct = clamp(parseFloat(used) / 5000, .02, 1);\
+        const bar = h('div', \{ style:\{ height:'.55rem', borderRadius:'.3rem', background:'rgba(128,110,90,.25)', overflow:'hidden', margin:'.5rem 0' \} \},\
+          h('div', \{ style:\{ height:'100%', width:(pct*100)+'%', background:'var(--accent)' \} \}));\
+        body.append(card(h('h4', \{\}, 'Kirk Disk'),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Files'), h('span', \{\}, files)),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Folders'), h('span', \{\}, folders)),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Used'), h('span', \{\}, used)), bar,\
+          h('div', \{ style:\{ fontSize:'.68rem', color:'var(--fg-faint)' \} \}, 'Quota is a rumor. The browser decides.')));\
+        body.append(card(h('h4', \{\}, 'Danger zone'),\
+          h('div', \{ class:'set-row' \}, h('span', \{\}, 'Reset the file system to factory defaults'),\
+            h('button', \{ class:'btn danger', onclick:async () => \{\
+              const r = await confirmDialog('Reset file system?', 'All files, folders and desktop positions go back to factory state. Open editors keep their text but lose their file.', 'Reset', true);\
+              if (r === 'ok')\{ Store.state.fs = seedFS(); Store.save(); Bus.emit('fs'); toast('File system restored to factory settings', 'refresh'); win.rerender(); \}\
+            \} \}, 'Reset\'85')),\
+          h('div', \{ class:'set-row' \}, h('span', \{\}, 'Erase everything and reboot'),\
+            h('button', \{ class:'btn danger', onclick:async () => \{\
+              const r = await confirmDialog('Erase everything?', 'Disk, settings, notes \'97 gone. The OS reboots brand new.', 'Erase', true);\
+              if (r === 'ok')\{ localStorage.removeItem(KEY); location.reload(); \}\
+            \} \}, 'Erase\'85'))));\
+      \}\
+      if (st.panel === 'about')\{\
+        body.append(h('div', \{ class:'set-h' \}, 'About'), h('div', \{ class:'set-sub' \}, 'The official specs. Do not fact-check them.'));\
+        const mas = h('div', \{ class:'mas' \});\
+        mas.innerHTML = ASSETS.mascot ? `<img src="$\{ASSETS.mascot\}" alt="mascot">` : mascotSVG(\{ w:100, h:133 \});\
+        const upEl = h('span', \{\});\
+        const upd = () => \{\
+          const ms = Date.now() - BOOT_TIME;\
+          const m = Math.floor(ms/60000), sec = Math.floor(ms/1000) % 60;\
+          upEl.textContent = `$\{Math.floor(m/60)\}h $\{m%60\}m $\{sec\}s`;\
+        \};\
+        win.addInterval(() => \{ if (document.body.contains(upEl)) upd(); \}, 1000);\
+        body.append(h('div', \{ class:'about-hero' \}, mas,\
+          h('div', \{\}, h('div', \{ style:\{ fontSize:'1.3rem', fontWeight:700 \} \}, 'Charlie Kirk OS'),\
+            h('div', \{ style:\{ fontSize:'.78rem', color:'var(--fg-dim)', margin:'.2rem 0 .6rem' \} \}, 'Version 1.0 "Sahur" \'b7 build TUNG-TUNG-TUNG'),\
+            h('div', \{ style:\{ fontSize:'.72rem', color:'var(--fg-faint)' \} \}, 'A desktop that runs entirely in your browser. No backend. No regrets.'))));\
+        body.append(card(h('h4', \{\}, 'Specifications'),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Device'), h('span', \{\}, 'KirkBook Brainrot Edition')),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Chip'), h('span', \{\}, 'Brainium B9 "Sahur", 9-core @ 4.20 GHz')),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Memory'), h('span', \{\}, '640K (ought to be enough for anybody)')),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Graphics'), h('span', \{\}, 'Canvas2D, hardware-caramelized')),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Shell'), h('span', \{\}, 'tungsh 1.0')),\
+          h('div', \{ class:'spec-row' \}, h('span', \{\}, 'Uptime'), upEl)));\
+      \}\
+    \}\
+    win.rerender = renderPanel;\
+    renderPanel();\
+  \},\
+\});\
+\
+/* ===================== APP: Calculator ===================== */\
+registerApp(\{\
+  id:'calc', name:'Calculator', tile:'calc', kw:'calculator math numbers',\
+  w:280, h:420, minW:240, minH:340, single:false,\
+  render(win)\{\
+    const st = \{ cur:'0', acc:null, op:null, fresh:true, expr:'' \};\
+    const exprEl = h('div', \{ class:'calc-expr' \});\
+    const curEl = h('div', \{ class:'calc-cur' \}, '0');\
+    const show = () => \{ exprEl.textContent = st.expr; curEl.textContent = st.cur; \};\
+    const OPS = \{ '+':(a,b)=>a+b, '\uc0\u8722 ':(a,b)=>a-b, '\'d7':(a,b)=>a*b, '\'f7':(a,b)=>b===0?NaN:a/b \};\
+    const SYM = \{ '+':'+', '-':'\uc0\u8722 ', '*':'\'d7', '/':'\'f7' \};\
+    function digit(d)\{\
+      if (st.fresh)\{ st.cur = d === '.' ? '0.' : d; st.fresh = false; \}\
+      else if (d === '.' )\{ if (!st.cur.includes('.')) st.cur += '.'; \}\
+      else if (st.cur === '0') st.cur = d;\
+      else if (st.cur.replace('-','').replace('.','').length < 12) st.cur += d;\
+      show();\
+    \}\
+    function setOp(op)\{\
+      if (st.op && !st.fresh) compute();\
+      else st.acc = parseFloat(st.cur);\
+      st.op = op; st.fresh = true;\
+      st.expr = st.acc + ' ' + op;\
+      show();\
+    \}\
+    function compute()\{\
+      if (st.op == null) return;\
+      const r = OPS[st.op](st.acc, parseFloat(st.cur));\
+      st.cur = isNaN(r) ? 'no.' : String(+r.toPrecision(12));\
+      st.acc = null; st.op = null; st.expr = '';\
+    \}\
+    function equals()\{ compute(); st.fresh = true; show(); \}\
+    function clearAll()\{ st.cur='0'; st.acc=null; st.op=null; st.fresh=true; st.expr=''; show(); \}\
+    const KEYS = [['C','fn'],['\'b1','fn'],['%','fn'],['\'f7','op'],\
+      ['7'],['8'],['9'],['\'d7','op'], ['4'],['5'],['6'],['\uc0\u8722 ','op'],\
+      ['1'],['2'],['3'],['+','op'], ['0'],['.'],['\uc0\u9003 ','fn'],['=','eq']];\
+    const grid = h('div', \{ class:'calc-grid' \});\
+    KEYS.forEach(([k, cls]) => \{\
+      const b = h('button', \{ class:'ck' + (cls ? ' ' + cls : '') \}, k);\
+      b.addEventListener('click', () => press(k));\
+      grid.append(b);\
+    \});\
+    const press = k => \{\
+      Sound.play('tick');\
+      if (/[0-9.]/.test(k) && k.length === 1) return digit(k);\
+      if (k === 'C') return clearAll();\
+      if (k === '\uc0\u9003 ')\{ st.cur = st.cur.length > 1 ? st.cur.slice(0,-1) : '0'; return show(); \}\
+      if (k === '\'b1')\{ st.cur = st.cur.startsWith('-') ? st.cur.slice(1) : (st.cur === '0' ? '0' : '-'+st.cur); return show(); \}\
+      if (k === '%')\{ st.cur = String(parseFloat(st.cur)/100); return show(); \}\
+      if (k === '=') return equals();\
+      if (SYM[k]) return setOp(k);\
+    \};\
+    win.body.append(h('div', \{ class:'calc' \}, h('div', \{ class:'calc-disp' \}, exprEl, curEl), grid));\
+    win._calcPress = press;\
+  \},\
+  onKey(win, e)\{\
+    const p = win._calcPress; if (!p) return;\
+    const k = e.key;\
+    if (/^[0-9.]$/.test(k)) \{ p(k); e.preventDefault(); \}\
+    else if (['+','-','*','/'].includes(k)) \{ p(k); e.preventDefault(); \}\
+    else if (k === 'Enter' || k === '=') \{ p('='); e.preventDefault(); \}\
+    else if (k === 'Backspace') \{ p('\uc0\u9003 '); e.preventDefault(); \}\
+    else if (k === 'Escape') \{ p('C'); e.preventDefault(); \}\
+  \},\
+\});\
+\
+/* ===================== APP: Terminal (tungsh) ===================== */\
+registerApp(\{\
+  id:'terminal', name:'Terminal', tile:'term', kw:'terminal shell console command',\
+  w:680, h:430, minW:420, minH:260, single:false,\
+  render(win, opts)\{\
+    const st = win.state = \{ cwd: (opts.cwd && findNode(opts.cwd)) ? opts.cwd : rootN().id, hist:[], hi:0 \};\
+    const out = h('div', \{ class:'term-out' \});\
+    const promptEl = h('span', \{ class:'term-prompt' \});\
+    const input = h('input', \{ type:'text', spellcheck:'false', autocomplete:'off' \});\
+    const root = h('div', \{ class:'term' \}, out, h('div', \{ class:'term-in' \}, promptEl, input));\
+    win.body.append(root);\
+    root.addEventListener('click', () => \{ if (window.getSelection().isCollapsed) input.focus(); \});\
+\
+    const shortPath = () => \{ const p = pathOf(findNode(st.cwd)); return p === '/' ? '~' : p; \};\
+    const setPrompt = () => \{ promptEl.textContent = `sahur@kirkos $\{shortPath()\} >`; \};\
+    const print = (txt, cls) => \{\
+      const d = h('div', \{\}, txt);\
+      if (cls) d.className = cls;\
+      out.append(d); out.scrollTop = out.scrollHeight;\
+    \};\
+    const printHTML = html => \{ const d = h('div', \{\}); d.innerHTML = html; out.append(d); out.scrollTop = out.scrollHeight; \};\
+\
+    function run(line)\{\
+      printHTML(`<span class="t-acc">sahur@kirkos $\{shortPath()\} &gt;</span> $\{esc(line)\}`);\
+      const parts = line.trim().split(/\\s+/).filter(Boolean);\
+      if (!parts.length) return;\
+      const [cmd, ...args] = parts;\
+      const err = m => \{ print(m, 't-dim'); Sound.play('error'); \};\
+      switch (cmd)\{\
+        case 'help':\
+          print('tungsh built-ins:'); print('  ls [path]      cd [path]     pwd           cat <file>');\
+          print('  mkdir <name>   touch <name>  rm [-r] <f>   echo <text>');\
+          print('  open <f|app>   apps          history       clear');\
+          print('  theme <d|l>    wallpaper <id|list>        date    uname');\
+          print('  whoami         neofetch     tung          (the important one)');\
+          break;\
+        case 'clear': out.innerHTML = ''; break;\
+        case 'pwd': print(pathOf(findNode(st.cwd)) || '/'); break;\
+        case 'whoami': print('sahur'); break;\
+        case 'date': print(new Date().toString()); break;\
+        case 'uname': print('CharlieKirkOS 1.0 sahur kernel-browser ' + (navigator.platform || 'web')); break;\
+        case 'ls': \{\
+          const t = resolvePath(args[0] || '.', st.cwd);\
+          if (!t) return err('ls: no such path: ' + args[0]);\
+          if (t.type === 'file') return print(t.name);\
+          const kids = childrenOf(t.id);\
+          if (!kids.length) return print('(empty)', 't-dim');\
+          printHTML(kids.map(c => c.type === 'folder' ? `<span class="t-dir">$\{esc(c.name)\}/</span>` : esc(c.name)).join('   '));\
+          break;\
+        \}\
+        case 'cd': \{\
+          const t = resolvePath(args[0] || '~', st.cwd);\
+          if (!t || t.type !== 'folder') return err('cd: not a directory: ' + (args[0] || ''));\
+          st.cwd = t.id; setPrompt();\
+          break;\
+        \}\
+        case 'cat': \{\
+          if (!args[0]) return err('cat: which file?');\
+          const t = resolvePath(args[0], st.cwd);\
+          if (!t || t.type !== 'file') return err('cat: no such file: ' + args[0]);\
+          if (t.kind === 'image') return print('[binary image data, ' + fmtBytes(t.content.length) + ' \'97 open it in Preview]', 't-dim');\
+          const d = document.createElement('div'); d.innerHTML = t.content || '';\
+          print(d.textContent || '(empty file)');\
+          break;\
+        \}\
+        case 'mkdir': \{\
+          if (!args[0]) return err('mkdir: name required');\
+          if (childrenOf(st.cwd).some(c => c.name === args[0])) return err('mkdir: already exists: ' + args[0]);\
+          createFolder(st.cwd, args[0]); print('created ' + args[0] + '/');\
+          break;\
+        \}\
+        case 'touch': \{\
+          if (!args[0]) return err('touch: name required');\
+          if (childrenOf(st.cwd).some(c => c.name === args[0])) \{ const e2 = childrenOf(st.cwd).find(c => c.name === args[0]); e2.modified = Date.now(); fsChanged(); break; \}\
+          createFile(st.cwd, args[0], 'text', ''); print('created ' + args[0]);\
+          break;\
+        \}\
+        case 'rm': \{\
+          let recursive = false, target = args[0];\
+          if (target === '-r')\{ recursive = true; target = args[1]; \}\
+          if (!target) return err('rm: which one?');\
+          const t = resolvePath(target, st.cwd);\
+          if (!t) return err('rm: no such file: ' + target);\
+          if (t.type === 'folder' && !recursive) return err('rm: ' + target + ' is a directory (use rm -r)');\
+          if (!t.parentId) return err('rm: cannot delete the root of the disk, nice try');\
+          deleteNode(t.id); print('removed ' + target);\
+          break;\
+        \}\
+        case 'echo': print(args.join(' ')); break;\
+        case 'history': st.hist.forEach((l,i) => print('  ' + (i+1) + '  ' + l)); break;\
+        case 'apps': Object.values(Apps).filter(a=>!a.hidden).forEach(a => print('  ' + a.id.padEnd(12) + ' ' + a.name, 't-dim')); break;\
+        case 'open': \{\
+          if (!args[0]) return err('open: file or app name required');\
+          const t = resolvePath(args[0], st.cwd);\
+          if (t) return openNode(t);\
+          if (Apps[args[0]]) return openApp(args[0]);\
+          return err('open: not found: ' + args[0]);\
+        \}\
+        case 'theme': \{\
+          const v = args[0];\
+          if (v === 'dark' || v === 'light')\{ S().theme = v; applySettings(); Store.schedule(); print('theme set to ' + v); \}\
+          else err('usage: theme dark|light');\
+          break;\
+        \}\
+        case 'wallpaper': \{\
+          if (args[0] === 'list' || !args[0])\{ print(Object.keys(WALLS).join('  ') + '  custom'); break; \}\
+          if (WALLS[args[0]])\{ S().wallpaper = args[0]; applySettings(); Store.schedule(); print('wallpaper: ' + args[0]); \}\
+          else err('wallpaper: unknown: ' + args[0] + ' (try "wallpaper list")');\
+          break;\
+        \}\
+        case 'tung': \{\
+          Sound.play('tung');\
+          print('tung.');\
+          setTimeout(() => \{ print('tung.'); Sound.play('tung'); \}, 380);\
+          setTimeout(() => \{ print('tung.'); Sound.play('tung'); \}, 760);\
+          setTimeout(() => print('SAHUR.', 't-acc'), 1150);\
+          break;\
+        \}\
+        case 'neofetch': \{\
+          let files = 0, folders = 0;\
+          (function walk(n)\{ if (n.type === 'folder')\{ folders++; n.children.forEach(walk); \} else files++; \})(rootN());\
+          const up = Math.floor((Date.now() - BOOT_TIME)/1000);\
+          printHTML(`<pre style="margin:0;font:inherit">   .-------.      <span class="t-acc">sahur@kirkos</span>\
+   | ()  () |     -----------------\
+   |  \\\\__/  |     OS: Charlie Kirk OS 1.0 sahur\
+   '-------'      Host: KirkGlass Browser\
+    |  | |  |     Kernel: DOM (single-user mode)\
+    |  | |  |     Shell: tungsh 1.0\
+   _|  |_|  |_    Uptime: $\{Math.floor(up/60)\}m $\{up%60\}s\
+                  Disk: $\{files\} files, $\{folders\} folders\
+                  Wallpaper: $\{S().wallpaper\}</pre>`);\
+          break;\
+        \}\
+        default: err('tungsh: command not found: ' + cmd + '  (try "help")');\
+      \}\
+    \}\
+    input.addEventListener('keydown', e => \{\
+      e.stopPropagation();\
+      if (e.key === 'Enter')\{\
+        const line = input.value;\
+        input.value = '';\
+        if (line.trim())\{ st.hist.push(line); st.hi = st.hist.length; \}\
+        run(line);\
+      \}\
+      if (e.key === 'ArrowUp')\{ e.preventDefault(); if (st.hi > 0)\{ st.hi--; input.value = st.hist[st.hi] || ''; \} \}\
+      if (e.key === 'ArrowDown')\{ e.preventDefault(); if (st.hi < st.hist.length)\{ st.hi++; input.value = st.hist[st.hi] || ''; \} \}\
+    \});\
+    print('tungsh 1.0 \'97 the shell of a very awake log.');\
+    print('type "help" to begin. "neofetch" if you know what is good for you.', 't-dim');\
+    print('');\
+    setPrompt();\
+    setTimeout(() => input.focus(), 60);\
+  \},\
+\});\
+\
+/* ===================== APP: Sahur Stickies ===================== */\
+registerApp(\{\
+  id:'notes', name:'Sahur Stickies', tile:'notes', kw:'sticky notes reminders',\
+  w:720, h:520, minW:420, minH:320, single:true,\
+  render(win)\{\
+    const PALETTE = ['#ffd9a0','#ffe9a8','#c9e8a5','#a8d8e8','#e8b8d8'];\
+    const board = h('div', \{ class:'nt-board' \});\
+    const inner = h('div', \{ class:'nt-inner' \});\
+    board.append(inner);\
+    win.body.append(h('div', \{ class:'notes' \},\
+      h('div', \{ class:'nt-bar' \},\
+        h('button', \{ class:'btn', style:\{ fontSize:'.76rem' \}, onclick:() => addNote() \}, 'Add Note'),\
+        h('span', \{ style:\{ fontSize:'.68rem', color:'var(--fg-faint)', marginLeft:'.5rem' \} \}, 'Drag by the header. Click the dot to change color.')),\
+      board));\
+    function persist()\{ Store.schedule(); \}\
+    function addNote(data)\{\
+      const n = data || \{ id:uid('s'), x: 40 + Math.random()*880, y: 30 + Math.random()*480,\
+        color: PALETTE[Math.floor(Math.random()*PALETTE.length)], text:'', tilt:(Math.random()*6 - 3).toFixed(1) \};\
+      if (!data)\{ Store.state.notes.push(n); persist(); \}\
+      const dot = h('button', \{ class:'st-dot', style:\{ background:n.color \}, title:'Change color' \});\
+      const xBtn = h('button', \{ class:'st-x', title:'Delete note' \}, icon('close', 11));\
+      const ta = h('textarea', \{ placeholder:'tung\'85' \});\
+      ta.value = n.text;\
+      ta.addEventListener('input', () => \{ n.text = ta.value; persist(); \});\
+      ta.addEventListener('keydown', e => e.stopPropagation());\
+      const head = h('div', \{ class:'st-head' \}, dot, xBtn);\
+      const note = h('div', \{ class:'sticky', style:\{ left:n.x+'px', top:n.y+'px', background:n.color, transform:`rotate($\{n.tilt\}deg)` \} \},\
+        head, ta);\
+      dot.addEventListener('click', () => \{\
+        n.color = PALETTE[(PALETTE.indexOf(n.color) + 1) % PALETTE.length];\
+        note.style.background = n.color; dot.style.background = n.color; persist();\
+      \});\
+      xBtn.addEventListener('click', () => \{\
+        note.style.transition = 'transform .18s, opacity .18s';\
+        note.style.transform += ' scale(.8)'; note.style.opacity = '0';\
+        setTimeout(() => note.remove(), 180);\
+        Store.state.notes = Store.state.notes.filter(x => x.id !== n.id); persist();\
+      \});\
+      head.addEventListener('pointerdown', e => \{\
+        if (e.button !== 0) return;\
+        e.preventDefault();\
+        const sx = e.clientX, sy = e.clientY, ox = n.x, oy = n.y;\
+        const mv = ev => \{\
+          n.x = clamp(ox + ev.clientX - sx, 0, 1600); n.y = clamp(oy + ev.clientY - sy, 0, 880);\
+          note.style.left = n.x + 'px'; note.style.top = n.y + 'px';\
+        \};\
+        const up = () => \{ window.removeEventListener('pointermove', mv); persist(); \};\
+        window.addEventListener('pointermove', mv);\
+        window.addEventListener('pointerup', up, \{ once:true \});\
+      \});\
+      inner.append(note);\
+      if (!data) setTimeout(() => ta.focus(), 40);\
+    \}\
+    Store.state.notes.forEach(n => addNote(\{ ...n \}));\
+    if (!Store.state.notes.length)\{\
+      addNote(\{ id:uid('s'), x:80, y:60, color:PALETTE[0], text:'3:04 AM \'97 the drum again.\\nWake up. Drink water. Ship the OS.', tilt:'-1.5' \});\
+      addNote(\{ id:uid('s'), x:340, y:170, color:PALETTE[2], text:'Remember:\\n"tung" = one more minute.\\n"tung tung" = now.', tilt:'2' \});\
+      persist();\
+    \}\
+  \},\
+\});\
+\
+/* ===================== global keys & init ===================== */\
+document.addEventListener('keydown', e => \{\
+  if (document.querySelector('.modal-veil')) return;\
+  if (e.target.classList && e.target.classList.contains('rename-input')) return;\
+  if (e.key === 'Escape')\{ closeMenu(); closeLauncher(); closePopovers(); return; \}\
+  const fw = WM.focused;\
+  if (fw && !fw.minimized && Apps[fw.appId] && Apps[fw.appId].onKey)\{\
+    Apps[fw.appId].onKey(fw, e);\
+    if (e.defaultPrevented) return;\
+  \}\
+  const ae = document.activeElement;\
+  const typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA' || ae.isContentEditable);\
+  if (!typing && (!fw || fw.minimized))\{\
+    if (e.key === 'Delete' && Desk.sel)\{\
+      const n = findNode(Desk.sel);\
+      if (n)\{ deleteNode(n.id); toast(`Deleted "$\{n.name\}"`, 'trash'); Desk.sel = null; \}\
+    \}\
+    if (e.key === 'F2' && Desk.sel)\{\
+      const n = findNode(Desk.sel);\
+      if (n) startRename(n);\
+    \}\
+  \}\
+\});\
+document.addEventListener('pointerdown', e => \{\
+  if (pop && !pop.p.contains(e.target) && !pop.anchor.contains(e.target)) closePopovers();\
+\}, true);\
+ $('#icons').addEventListener('pointerdown', e => \{\
+  if (e.target === $('#icons'))\{ Desk.sel = null; updateSelClasses(); \}\
+\});\
+ $('#start-btn').addEventListener('click', () => \{ Sound.init(); toggleLauncher(); \});\
+ $('#clock').addEventListener('click', () => popover($('#clock'), buildCalendar));\
+ $('#qs-btn').addEventListener('click', () => popover($('#qs-btn'), buildQuickSettings));\
+ $('#sound-btn').addEventListener('click', () => \{\
+  S().sound = !S().sound; Store.schedule(); renderDock();\
+  if (S().sound) Sound.play('tung');\
+\});\
+function startClock()\{\
+  const tick = () => \{\
+    const d = new Date();\
+    const t = $('#clock-time'), dt = $('#clock-date');\
+    if (t) t.textContent = d.toLocaleTimeString([], \{ hour:'2-digit', minute:'2-digit' \});\
+    if (dt) dt.textContent = d.toLocaleDateString([], \{ weekday:'short', day:'numeric', month:'short' \});\
+  \};\
+  setInterval(tick, 1000); tick();\
+\}\
+window.addEventListener('resize', () => \{\
+  WM.wins.forEach(w => \{\
+    if (w.maximized)\{ const a = workArea(); setRect(w, a.x, a.y, a.w, a.h); \}\
+    else setRect(w, clamp(w.el.offsetLeft, 150 - w.el.offsetWidth, innerWidth - 150),\
+      clamp(w.el.offsetTop, 0, Math.max(0, innerHeight - 48)), w.el.offsetWidth, w.el.offsetHeight);\
+  \});\
+\});\
+\
+/* ===================== boot ===================== */\
+const BOOT_TIME = Date.now();\
+let booted = false;\
+function boot()\{\
+  Store.load();\
+  applySettings();\
+  renderDesktop();\
+  renderDock();\
+  startClock();\
+  Bus.on('fs', () => renderDesktop());\
+  $('#start-btn').innerHTML = ASSETS.logo || logoSVG(24);\
+  $('#boot-mascot').innerHTML = ASSETS.mascot ? `<img src="$\{ASSETS.mascot\}" alt="mascot">` : mascotSVG(\{ w:120, h:160 \});\
+  const LINES = ['tung.', 'tung tung.', 'tung tung tung.', 'SAHUR.', 'mounting Kirk Disk\'85', 'loading brainrot modules\'85', 'polishing the bat\'85'];\
+  const bootEl = $('#boot'), linesEl = $('#boot-lines'), barEl = $('#boot-bar'), hint = $('#boot-hint');\
+  let seq = null;\
+  const finish = () => \{\
+    if (booted) return; booted = true;\
+    clearInterval(seq);\
+    bootEl.classList.add('off');\
+    setTimeout(() => bootEl.remove(), 600);\
+    if (Store.firstRun) setTimeout(() => toast('Right-click the desktop \'97 everything starts there. Double-click "read me.txt".', 'info'), 900);\
+  \};\
+  bootEl.addEventListener('click', () => \{\
+    if (seq) return finish(); // clicking during boot skips it\
+    Sound.init(); Sound.play('startup');\
+    hint.style.display = 'none';\
+    let i = 0;\
+    linesEl.textContent = LINES[0]; barEl.style.width = '8%';\
+    seq = setInterval(() => \{\
+      i++;\
+      if (i < LINES.length)\{ linesEl.textContent = LINES[i]; barEl.style.width = Math.round(8 + (i+1)/LINES.length * 88) + '%'; \}\
+      else \{ barEl.style.width = '100%'; setTimeout(finish, 260); \}\
+    \}, 300);\
+  \});\
+\}\
+boot();\
+</script>\
+</body>\
+</html>}
