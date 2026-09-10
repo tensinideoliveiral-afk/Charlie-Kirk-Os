@@ -13,33 +13,25 @@ module.exports = function handler(req, res) {
   }
 
   const source = file.slice(start, end + '</html>'.length);
-  let html = '';
 
-  for (let i = 0; i < source.length; i++) {
-    if (source[i] !== '\\') {
-      html += source[i];
-      continue;
-    }
-
-    if (source[i + 1] === '\n' || source[i + 1] === '\r') {
-      if (source[i + 1] === '\r' && source[i + 2] === '\n') i++;
-      i++;
-      continue;
-    }
-
-    if (source[i + 1] === '{' || source[i + 1] === '}' || source[i + 1] === '\\') {
-      html += source[++i];
-      continue;
-    }
-
-    if (source[i + 1] === "'" && /^[0-9a-fA-F]{2}$/.test(source.slice(i + 2, i + 4))) {
-      html += Buffer.from(source.slice(i + 2, i + 4), 'hex').toString('latin1');
-      i += 3;
-      continue;
-    }
-
-    html += '\\';
-  }
+  // The uploaded index.html is an RTF-wrapped HTML document. Decode the
+  // RTF escapes before sending it to the browser. In particular, the app's
+  // JavaScript contains RTF Unicode controls such as \\u8722; leaving those
+  // controls intact makes the browser reject the entire script.
+  let html = source
+    .replace(/\\\\\r?\n/g, '')
+    .replace(/\\\\\{/g, '{')
+    .replace(/\\\\\}/g, '}')
+    .replace(/\\\\\\\\/g, '\\\\')
+    .replace(/\\\\uc-?\d+/g, '')
+    .replace(/\\\\u(-?\d+)\??\s?/g, (_, n) => {
+      let code = Number(n);
+      if (code < 0) code += 65536;
+      return String.fromCharCode(code);
+    })
+    .replace(/\\\\'([0-9a-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\\\(?:par|line)\b/g, '\n')
+    .replace(/\\\\tab\b/g, '\t');
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
