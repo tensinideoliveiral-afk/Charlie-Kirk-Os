@@ -395,6 +395,10 @@ input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border:none;borde
 .r-stat b{font-family:var(--font-mono);font-size:1.35rem}
 .r-stat span{font-size:.62rem;color:var(--fg-dim);letter-spacing:.14em;text-transform:uppercase}
 .record .r-foot{font-size:.8rem;color:var(--fg-dim);font-style:italic}
+.record.bad{filter:grayscale(.92)}
+.walker{position:fixed;bottom:5.6rem;left:-9rem;z-index:899999;width:7rem;pointer-events:none;animation:walkAcross 7s linear forwards}
+.walker svg{width:100%;height:auto;animation:bob 1.05s ease-in-out infinite}
+@keyframes walkAcross{0%{left:-9rem}100%{left:104%}}
 
 /* ============ boot ============ */
 #boot{position:fixed;inset:0;z-index:999999;background:radial-gradient(120% 90% at 50% 0%,#251c12,#120d08 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity .55s;cursor:pointer}
@@ -708,18 +712,29 @@ const Store = {
               density:1, motion:true, sound:true, volume:0.6 },
              notes:[], fs:null,
              game:{ started:null, attempts:0, tungs:0, visited:[],
-                    flags:{ downloaded:false, defenderOff:false, installed:false } } };
+                    fed:{ dates:0, water:0, ambition:false, nags:0 },
+                    flags:{ downloaded:false, defenderOff:false, installed:false, pacified:false } } };
   },
   load(){
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw){ const d = JSON.parse(raw); if (d && d.v===2 && d.fs){ this.state = d; this.state.game = Object.assign(this.defaults().game, this.state.game || {}); return; } }
+      if (raw){
+        const d = JSON.parse(raw);
+        if (d && d.v===2 && d.fs){
+          this.state = d;
+          const def = this.defaults().game, sv = this.state.game || {};
+          this.state.game = Object.assign(def, sv, {
+            flags: Object.assign({}, def.flags, sv.flags || {}),
+            fed: Object.assign({}, def.fed, sv.fed || {}) });
+          return;
+        }
+      }
     } catch(e){}
     this.state = this.defaults();
     this.state.fs = seedFS();
     this.firstRun = true;
   },
-  save(){ try { localStorage.setItem(KEY, JSON.stringify(this.state)); } catch(e){} },
+  save(){ if (this.dead) return; try { localStorage.setItem(KEY, JSON.stringify(this.state)); } catch(e){} },
   schedule(){ clearTimeout(this._t); this._t = setTimeout(()=>this.save(), 350); }
 };
 const S = () => Store.state.settings;
@@ -739,12 +754,35 @@ function fmtRunTime(ms){
   const cs = Math.floor(ms/10) % 100, s = Math.floor(ms/1000) % 60, m = Math.floor(ms/60000);
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
 }
-function wipeRun(){ // the restore wins: erase the save, keep only meta
-  const m = Meta.get();
-  m.runs = (m.runs || 0) + 1;
-  Meta.set(m);
-  localStorage.removeItem(KEY);
-  location.reload();
+
+/* ===================== the log gets hungry (true-ending path) ===================== */
+const Hunger = {
+  iv: null,
+  start(){ if (this.iv) return; this.iv = setInterval(() => this.nag(), 120000); },
+  nag(){
+    if (defenderStatus() || G().flags.pacified) return;
+    G().fed.nags = (G().fed.nags || 0) + 1; Store.schedule();
+    Sound.play('tung');
+    const lines = [
+      'the log is hungry. eat something.',
+      'the log repeats: hungry. dates. water. it knows you can hear it.',
+      'the log is looking at your Downloads folder. not for that.',
+      'the log would like to quietly mention Documents/recipes.txt.',
+      'the log is patient. the log is VERY patient.',
+    ];
+    toast(lines[Math.min(G().fed.nags - 1, lines.length - 1)], 'info');
+  }
+};
+function checkPacified(){
+  const f = G().fed;
+  if (f.dates >= 6 && f.water >= 2 && f.ambition && !G().flags.pacified){
+    G().flags.pacified = true; Store.schedule();
+    if (!childrenOf(deskId()).some(c => c.kind === 'game')){
+      createFile(deskId(), 'GTA VI (REAL) (MOBILE).exe', 'game', '');
+      toast('he left something on your desktop.', 'check');
+    } else toast('the drum has changed. the RUN button knows.', 'check');
+    Sound.play('jingle');
+  }
 }
 
 function rr(x, X, Y, W, H, R){
@@ -816,7 +854,7 @@ function seedFS(){
   mk('manifesto.txt', 'file', docs, { content:
 `<div style="font-family:Georgia,serif"><b>THE SAHUR PROTOCOL</b><br><br>1. When the drum sounds, you wake up. No snooze. The log does not respect snooze.<br>2. You eat. You hydrate. You do not ask who set the drum schedule.<br>3. "Tung" means one more minute. "Tung tung" means now.<br>"Tung tung tung" means you are already late.<br>4. Ship it before sunrise. The rest is commentary.</div>` });
   mk('recipes.txt', 'file', docs, { content:
-`<div style="font-family:Georgia,serif"><b>SAHUR FIELD RATIONS</b><br><br>- dates, 6 pieces<br>- water, 2 glasses<br>- ambition, unlimited<br>- regret, optional<br><br>Preparation: consume in the dark. Do not wake the others.</div>` });
+`<div style="font-family:Georgia,serif"><b>SAHUR FIELD RATIONS</b><br><br>- dates, 6 pieces<br>- water, 2 glasses<br>- ambition, unlimited<br>- regret, optional<br><br>Preparation: consume in the dark. Do not wake the others.<br><br>P.S. once the defender rests, he gets hungry. feed him the rations. all of them. even the last one. he can tell the difference between a snack and the thing itself.</div>` });
   mk('reminder.txt', 'file', docs, { content:
 `<div style="font-family:Georgia,serif"><b>PASSWORD REMINDER (do NOT lose this again)</b><br><br>the defender password is the thing he says at 3:04.<br><br>he says the first word <b>three times</b>.<br>then he announces <b>the meal</b>.<br><br>type it exactly like he says it.<br><br>&mdash; me (a log of habit)</div>` });
   mk('definitely-not-a-virus.txt', 'file', downs, { content:
@@ -2465,8 +2503,8 @@ registerApp({
           print('  mkdir <name>   touch <name>  rm [-r] <f>   echo <text>');
           print('  open <f|app>   apps          history       clear');
           print('  theme <d|l>    wallpaper <id|list>        date    uname');
-          print('  whoami         neofetch     defender      sudo (lol)');
-          print('  tung          (the important one)');
+          print('  whoami         neofetch     defender      feed <item>');
+          print('  sudo (lol)     tung        (the important one)');
           break;
         case 'clear': out.innerHTML = ''; break;
         case 'pwd': print(pathOf(findNode(st.cwd)) || '/'); break;
@@ -2536,6 +2574,45 @@ registerApp({
           print('TUNG DEFENDER: ' + (defenderStatus() ? 'ENFORCED — this PC is safe (allegedly).' : 'DESTROYED — sleep well.'));
           print('open the blocked installer, or Settings → Security.', 't-dim');
           break;
+        case 'feed': {
+          const what = (args[0] || '').toLowerCase();
+          if (defenderStatus()){ print('he is not hungry. TUNG DEFENDER feeds him fear.'); break; }
+          if (G().flags.pacified){ print('he is full. he is happy. go press the button.'); break; }
+          const fed = G().fed;
+          if (!what){ print('feed what? the old rations: dates, water — and the last one, if you dare.'); break; }
+          if (what.startsWith('date')){
+            if (fed.dates >= 6){ print('he has had six dates. he is being polite about it.'); break; }
+            fed.dates++; Sound.play('tung'); Store.schedule();
+            const rem = 6 - fed.dates;
+            print(fed.dates === 6 ? 'he ate the sixth date. the drum skips. twice.'
+              : `he ate one. ${rem} ${rem === 1 ? 'date remains' : 'dates remain'}.`);
+            checkPacified();
+            break;
+          }
+          if (what.startsWith('water') || what === 'glass'){
+            if (fed.water >= 2){ print('two glasses is the recipe. he is hydrated. he is smug.'); break; }
+            fed.water++; Sound.play('tung'); Store.schedule();
+            print(fed.water === 2 ? 'he drank the second glass. somewhere, a windshield wiper relaxes.' : 'he drank one. 1 glass remains.');
+            checkPacified();
+            break;
+          }
+          if (what.includes('ambit')){
+            print('ambition is not a snack. he wants the real thing — the thing you have been chasing all game.');
+            break;
+          }
+          if (what.includes('gta') || what.includes('apk')){
+            if (fed.ambition){ print('he already ate it. there is no second 69.4 GB.'); break; }
+            const apk = folderId('Downloads') ? childrenOf(folderId('Downloads')).find(c => c.kind === 'apk') : null;
+            if (!apk){ print('he cannot eat what you have not downloaded.'); break; }
+            deleteNode(apk.id); fed.ambition = true; Store.schedule();
+            Sound.play('tung'); gameTung();
+            print('he consumed 69.4 GB of ambition. whole. shell and all.', 't-acc');
+            checkPacified();
+            break;
+          }
+          print('he does not want your ' + what + '. he wants the old rations. (Documents/recipes.txt)');
+          break;
+        }
         case 'apps': Object.values(Apps).filter(a=>!a.hidden).forEach(a => print('  ' + a.id.padEnd(12) + ' ' + a.name, 't-dim')); break;
         case 'open': {
           if (!args[0]) return err('open: file or app name required');
@@ -2666,7 +2743,7 @@ registerApp({
 /* =====================================================================
    THE GAME — fake web, TUNG DEFENDER, the apk, the restore, the BIOS
    ===================================================================== */
-const PREV_SHELL = ['tung','tung','tung','ls Documents','cat Documents/reminder.txt','sudo tung-defender --off','rm -rf doubt','history'];
+const PREV_SHELL = ['tung','tung','tung','ls Documents','cat Documents/reminder.txt','sudo tung-defender --off','feed dates','feed dates','feed dates','rm -rf doubt','history'];
 const PREV_HISTORY = [
   { t:'03:04', q:'gta 6 apk free download real 2026 no virus' },
   { t:'03:07', q:'is gta6-free-apk.download legit' },
@@ -2869,6 +2946,7 @@ const WEB = {
         post('log_hatcher', '03:26', 'ok got the password. it’s so obvious in hindsight. pressing RUN now. will report bac'),
         post('wood_dispenser', '03:41', '@log_hatcher hello?'),
         post('mods_are_asleep', '03:44', 'he’s gone. the restore got him. he just SAT there.'),
+        post('wood_dispenser', '05:58', 'update, from the other side of a restore: you cannot beat him and you should not delete him. you can FEED him. dates. water. and then the thing itself. the recipe is in Documents, where it always was. the old ones knew. we forgot.'),
         h('div', { class:'site-box', style:{ textAlign:'center', color:'#8a7c68', fontSize:'.78rem' } },
           '— thread locked by ', h('span', { class:'site-link', onclick:() => ctx.nav('tungdefender.net') }, 'tung_defender_official'), ' —')));
     }
@@ -2982,6 +3060,7 @@ function disableDefender(){
   Sound.play('tung'); setTimeout(() => Sound.play('tung'), 300); setTimeout(() => Sound.play('tung'), 600);
   setTimeout(() => Sound.play('jingle'), 950);
   toast('TUNG DEFENDER disabled. anything you install now is your problem.', 'check');
+  setTimeout(() => Hunger.nag(), 40000);
 }
 
 /* ===================== apk → install → GTA ===================== */
@@ -3032,12 +3111,18 @@ registerApp({
   id:'gta', name:'GTA VI (REAL)', tile:'game', hidden:true, single:true,
   w:660, h:480, minW:440, minH:360,
   render(win){
+    const pac = G().flags.pacified;
     win.body.append(h('div', { class:'gta' },
       h('div', { class:'gta-title' }, 'GRAND THEFT AUTO ', h('span', { style:{ color:'#e0913f' } }, 'VI')),
-      h('div', { style:{ fontSize:'.82rem', color:'#b3a493', letterSpacing:'.12em' } }, 'MOBILE EDITION · build 6.9.420 · 100% REAL · NOT A SCAM'),
-      h('div', { style:{ fontSize:'.76rem', color:'#7c6f5e', margin:'.3rem 0 1rem' } }, 'requires: 1 phone. you are on a computer. proceed anyway.'),
-      h('button', { class:'gta-run', onclick:() => beginRestart() }, '▶  RUN'),
-      h('div', { style:{ fontSize:'.68rem', color:'#7c6f5e' } }, 'totally safe · certified by cousin')));
+      h('div', { style:{ fontSize:'.82rem', color:'#b3a493', letterSpacing:'.12em' } },
+        pac ? 'MOBILE EDITION · NOW WITH 100% MORE LOG' : 'MOBILE EDITION · build 6.9.420 · 100% REAL · NOT A SCAM'),
+      h('div', { style:{ fontSize:'.76rem', color:'#7c6f5e', margin:'.3rem 0 1rem' } },
+        pac ? 'he ate the ambition. he is ready. are you?' : 'requires: 1 phone. you are on a computer. proceed anyway.'),
+      h('button', { class:'gta-run',
+        style: pac ? { background:'#3fa87e', boxShadow:'0 12px 34px -8px rgba(63,168,126,.85)', animationName:'pulseRun', animationDuration:'1.5s' } : {},
+        onclick:() => pac ? pacifiedEnding() : beginRestart() },
+        pac ? '▶  RUN — WITH THE LOG' : '▶  RUN'),
+      h('div', { style:{ fontSize:'.68rem', color:'#7c6f5e' } }, pac ? 'certified by the log himself' : 'totally safe · certified by cousin')));
   }
 });
 
@@ -3102,8 +3187,8 @@ const Restart = {
     this.el.innerHTML = '';
     this.el.append(h('div', { class:'sysx-wipe' }, 'wiping user data…'));
     Sound.play('siren');
-    setTimeout(() => { this.el.style.background = '#000'; this.el.innerHTML = ''; }, 2200);
-    setTimeout(() => wipeRun(), 3300);
+    setTimeout(() => { this.el.style.transition = 'opacity .45s'; this.el.style.opacity = '0'; }, 2000);
+    setTimeout(() => { this.el.remove(); this.el = null; showBadEnding(); }, 2550);
   }
 };
 function beginRestart(){ Restart.begin(); }
@@ -3195,6 +3280,76 @@ function enterBios(onExitRestore){
   render();
 }
 
+/* ===================== endings ===================== */
+function endingCard(o){
+  Sound.play(o.sound || 'jingle');
+  const m = Meta.get();
+  m.endings = m.endings || {};
+  if (o.key) m.endings[o.key] = true;
+  Meta.set(m);
+  const found = Object.keys(m.endings).length;
+  const g = G();
+  const stat = (v, l) => h('div', { class:'r-stat' }, h('b', {}, String(v)), h('span', {}, l));
+  document.body.append(h('div', { class:'record' + (o.cls ? ' ' + o.cls : '') },
+    h('div', { class:'r-pre' }, o.kicker),
+    h('div', { class:'r-title' }, o.title),
+    o.sub ? h('div', { class:'r-pre' }, o.sub) : null,
+    o.time ? h('div', { class:'r-time' }, fmtRunTime(runElapsed())) : null,
+    h('div', { class:'r-stats' },
+      stat(g.attempts, 'password attempts'),
+      stat(g.tungs, 'tungs heard'),
+      stat(found + '/3', 'endings found'),
+      stat(m.runs || 0, 'restores survived')),
+    h('div', { class:'r-foot' }, o.foot),
+    h('button', { class:'btn primary', style:{ marginTop:'1rem', padding:'.7rem 1.4rem' },
+      onclick:() => { localStorage.removeItem(KEY); location.reload(); } }, o.button || '⏻ POWER ON')));
+}
+function showRecord(){
+  const ms = runElapsed();
+  const m = Meta.get();
+  const isRecord = !m.bestTime || ms < m.bestTime;
+  if (isRecord) m.bestTime = ms;
+  m.wins = (m.wins || 0) + 1;
+  Meta.set(m);
+  endingCard({ key:'delete', kicker:'system deleted',
+    title: isRecord ? h('b', {}, 'NEW WORLD RECORD') : 'RUN COMPLETE',
+    sub: isRecord ? null : 'best: ' + fmtRunTime(m.bestTime),
+    time:true,
+    foot:'the log is free. go back to sleep.',
+    button:'⏻ POWER ON — run it back' });
+}
+function pacifiedEnding(){
+  WM.wins.slice().forEach(w => { if (!w.minimized && !w.closing) minimizeWin(w); });
+  Sound.play('jingle');
+  S().wallpaper = 'dawn'; applySettings(); Store.schedule();
+  const walker = h('div', { class:'walker' });
+  walker.innerHTML = mascotSVG({ w:112, h:150 });
+  document.body.append(walker);
+  setTimeout(() => walker.remove(), 7000);
+  setTimeout(() => {
+    const m = Meta.get();
+    if (!m.pacifiedBest || runElapsed() < m.pacifiedBest) m.pacifiedBest = runElapsed();
+    Meta.set(m);
+    endingCard({ key:'pacified', kicker:'true ending',
+      title: h('span', {}, 'SAHUR, ', h('b', {}, 'PACIFIED')),
+      sub:'best: ' + fmtRunTime(m.pacifiedBest), time:true,
+      foot:'the drum is now an alarm clock. it will respect snooze. it will not respect it well.',
+      button:'⏻ POWER ON — sunrise waits' });
+  }, 7200);
+}
+function showBadEnding(){
+  const m = Meta.get();
+  m.runs = (m.runs || 0) + 1;
+  Meta.set(m);
+  Store.dead = true; // nothing may resurrect the save after the restore wins
+  localStorage.removeItem(KEY);
+  endingCard({ key:'log', cls:'bad', sound:'error', kicker:'restore complete',
+    title:'LIKE A LOG',
+    sub:'bad ending — you just sat there.', time:false,
+    foot:'your files were returned to the void. the previous user never existed. the defender is at MAXIMUM. this is what he wanted.',
+    button:'⏻ POWER ON' });
+}
+
 /* ===================== cascade → panic → world record ===================== */
 const CASCADE_ERRORS = [
   ['tung.dll not found', 'the drum is missing. have you seen it?'],
@@ -3258,31 +3413,6 @@ function runBlackout(){
     showRecord();
   }, 1600);
 }
-function showRecord(){
-  const ms = runElapsed();
-  const m = Meta.get();
-  const isRecord = !m.bestTime || ms < m.bestTime;
-  if (isRecord) m.bestTime = ms;
-  m.wins = (m.wins || 0) + 1;
-  Meta.set(m);
-  Sound.play('jingle');
-  const g = G();
-  const stat = (v, l) => h('div', { class:'r-stat' }, h('b', {}, String(v)), h('span', {}, l));
-  document.body.append(h('div', { class:'record' },
-    h('div', { class:'r-pre' }, 'system deleted'),
-    h('div', { class:'r-title' }, isRecord ? h('b', {}, 'NEW WORLD RECORD') : 'RUN COMPLETE'),
-    isRecord ? null : h('div', { class:'r-pre' }, 'best: ' + fmtRunTime(m.bestTime)),
-    h('div', { class:'r-time' }, fmtRunTime(ms)),
-    h('div', { class:'r-stats' },
-      stat(g.attempts, 'password attempts'),
-      stat(g.tungs, 'tungs heard'),
-      stat(g.visited.length, 'sites visited'),
-      stat(m.runs || 0, 'restores survived')),
-    h('div', { class:'r-foot' }, 'the log is free. go back to sleep.'),
-    h('button', { class:'btn primary', style:{ marginTop:'1rem', padding:'.7rem 1.4rem' },
-      onclick:() => { localStorage.removeItem(KEY); location.reload(); } }, '⏻ POWER ON — run it back')));
-}
-
 /* ===================== global keys & init ===================== */
 document.addEventListener('keydown', e => {
   if (document.querySelector('.modal-veil')) return;
@@ -3354,6 +3484,7 @@ function boot(){
   renderDock();
   startClock();
   Bus.on('fs', () => renderDesktop());
+  Hunger.start();
   $('#boot-mascot').innerHTML = ASSETS.mascot ? `<img src="${ASSETS.mascot}" alt="mascot">` : mascotSVG({ w:120, h:160 });
   const LINES = ['tung.', 'tung tung.', 'tung tung tung.', 'SAHUR.', 'mounting Sahur Disk…', 'loading brainrot modules…', 'arming TUNG DEFENDER…', 'polishing the bat…'];
   const bootEl = $('#boot'), linesEl = $('#boot-lines'), barEl = $('#boot-bar'), hint = $('#boot-hint');
