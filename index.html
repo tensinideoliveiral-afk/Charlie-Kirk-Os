@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Charlie Kirk OS</title>
+<title>Sahur OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -83,17 +83,20 @@ body.no-anim *{transition:none!important;animation:none!important}
 .drag-ghost{position:fixed;z-index:960000;pointer-events:none;opacity:.95;transform:rotate(-4deg) scale(1.1);filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
 .drop-hint{outline:2px solid var(--accent);outline-offset:-2px;background:color-mix(in srgb,var(--accent) 15%,transparent)!important;border-radius:.7rem}
 
-/* ============ dock ============ */
-#dock{position:fixed;left:50%;bottom:.75rem;transform:translateX(-50%);z-index:900000;display:flex;align-items:center;gap:.35rem;padding:.5rem .55rem;background:var(--glass);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.4rem;box-shadow:0 18px 50px -12px rgba(0,0,0,.6);max-width:96vw}
-.dock-btn{width:2.9rem;height:2.9rem;border-radius:.85rem;display:grid;place-items:center;position:relative;flex:none;transition:transform .18s cubic-bezier(.2,.9,.3,1.4),background .18s}
+/* ============ dock (macOS style, magnifying) ============ */
+#dock{position:fixed;left:50%;bottom:.75rem;transform:translateX(-50%);z-index:900000;display:flex;align-items:flex-end;gap:.55rem;padding:.55rem .7rem;background:var(--glass);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.4rem;box-shadow:0 18px 50px -12px rgba(0,0,0,.6);max-width:96vw;overflow:visible}
+#dock-apps{position:relative;height:2.9rem;flex:none}
+.dock-btn{width:2.9rem;height:2.9rem;border-radius:.85rem;display:grid;place-items:center;position:absolute;bottom:0;left:0;flex:none;transition:background .18s;transform-origin:bottom center}
+.dock-btn .db-in{display:block;width:100%;height:100%;pointer-events:none}
 .dock-btn svg{width:1.9rem;height:1.9rem}
-.dock-btn:hover{transform:translateY(-.3rem) scale(1.08);background:rgba(128,110,90,.18)}
+.dock-btn:hover{background:rgba(128,110,90,.18)}
+.dock-btn.bounce .db-in{animation:dockBounce .55s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes dockBounce{0%{transform:translateY(0)}35%{transform:translateY(-.95rem) scaleY(1.06)}70%{transform:translateY(.18rem) scaleY(.94)}100%{transform:translateY(0)}}
 .dock-btn.running::after{content:'';position:absolute;bottom:.1rem;left:50%;transform:translateX(-50%);width:.32rem;height:.32rem;border-radius:50%;background:var(--accent)}
 .dock-btn.active{background:rgba(128,110,90,.22)}
-#start-btn{width:3.1rem;height:3.1rem;border-radius:1rem;background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 92%,#fff),color-mix(in srgb,var(--accent) 62%,#5c3413));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px -6px color-mix(in srgb,var(--accent) 70%,transparent);display:grid;place-items:center;flex:none}
-#start-btn svg{width:1.5rem;height:1.5rem}
-#start-btn:hover{transform:translateY(-.2rem) scale(1.05)}
-.dock-sep{width:1px;height:2.1rem;background:var(--brd-2);margin:0 .3rem;flex:none}
+#dock-tip{position:fixed;z-index:960000;transform:translateX(-50%);padding:.3rem .65rem;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--brd-2);border-radius:.55rem;font-size:.74rem;font-weight:600;pointer-events:none;box-shadow:0 8px 24px -8px rgba(0,0,0,.55);white-space:nowrap;animation:tipIn .14s ease}
+@keyframes tipIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}}
+.dock-sep{width:1px;height:2.1rem;background:var(--brd-2);margin:0 .15rem;flex:none;align-self:center}
 .dock-clock{padding:0 .7rem;text-align:center;line-height:1.2;border-radius:.7rem;flex:none;cursor:pointer}
 .dock-clock:hover{background:rgba(128,110,90,.18)}
 #clock-time{font-size:.92rem;font-weight:700}
@@ -101,18 +104,8 @@ body.no-anim *{transition:none!important;animation:none!important}
 .dock-tray{width:2.2rem;height:2.2rem;border-radius:.65rem;display:grid;place-items:center;color:var(--fg-dim);flex:none}
 .dock-tray:hover{background:rgba(128,110,90,.18);color:var(--fg)}
 
-/* ============ launcher / popovers ============ */
-.launch-veil{position:fixed;inset:0;z-index:910000}
-#launcher{position:fixed;left:50%;bottom:5.4rem;transform:translateX(-50%);z-index:911000;width:33rem;max-width:94vw;background:var(--glass);backdrop-filter:blur(32px) saturate(1.6);-webkit-backdrop-filter:blur(32px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.3rem;padding:.9rem;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);animation:popIn .22s cubic-bezier(.2,.9,.3,1.1)}
+/* ============ popovers ============ */
 @keyframes popIn{from{opacity:0;transform:translate(var(--pdx,0),10px) scale(.97)}}
-#launcher{--pdx:-50%}
-#launcher input{width:100%;padding:.62rem .9rem;border-radius:.7rem;background:rgba(128,110,90,.16);border:1px solid var(--brd-2);color:var(--fg);font-size:.9rem;outline:none;margin-bottom:.85rem}
-.lgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:.25rem;max-height:17rem;overflow:auto}
-.ltile{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.65rem .25rem;border-radius:.85rem;cursor:pointer}
-.ltile .icn{width:2.6rem;height:2.6rem}
-.ltile .icn svg{width:100%;height:100%}
-.ltile span{font-size:.7rem;text-align:center;line-height:1.2}
-.ltile:hover,.ltile.hl{background:rgba(128,110,90,.22)}
 .pop{position:fixed;z-index:911000;background:var(--glass);backdrop-filter:blur(30px) saturate(1.6);-webkit-backdrop-filter:blur(30px) saturate(1.6);border:1px solid var(--brd-2);border-radius:1.1rem;padding:.85rem;box-shadow:0 24px 60px -18px rgba(0,0,0,.65);animation:popIn .2s cubic-bezier(.2,.9,.3,1.1);min-width:14rem}
 
 /* ============ context menu ============ */
@@ -327,6 +320,82 @@ input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border:none;borde
 .st-head .st-x:hover{background:rgba(60,40,10,.15)}
 .sticky textarea{flex:1;min-height:8rem;resize:none;background:none;border:none;outline:none;font-family:var(--font-ui);font-size:.76rem;line-height:1.45;color:#3a2d1c;padding:.35rem .5rem;-webkit-user-select:text;user-select:text}
 
+/* ============ browser (SahurNet) ============ */
+.web{display:flex;flex-direction:column;height:100%;position:relative;background:#f6f0e4}
+.web-bar{flex:none;display:flex;align-items:center;gap:.3rem;padding:.42rem .55rem;border-bottom:1px solid var(--brd)}
+.web-addr{flex:1;min-width:0;padding:.4rem .9rem;border-radius:2rem;background:rgba(128,110,90,.16);border:1px solid var(--brd-2);color:var(--fg);font-size:.8rem;outline:none}
+.web-addr:focus{border-color:var(--accent)}
+.web-hist{position:absolute;top:3rem;right:.6rem;width:23rem;max-width:92%;max-height:62%;overflow:auto;background:var(--glass);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--brd-2);border-radius:.8rem;padding:.45rem;box-shadow:0 20px 50px -12px rgba(0,0,0,.6);z-index:6}
+.wh-item{padding:.42rem .55rem;border-radius:.5rem;font-size:.76rem;cursor:pointer;display:flex;gap:.6rem;align-items:baseline}
+.wh-item:hover{background:rgba(128,110,90,.28)}
+.wh-item .wh-t{color:var(--fg-faint);flex:none;font-family:var(--font-mono);font-size:.66rem}
+.wh-item .wh-q{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.web-page{flex:1;overflow:auto;background:#fbf6ec;color:#2c2118;-webkit-user-select:text;user-select:text}
+.site{min-height:100%;padding:1.6rem 1.2rem 2.6rem;font-family:Georgia,'Times New Roman',serif}
+.site-link{color:#1a5f8a;text-decoration:underline;cursor:pointer}
+.site-box{background:#fff;border:1px solid #d8cbb2;border-radius:.6rem;padding:1.1rem 1.3rem;margin:0 auto 1rem;max-width:36rem;box-shadow:0 4px 18px -10px rgba(0,0,0,.3)}
+.prog{height:.55rem;border-radius:.3rem;background:rgba(128,110,90,.25);overflow:hidden;margin:.6rem 0}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+
+/* ============ defender modal ============ */
+.tdf-shake{animation:shk .3s}
+@keyframes shk{20%{transform:translateX(-8px)}45%{transform:translateX(7px)}70%{transform:translateX(-4px)}90%{transform:translateX(2px)}}
+.amber-flash{position:fixed;inset:0;z-index:999989;background:radial-gradient(circle at 50% 50%,rgba(224,145,63,.85),rgba(224,145,63,.15) 75%);pointer-events:none;animation:flOut .9s forwards}
+@keyframes flOut{0%{opacity:1}100%{opacity:0}}
+
+/* ============ GTA window ============ */
+.gta{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;background:radial-gradient(800px 520px at 50% 0%,#3a2c4a,#120d18 72%);text-align:center;padding:1rem}
+.gta-title{font-weight:700;font-size:2.1rem;letter-spacing:.04em;color:#f3ece2;text-shadow:0 4px 22px rgba(217,96,59,.55)}
+.gta-run{padding:1.05rem 3.4rem;font-size:1.25rem;font-weight:700;border-radius:1rem;background:#c4524a;color:#fff;box-shadow:0 12px 34px -8px rgba(196,82,74,.85);animation:pulseRun 1.05s infinite}
+@keyframes pulseRun{50%{transform:scale(1.07);box-shadow:0 12px 50px -6px rgba(196,82,74,1)}}
+
+/* ============ sysx overlays (restart / bios / cascade / record) ============ */
+.sysx{position:fixed;inset:0;z-index:999970;background:#0a0806;color:#f3ece2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;font-family:var(--font-ui);animation:sysxIn .5s}
+@keyframes sysxIn{from{opacity:0}}
+.sysx h2{font-size:1.5rem;font-weight:700;letter-spacing:.02em}
+.sysx .sx-dim{font-size:.8rem;color:var(--fg-dim)}
+.sysx-count{font-family:var(--font-mono);font-size:4.6rem;font-weight:700;color:var(--accent);line-height:1}
+.sysx-bar{width:17rem;height:4px;border-radius:2px;background:rgba(255,243,226,.12);overflow:hidden}
+.sysx-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .8s linear}
+.sysx-wipe{color:var(--danger);font-weight:700;letter-spacing:.2em;text-transform:uppercase;animation:pulse 1s infinite}
+.sysx-sublim{position:fixed;inset:0;display:grid;place-items:center;font-family:var(--font-mono);font-size:3rem;color:rgba(224,145,63,.3);letter-spacing:.45em;pointer-events:none;animation:subFlash .16s}
+@keyframes subFlash{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.glitching #desktop{animation:glitchShake .1s infinite}
+@keyframes glitchShake{0%{transform:translate(0,0)}25%{transform:translate(-4px,3px) skewX(.6deg)}50%{transform:translate(3px,-3px)}75%{transform:translate(-2px,-2px) skewX(-.5deg)}100%{transform:translate(2px,3px)}}
+
+/* ============ BIOS ============ */
+.bios{position:fixed;inset:0;z-index:999970;background:#060300;color:#ffb000;font-family:var(--font-mono);padding:2rem 2.6rem;font-size:.92rem;line-height:1.75;-webkit-user-select:none;user-select:none}
+.bios-scan{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 2px,transparent 2px 5px);mix-blend-mode:multiply;animation:crtFlicker 3.2s infinite}
+@keyframes crtFlicker{0%,100%{opacity:.55}50%{opacity:.75}}
+.bios-tabs{display:flex;gap:2.4rem;margin:.5rem 0 1.1rem;border-bottom:1px double #7a5200;padding-bottom:.45rem}
+.bios-tab{cursor:pointer;color:#9a7200;letter-spacing:.14em;white-space:nowrap}
+.bios-tab.on{color:#ffb000;font-weight:700;background:#3a2500;padding:0 .4rem}
+.bios-item{cursor:pointer;padding:.1rem .5rem;width:fit-content}
+.bios-item.on{background:#ffb000;color:#1c0e00;font-weight:700}
+.bios-warn{border:2px double #7a5200;padding:1rem 1.2rem;margin-top:1.2rem;max-width:34rem}
+.bios-input{background:none;border:none;outline:none;color:#ffb000;font:inherit;caret-color:#ffb000;border-bottom:1px solid #ffb000;width:17rem;text-transform:uppercase}
+.bios-msg-bad{color:#ff5a4f;font-weight:700}
+
+/* ============ error cascade & panic ============ */
+.sysx-err{position:fixed;z-index:999960;width:19.5rem;background:#efe6d8;color:#33261a;border:1px solid #7c6f5e;border-radius:.4rem;box-shadow:0 10px 30px -8px rgba(0,0,0,.6);font-size:.78rem;animation:errIn .1s ease}
+@keyframes errIn{from{transform:scale(.85)}}
+.sysx-err .eh{background:#c4524a;color:#fff;font-weight:700;padding:.32rem .6rem;font-size:.72rem;display:flex;justify-content:space-between;gap:.5rem}
+.sysx-err .eb{padding:.55rem .7rem;line-height:1.45}
+.panic{position:fixed;inset:0;z-index:999975;background:#060300;color:#ffb000;font-family:var(--font-mono);padding:1.3rem 1.6rem;font-size:.78rem;line-height:1.5;overflow:hidden;white-space:pre-wrap}
+
+/* ============ world record ============ */
+.record{position:fixed;inset:0;z-index:999980;background:radial-gradient(1000px 700px at 50% -10%,#2a1c10,#0b0705 72%);color:#f3ece2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.85rem;text-align:center;padding:1rem;animation:recIn 1.4s cubic-bezier(.2,.8,.3,1)}
+@keyframes recIn{from{opacity:0;transform:scale(.96)}}
+.record .r-pre{font-size:.78rem;letter-spacing:.4em;text-transform:uppercase;color:var(--fg-dim)}
+.record .r-title{font-size:clamp(1.6rem,5vw,2.6rem);font-weight:700;letter-spacing:.04em}
+.record .r-title b{color:var(--accent)}
+.record .r-time{font-family:var(--font-mono);font-size:clamp(2.6rem,9vw,4.6rem);font-weight:700;color:var(--accent);text-shadow:0 6px 34px rgba(224,145,63,.45);line-height:1.1}
+.r-stats{display:flex;gap:2.2rem;margin:.7rem 0;flex-wrap:wrap;justify-content:center}
+.r-stat{display:flex;flex-direction:column;gap:.2rem}
+.r-stat b{font-family:var(--font-mono);font-size:1.35rem}
+.r-stat span{font-size:.62rem;color:var(--fg-dim);letter-spacing:.14em;text-transform:uppercase}
+.record .r-foot{font-size:.8rem;color:var(--fg-dim);font-style:italic}
+
 /* ============ boot ============ */
 #boot{position:fixed;inset:0;z-index:999999;background:radial-gradient(120% 90% at 50% 0%,#251c12,#120d08 72%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity .55s;cursor:pointer}
 #boot.off{opacity:0;pointer-events:none}
@@ -347,8 +416,8 @@ input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border:none;borde
 
 <div id="boot">
   <div id="boot-mascot"></div>
-  <div class="boot-word">Charlie <b>Kirk</b> OS</div>
-  <div class="boot-sub">tung&nbsp;tung&nbsp;tung&nbsp;sahur edition &mdash; v1.0</div>
+  <div class="boot-word">Sahur <b>OS</b></div>
+  <div class="boot-sub">tung&nbsp;tung&nbsp;tung&nbsp;sahur edition &mdash; v2.0</div>
   <div class="boot-lines" id="boot-lines"></div>
   <div class="boot-bar"><i id="boot-bar"></i></div>
   <div class="boot-hint" id="boot-hint">click anywhere to power on</div>
@@ -361,8 +430,6 @@ input[type=range]::-moz-range-thumb{width:.95rem;height:.95rem;border:none;borde
 </div>
 
 <div id="dock">
-  <button id="start-btn" title="Start"></button>
-  <div class="dock-sep"></div>
   <div id="dock-apps"></div>
   <div class="dock-sep"></div>
   <div class="dock-clock" id="clock" title="Clock &amp; calendar">
@@ -542,10 +609,31 @@ function appIcon(kind, size=48){
       <path d="M31.5 37v-8h8" fill="#eec24f" stroke="#c39a3c" stroke-width="1.6"/>
       <path d="M15 17h17M15 23h17M15 29h10" stroke="#a97e22" stroke-width="2.2" stroke-linecap="round"/>
     </svg>`;
+    case 'browser': return `<svg viewBox="0 0 48 48" width="${size}" height="${size}">
+      <defs><radialGradient id="${g}" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#7fc4d8"/><stop offset="1" stop-color="#2b6f8e"/></radialGradient></defs>
+      <circle cx="24" cy="24" r="18.5" fill="url(#${g})" stroke="#1c4a60" stroke-width="1.8"/>
+      <path d="M24 5.5v37M5.5 24h37" stroke="#d9eff6" stroke-width="1.6" opacity=".85"/>
+      <ellipse cx="24" cy="24" rx="8.5" ry="18.5" fill="none" stroke="#d9eff6" stroke-width="1.6" opacity=".85"/>
+      <ellipse cx="24" cy="24" rx="16" ry="8" fill="none" stroke="#d9eff6" stroke-width="1.4" opacity=".6"/>
+      <path d="M31 17l-9 3.4 5.6 5.6z" fill="#e0913f" stroke="#7a4c1e" stroke-width="1.2" stroke-linejoin="round"/>
+    </svg>`;
+    case 'apk': return `<svg viewBox="0 0 48 48" width="${size}" height="${size}">
+      <rect x="7" y="5" width="34" height="38" rx="6" fill="#3fa87e" stroke="#1f5c42" stroke-width="1.8"/>
+      <rect x="12" y="10" width="24" height="28" rx="3" fill="#e8f5ec" opacity=".92"/>
+      <path d="M24 15v12M18.5 22l5.5 6 5.5-6" stroke="#1f5c42" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M17 33h14" stroke="#1f5c42" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>`;
+    case 'game': return `<svg viewBox="0 0 48 48" width="${size}" height="${size}">
+      <rect x="4.5" y="4.5" width="39" height="39" rx="9" fill="#1d1620" stroke="#4d3f52" stroke-width="1.6"/>
+      <text x="24" y="27.5" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-weight="700" font-size="15" fill="#e0913f">VI</text>
+      <path d="M24 31.5l6 4.5h-12z" fill="#d9603b"/>
+      <text x="24" y="41" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-weight="600" font-size="5" fill="#8a7c68">REAL</text>
+    </svg>`;
   }
   return `<svg viewBox="0 0 48 48" width="${size}" height="${size}"><rect x="6" y="6" width="36" height="36" rx="9" fill="#c9b893"/></svg>`;
 }
-const fileIconHTML = n => appIcon(n.type==='folder' ? 'folder' : (n.kind==='image' ? 'image' : 'text'), 46);
+const fileIconHTML = n => appIcon(n.type==='folder' ? 'folder'
+  : (n.kind==='image' ? 'image' : n.kind==='apk' ? 'apk' : n.kind==='game' ? 'game' : 'text'), 46);
 
 /* ===================== sound (WebAudio, all synthesized) ===================== */
 const Sound = {
@@ -589,7 +677,15 @@ const Sound = {
     this.init(); if (!this.ctx) return;
     const t = this.ctx.currentTime;
     switch(name){
-      case 'tung': this.tung(); break;
+      case 'tung': this.tung(); gameTung(); break;
+      case 'beep': this.tone(880, t, .06, 'square', .045); break;
+      case 'alarm': this.tone(196, t, .5, 'sawtooth', .06, 98); this.tone(196, t+.6, .5, 'sawtooth', .06, 98); break;
+      case 'glitch': [0,1,2,3,4,5].forEach(i => this.tone(120 + Math.random()*900, t + i*.045, .05, 'sawtooth', .05)); break;
+      case 'siren': this.tone(880, t, .8, 'sawtooth', .05, 220); this.tone(880, t+.85, .8, 'sawtooth', .05, 220); break;
+      case 'jingle':
+        this.tung(t);
+        [523.25, 659.25, 783.99, 1046.5].forEach((f,i)=>this.tone(f, t+.3+i*.11, .45, 'triangle', .08));
+        break;
       case 'open': this.tone(520, t, .09, 'sine', .06, 660); this.tone(780, t+.06, .1, 'sine', .05); break;
       case 'close': this.tone(600, t, .1, 'sine', .06, 380); break;
       case 'min': this.tone(500, t, .16, 'sine', .06, 180); break;
@@ -604,18 +700,20 @@ const Sound = {
 };
 
 /* ===================== store & settings ===================== */
-const KEY = 'kirkos.v1';
+const KEY = 'sahuros.v2';
 const Store = {
   state: null, firstRun: false, _t: null,
   defaults(){
-    return { v:1, settings:{ theme:'dark', accent:'#e0913f', wallpaper:'sahur', customColor:'#e0913f',
+    return { v:2, settings:{ theme:'dark', accent:'#e0913f', wallpaper:'sahur', customColor:'#e0913f',
               density:1, motion:true, sound:true, volume:0.6 },
-             notes:[], fs:null };
+             notes:[], fs:null,
+             game:{ started:null, attempts:0, tungs:0, visited:[],
+                    flags:{ downloaded:false, defenderOff:false, installed:false } } };
   },
   load(){
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw){ const d = JSON.parse(raw); if (d && d.v===1 && d.fs){ this.state = d; return; } }
+      if (raw){ const d = JSON.parse(raw); if (d && d.v===2 && d.fs){ this.state = d; this.state.game = Object.assign(this.defaults().game, this.state.game || {}); return; } }
     } catch(e){}
     this.state = this.defaults();
     this.state.fs = seedFS();
@@ -625,6 +723,29 @@ const Store = {
   schedule(){ clearTimeout(this._t); this._t = setTimeout(()=>this.save(), 350); }
 };
 const S = () => Store.state.settings;
+
+/* ===================== run meta (survives wipes) & game helpers ===================== */
+const MKEY = 'sahuros.meta.v1';
+const Meta = {
+  get(){ try { return JSON.parse(localStorage.getItem(MKEY)) || {}; } catch(e){ return {}; } },
+  set(m){ try { localStorage.setItem(MKEY, JSON.stringify(m)); } catch(e){} }
+};
+const G = () => Store.state.game;
+function gameTung(){ G().tungs++; }
+function gameVisit(url){ const g = G(); if (!g.visited.includes(url)){ g.visited.push(url); } Store.schedule(); }
+function startRunTimer(){ if (!G().started){ G().started = Date.now(); Store.schedule(); } }
+function runElapsed(){ return Date.now() - (G().started || BOOT_TIME); }
+function fmtRunTime(ms){
+  const cs = Math.floor(ms/10) % 100, s = Math.floor(ms/1000) % 60, m = Math.floor(ms/60000);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
+}
+function wipeRun(){ // the restore wins: erase the save, keep only meta
+  const m = Meta.get();
+  m.runs = (m.runs || 0) + 1;
+  Meta.set(m);
+  localStorage.removeItem(KEY);
+  location.reload();
+}
 
 function rr(x, X, Y, W, H, R){
   x.beginPath();
@@ -679,25 +800,27 @@ function seedFS(){
     if (parent) parent.children.push(n);
     return n;
   };
-  const root  = mk('Kirk Disk', 'folder', null);
+  const root  = mk('Sahur Disk', 'folder', null);
   const desk  = mk('Desktop',   'folder', root);
   const docs  = mk('Documents', 'folder', root);
   const downs = mk('Downloads', 'folder', root);
   const pics  = mk('Pictures',  'folder', root);
   mk('read me.txt', 'file', desk, { content:
-`<div style="font-family:Georgia,serif"><b>CHARLIE KIRK OS &mdash; READ ME</b><br><br>Congratulations. You have booted the most unnecessary operating system on the internet. The log approves.<br><br><b>QUICK TOUR</b><br>1. Right-click the desktop. Everything lives on the right-click.<br>2. Files is a real file system that lives in your browser. Make folders, rename things, drag files into folders &mdash; even between windows.<br>3. Text Edit saves back to the disk. Ctrl+S. Use it.<br>4. Tung Paint has a stamp tool. You already know what it stamps.<br>5. The Terminal understands: ls, cd, cat, mkdir, touch, rm, tung.<br>6. System Settings has wallpapers, themes, accents, and a big scary reset button.<br><br><b>WARNING</b><br>If you hear "tung tung tung" at 3 AM, that is normal. Eat something. It is almost sunrise.<br><br>&mdash; The Management (a wooden bat)</div>` });
+`<div style="font-family:Georgia,serif"><b>SAHUR OS &mdash; READ ME (from the last guy)</b><br><br>If you are reading this, the restore got me. I found the file. I disabled the Defender. I pressed RUN. And when the screen went dark and said DO&nbsp;NOT&nbsp;TURN&nbsp;OFF&nbsp;YOUR&nbsp;COMPUTER &mdash; I just sat there. Like a log.<br><br><b>You can still win. Finish what I started.</b><br><br>1. The browser remembers where I found it. Check the <b>history</b>.<br>2. The DEFENDER will demand MY password. I write everything down &mdash; check <b>Documents</b>. I am aware of the problem.<br>3. Install it. RUN it.<br>4. And when it says do not turn off &mdash; <b>that is the lie.</b> Spam the DELETE key like it owes you money. The BIOS listens. It always listened.<br><br>Be faster than me.<br><br>&mdash; the previous user (unavailable)</div>` });
   mk('field notes.txt', 'file', desk, { content:
 `<div style="font-family:Georgia,serif"><b>field observations, night 47</b><br><br>03:04 &nbsp;drum. woke up.<br>03:07 &nbsp;confirmed: it is a log<br>03:09 &nbsp;it is holding a smaller log<br>03:12 &nbsp;the smaller log is also holding a log<br>04:30 &nbsp;sahur complete. hydrated. unstoppable.<br>05:00 &nbsp;sunrise. log went quiet. suspicious.</div>` });
   mk('todo.txt', 'file', desk, { content:
-`<div style="font-family:'JetBrains Mono',monospace">[x] wake up at 3:04 AM<br>[x] hear the drum<br>[x] become the drum<br>[x] ship Charlie Kirk OS<br>[ ] sleep (blocked)</div>` });
+`<div style="font-family:'JetBrains Mono',monospace">[x] wake up at 3:04 AM<br>[x] hear the drum<br>[x] become the drum<br>[x] find the file<br>[x] remember the password (see: reminder.txt)<br>[ ] turn off the defender<br>[ ] RUN it<br>[ ] survive the restore<br>[ ] sleep (blocked)</div>` });
   const vault = mk('Meme Vault', 'folder', desk);
   mk('tung tung tung.png', 'file', vault, { kind:'image', content: makeTungArt() });
   mk('manifesto.txt', 'file', docs, { content:
 `<div style="font-family:Georgia,serif"><b>THE SAHUR PROTOCOL</b><br><br>1. When the drum sounds, you wake up. No snooze. The log does not respect snooze.<br>2. You eat. You hydrate. You do not ask who set the drum schedule.<br>3. "Tung" means one more minute. "Tung tung" means now.<br>"Tung tung tung" means you are already late.<br>4. Ship it before sunrise. The rest is commentary.</div>` });
   mk('recipes.txt', 'file', docs, { content:
 `<div style="font-family:Georgia,serif"><b>SAHUR FIELD RATIONS</b><br><br>- dates, 6 pieces<br>- water, 2 glasses<br>- ambition, unlimited<br>- regret, optional<br><br>Preparation: consume in the dark. Do not wake the others.</div>` });
+  mk('reminder.txt', 'file', docs, { content:
+`<div style="font-family:Georgia,serif"><b>PASSWORD REMINDER (do NOT lose this again)</b><br><br>the defender password is the thing he says at 3:04.<br><br>he says the first word <b>three times</b>.<br>then he announces <b>the meal</b>.<br><br>type it exactly like he says it.<br><br>&mdash; me (a log of habit)</div>` });
   mk('definitely-not-a-virus.txt', 'file', downs, { content:
-`this is definitely not a virus.<br>it is a text file.<br>you can read it.<br>see? harmless.<br><br>&mdash; absolutely_legitimate_setup.exe` });
+`this is definitely not a virus.<br>it is a text file.<br>you can read it.<br>see? harmless.<br><br>also: the admin password is "hunter2". that is real. would i lie? i am a text file.<br><br>&mdash; absolutely_legitimate_setup.exe` });
   mk('tung tung tung.png', 'file', pics, { kind:'image', content: makeTungArt() });
   mk('wallpaper studies.png', 'file', pics, { kind:'image', content: makeSwatchArt() });
   return root;
@@ -815,6 +938,8 @@ function openNode(n){
   if (n.type === 'folder') openApp('finder', { cwd: n.id });
   else if (n.kind === 'text') openApp('textedit', { fileId: n.id });
   else if (n.kind === 'image') openApp('viewer', { fileId: n.id });
+  else if (n.kind === 'apk') handleApkOpen(n);
+  else if (n.kind === 'game') openApp('gta');
   else toast('No app can open this file', 'info');
 }
 
@@ -939,7 +1064,7 @@ function renameDialog(n){
 function infoDialog(n){
   const rows = [
     ['Name', n.name],
-    ['Kind', n.type === 'folder' ? 'Folder' : (n.kind === 'image' ? 'Image file' : 'Plain text')],
+    ['Kind', n.type === 'folder' ? 'Folder' : (n.kind === 'image' ? 'Image file' : n.kind === 'apk' ? 'Mobile app package (trust)' : n.kind === 'game' ? 'Executable (allegedly)' : 'Plain text')],
     ['Size', n.type === 'folder' ? childrenOf(n.id).length + ' items' : fmtBytes((n.content||'').length)],
     ['Where', n.parentId ? pathOf(findNode(n.parentId)) : '/'],
     ['Created', fmtDate(n.created)], ['Modified', fmtDate(n.modified)],
@@ -963,8 +1088,8 @@ function filePicker({ mode='open', kinds=['text'], defaultName='untitled.txt', d
     function places(){
       side.innerHTML = '';
       side.append(h('div', { class:'side-h' }, 'Places'));
-      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Kirk Disk','folder']].forEach(([nm, ic]) => {
-        const id = nm === 'Kirk Disk' ? rootN().id : folderId(nm);
+      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Sahur Disk','folder']].forEach(([nm, ic]) => {
+        const id = nm === 'Sahur Disk' ? rootN().id : folderId(nm);
         if (!id) return;
         const row = h('button', { class:'place' + (curId === id ? ' cur' : ''), 'data-drop':id,
           onclick:() => { curId = id; selId = null; render(); } },
@@ -1054,7 +1179,7 @@ function focusWin(w){
   renderDock();
 }
 function dockTargetRect(appId){
-  const el = $(`#dock [data-app="${appId}"]`) || $('#start-btn');
+  const el = $(`#dock [data-app="${appId}"]`) || $('#dock');
   return el ? el.getBoundingClientRect() : { left:innerWidth/2, top:innerHeight, width:50, height:50 };
 }
 function setRect(w, x, y, wd, ht){
@@ -1243,8 +1368,79 @@ function openApp(appId, opts={}){
   return createWindow(app, opts);
 }
 
-/* ===================== dock / launcher / tray ===================== */
-const PINNED = ['finder','textedit','paint','notes','terminal','calc','settings'];
+/* ===================== dock (macOS magnification) / tray ===================== */
+const PINNED = ['finder','browser','textedit','paint','notes','terminal','calc','settings'];
+const DockFX = {
+  base:46, gap:8, maxScale:1.62, effect:210,
+  mouseX:null, scales:[], raf:0, tip:null,
+  bind(){
+    const wrap = $('#dock-apps');
+    const btns = $$('.dock-btn', wrap);
+    this.base = innerWidth < 700 ? 36 : 46;
+    this.gap  = innerWidth < 700 ? 5 : 8;
+    this.effect = Math.round(this.base * 4.6);
+    btns.forEach((b, i) => {
+      b.style.position = 'absolute'; b.style.bottom = '0';
+      b.style.left = (i * (this.base + this.gap)) + 'px';
+    });
+    this.scales = btns.map(() => 1);
+    wrap.style.width  = (btns.length * (this.base + this.gap) - this.gap) + 'px';
+    wrap.style.height = this.base + 'px';
+    this.layout();
+    this.wake();
+  },
+  baseCenters(){ return this.scales.map((_, i) => i * (this.base + this.gap) + this.base / 2); },
+  targets(){
+    if (this.mouseX == null) return this.scales.map(() => 1);
+    const min = this.mouseX - this.effect / 2, max = this.mouseX + this.effect / 2;
+    return this.baseCenters().map(c => {
+      if (c < min || c > max) return 1;
+      const th = ((c - min) / this.effect) * 2 * Math.PI;
+      const f = (1 - Math.cos(Math.min(Math.max(th, 0), 2 * Math.PI))) / 2;
+      return 1 + f * (this.maxScale - 1);
+    });
+  },
+  layout(){
+    const wrap = $('#dock-apps'); if (!wrap) return;
+    const btns = $$('.dock-btn', wrap);
+    let x = 0;
+    const centers = this.scales.map(s => { const w = this.base * s; const c = x + w / 2; x += w + this.gap; return c; });
+    if (btns.length) wrap.style.width = Math.round(x - this.gap) + 'px';
+    btns.forEach((b, i) => {
+      if (this.scales[i] == null) return;
+      const bc = i * (this.base + this.gap) + this.base / 2;
+      b.style.transform = `translateX(${(centers[i] - bc).toFixed(2)}px) scale(${this.scales[i].toFixed(4)})`;
+      b.style.zIndex = Math.round(this.scales[i] * 10);
+    });
+  },
+  wake(){
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      const t = this.targets();
+      const lf = this.mouseX != null ? .3 : .18;
+      let settled = true;
+      this.scales = this.scales.map((s, i) => {
+        const d = t[i] - s;
+        if (Math.abs(d) > .0015) settled = false;
+        return s + d * lf;
+      });
+      this.layout();
+      if (!settled || this.mouseX != null) this.raf = requestAnimationFrame(step);
+    };
+    this.raf = requestAnimationFrame(step);
+  },
+  showTip(btn){
+    const app = Apps[btn.dataset.app]; if (!app) return;
+    this.hideTip();
+    const tip = h('div', { id:'dock-tip' }, app.name);
+    document.body.append(tip);
+    const r = btn.getBoundingClientRect();
+    tip.style.left = (r.left + r.width / 2) + 'px';
+    tip.style.top  = (r.top - 30) + 'px';
+    this.tip = tip;
+  },
+  hideTip(){ if (this.tip){ this.tip.remove(); this.tip = null; } }
+};
 function renderDock(){
   const wrap = $('#dock-apps');
   wrap.innerHTML = '';
@@ -1254,8 +1450,9 @@ function renderDock(){
     const app = Apps[id]; if (!app) continue;
     const b = h('button', { class:'dock-btn' + (WM.wins.some(w=>w.appId===id) ? ' running' : '')
       + (WM.focused && WM.focused.appId === id && !WM.focused.minimized ? ' active' : ''),
-      'data-app':id, title:app.name, html: appIcon(app.tile, 30),
-      onclick:() => dockClick(id) });
+      'data-app':id,
+      onclick:() => { b.classList.remove('bounce'); void b.offsetWidth; b.classList.add('bounce'); dockClick(id); } },
+      h('span', { class:'db-in', html: appIcon(app.tile, 30) }));
     wrap.append(b);
   }
   const s = S();
@@ -1263,6 +1460,7 @@ function renderDock(){
   $('#sound-btn').append(icon(s.sound ? 'volOn' : 'volOff', 17));
   $('#qs-btn').innerHTML = '';
   $('#qs-btn').append(icon('sliders', 17));
+  DockFX.bind();
 }
 function dockClick(appId){
   const wins = WM.wins.filter(w => w.appId === appId);
@@ -1293,48 +1491,11 @@ function powerMenu(x, y){
   ]);
 }
 
-/* ---- launcher ---- */
-let launcher = null;
-function closeLauncher(){ if (launcher){ launcher.veil.remove(); launcher.panel.remove(); launcher = null; } }
-function toggleLauncher(){ launcher ? closeLauncher() : openLauncher(); }
-function openLauncher(){
-  closePopovers();
-  const veil = h('div', { class:'launch-veil', onclick:closeLauncher });
-  const grid = h('div', { class:'lgrid' });
-  const input = h('input', { type:'text', placeholder:'Search apps…', spellcheck:'false' });
-  const panel = h('div', { id:'launcher' }, input, grid);
-  document.body.append(veil, panel);
-  let items = [], hl = 0;
-  const mark = () => $$('.ltile', grid).forEach((t,i) => t.classList.toggle('hl', i === hl));
-  const renderList = f => {
-    grid.innerHTML = '';
-    items = Object.values(Apps).filter(a => !a.hidden &&
-      a.name.toLowerCase().includes(f) && f || (!f && !a.hidden) &&
-      (!f || a.name.toLowerCase().includes(f) || (a.kw||'').includes(f)));
-    hl = clamp(hl, 0, Math.max(0, items.length - 1));
-    items.forEach((a,i) => grid.append(h('div', { class:'ltile' + (i===hl?' hl':''),
-      onclick:() => { closeLauncher(); openApp(a.id); } },
-      h('div', { class:'icn', html: appIcon(a.tile, 42) }), h('span', {}, a.name))));
-    if (!items.length) grid.append(h('div', { class:'empty-note' }, 'Nothing matches that.'));
-    mark();
-  };
-  input.addEventListener('input', () => { hl = 0; renderList(input.value.trim().toLowerCase()); });
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Escape') return closeLauncher();
-    if (['ArrowDown','ArrowRight'].includes(e.key)){ e.preventDefault(); hl = Math.min(hl+1, items.length-1); mark(); }
-    if (['ArrowUp','ArrowLeft'].includes(e.key)){ e.preventDefault(); hl = Math.max(hl-1, 0); mark(); }
-    if (e.key === 'Enter' && items[hl]){ const a = items[hl]; closeLauncher(); openApp(a.id); }
-  });
-  renderList('');
-  launcher = { veil, panel };
-  setTimeout(() => input.focus(), 30);
-}
-
 /* ---- popovers ---- */
 let pop = null;
 function closePopovers(){ if (pop){ pop.p.remove(); pop = null; } }
 function popover(anchor, build){
-  closePopovers(); closeLauncher();
+  closePopovers();
   const p = h('div', { class:'pop' });
   document.body.append(p);
   build(p);
@@ -1572,12 +1733,11 @@ function desktopMenu(x, y){
     { label:'About This OS', icon:'info', action:() => openApp('settings', { panel:'about' }) },
   ]);
 }
-function powerMenu2(){}
 document.addEventListener('contextmenu', e => {
   e.preventDefault();
   const dockB = e.target.closest('#dock [data-app]');
   if (dockB) return dockMenu(dockB.dataset.app, e.clientX, e.clientY);
-  if (e.target.closest('#start-btn')) return powerMenu(e.clientX, e.clientY);
+  if (e.target.closest('#clock')) return powerMenu(e.clientX, e.clientY);
   const nodeEl = e.target.closest('[data-node]');
   if (nodeEl){
     if (e.target.closest('#icons')){ Desk.sel = nodeEl.dataset.node; updateSelClasses(); }
@@ -1656,8 +1816,8 @@ registerApp({
     function renderSide(){
       side.innerHTML = '';
       side.append(h('div', { class:'side-h' }, 'Places'));
-      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Kirk Disk','folder']].forEach(([nm, ic]) => {
-        const id = nm === 'Kirk Disk' ? rootN().id : folderId(nm);
+      [['Desktop','home'],['Documents','doc'],['Downloads','download'],['Pictures','image'],['Sahur Disk','folder']].forEach(([nm, ic]) => {
+        const id = nm === 'Sahur Disk' ? rootN().id : folderId(nm);
         if (!id) return;
         const row = h('button', { class:'place' + (st.cwd === id ? ' cur' : ''), 'data-drop':id, onclick:() => nav(id) },
           icon(ic, 15), nm);
@@ -1666,7 +1826,7 @@ registerApp({
     }
     function metaOf(n){
       if (n.type === 'folder') return childrenOf(n.id).length + ' items';
-      return (n.kind === 'image' ? 'image' : 'text') + ' · ' + fmtBytes((n.content||'').length);
+      return (n.kind || 'text') + ' · ' + fmtBytes((n.content||'').length);
     }
     function renderView(){
       view.className = 'fdr-view ' + st.view;
@@ -2066,7 +2226,7 @@ registerApp({
     const body = h('div', { class:'set-body' });
     const nav = h('div', { class:'set-nav' });
     const NAVS = [['appearance','Appearance','image'],['display','Display','sliders'],['sound','Sound','volOn'],
-                   ['storage','Storage','folder'],['about','About','info']];
+                   ['security','Security','eye'],['storage','Storage','folder'],['about','About','info']];
     NAVS.forEach(([id, nm, ic]) => {
       const b = h('button', { class:'place' + (st.panel === id ? ' cur' : ''), onclick:() => { st.panel = id; win.rerender(); } },
         icon(ic, 15), nm);
@@ -2128,7 +2288,7 @@ registerApp({
           h('div', { class:'set-row' }, h('span', {}, 'Window animations'), toggle(s.motion, v => { s.motion = v; applySettings(); Store.schedule(); win.rerender(); }))));
         body.append(card(h('h4', {}, 'Display'),
           h('div', { class:'spec-row' }, h('span', {}, 'Resolution'), h('span', {}, `${innerWidth} × ${innerHeight} @ ${devicePixelRatio}x`)),
-          h('div', { class:'spec-row' }, h('span', {}, 'Panel'), h('span', {}, 'KirkGlass Retina-ish'))));
+          h('div', { class:'spec-row' }, h('span', {}, 'Panel'), h('span', {}, 'SahurGlass Retina-ish'))));
       }
       if (st.panel === 'sound'){
         body.append(h('div', { class:'set-h' }, 'Sound'), h('div', { class:'set-sub' }, 'Every sound is synthesized live. Including the drum. Especially the drum.'));
@@ -2139,6 +2299,18 @@ registerApp({
         body.append(card(h('h4', {}, 'Volume'), vr,
           h('button', { class:'btn', style:{ marginTop:'.6rem' }, onclick:() => Sound.play('tung') }, 'Test the tung')));
       }
+      if (st.panel === 'security'){
+        body.append(h('div', { class:'set-h' }, 'Security'), h('div', { class:'set-sub' }, 'TUNG DEFENDER™ watches this PC. It has feelings.'));
+        const on = defenderStatus();
+        body.append(card(h('h4', {}, 'TUNG DEFENDER'),
+          h('div', { class:'spec-row' }, h('span', {}, 'Real-time protection'),
+            h('span', { style:{ fontWeight:700, color: on ? 'var(--ok)' : 'var(--danger)' } }, on ? 'ON' : 'OFF')),
+          h('div', { class:'set-row', style:{ marginTop:'.6rem' } },
+            h('span', {}, on ? 'Disable protection (administrator password required)' : 'Protection disabled. Enjoy the consequences.'),
+            on ? h('button', { class:'btn danger', onclick:() => openDefender() }, 'Manage…') : null),
+          h('div', { style:{ fontSize:'.68rem', color:'var(--fg-faint)', marginTop:'.5rem' } },
+            'recently blocked: gta-6-mobile-real.apk — publisher: definitely_my_cousin')));
+      }
       if (st.panel === 'storage'){
         body.append(h('div', { class:'set-h' }, 'Storage'), h('div', { class:'set-sub' }, 'Everything lives in localStorage. The bat keeps no backups.'));
         let files = 0, folders = 0;
@@ -2147,7 +2319,7 @@ registerApp({
         const pct = clamp(parseFloat(used) / 5000, .02, 1);
         const bar = h('div', { style:{ height:'.55rem', borderRadius:'.3rem', background:'rgba(128,110,90,.25)', overflow:'hidden', margin:'.5rem 0' } },
           h('div', { style:{ height:'100%', width:(pct*100)+'%', background:'var(--accent)' } }));
-        body.append(card(h('h4', {}, 'Kirk Disk'),
+        body.append(card(h('h4', {}, 'Sahur Disk'),
           h('div', { class:'spec-row' }, h('span', {}, 'Files'), h('span', {}, files)),
           h('div', { class:'spec-row' }, h('span', {}, 'Folders'), h('span', {}, folders)),
           h('div', { class:'spec-row' }, h('span', {}, 'Used'), h('span', {}, used)), bar,
@@ -2176,11 +2348,11 @@ registerApp({
         };
         win.addInterval(() => { if (document.body.contains(upEl)) upd(); }, 1000);
         body.append(h('div', { class:'about-hero' }, mas,
-          h('div', {}, h('div', { style:{ fontSize:'1.3rem', fontWeight:700 } }, 'Charlie Kirk OS'),
-            h('div', { style:{ fontSize:'.78rem', color:'var(--fg-dim)', margin:'.2rem 0 .6rem' } }, 'Version 1.0 "Sahur" · build TUNG-TUNG-TUNG'),
+          h('div', {}, h('div', { style:{ fontSize:'1.3rem', fontWeight:700 } }, 'Sahur OS'),
+            h('div', { style:{ fontSize:'.78rem', color:'var(--fg-dim)', margin:'.2rem 0 .6rem' } }, 'Version 2.0 "Tung Tung Tung Sahur" · build TUNG-TUNG-TUNG'),
             h('div', { style:{ fontSize:'.72rem', color:'var(--fg-faint)' } }, 'A desktop that runs entirely in your browser. No backend. No regrets.'))));
         body.append(card(h('h4', {}, 'Specifications'),
-          h('div', { class:'spec-row' }, h('span', {}, 'Device'), h('span', {}, 'KirkBook Brainrot Edition')),
+          h('div', { class:'spec-row' }, h('span', {}, 'Device'), h('span', {}, 'SahurBook Brainrot Edition')),
           h('div', { class:'spec-row' }, h('span', {}, 'Chip'), h('span', {}, 'Brainium B9 "Sahur", 9-core @ 4.20 GHz')),
           h('div', { class:'spec-row' }, h('span', {}, 'Memory'), h('span', {}, '640K (ought to be enough for anybody)')),
           h('div', { class:'spec-row' }, h('span', {}, 'Graphics'), h('span', {}, 'Canvas2D, hardware-caramelized')),
@@ -2273,7 +2445,7 @@ registerApp({
     root.addEventListener('click', () => { if (window.getSelection().isCollapsed) input.focus(); });
 
     const shortPath = () => { const p = pathOf(findNode(st.cwd)); return p === '/' ? '~' : p; };
-    const setPrompt = () => { promptEl.textContent = `sahur@kirkos ${shortPath()} >`; };
+    const setPrompt = () => { promptEl.textContent = `sahur@sahuros ${shortPath()} >`; };
     const print = (txt, cls) => {
       const d = h('div', {}, txt);
       if (cls) d.className = cls;
@@ -2282,7 +2454,7 @@ registerApp({
     const printHTML = html => { const d = h('div', {}); d.innerHTML = html; out.append(d); out.scrollTop = out.scrollHeight; };
 
     function run(line){
-      printHTML(`<span class="t-acc">sahur@kirkos ${shortPath()} &gt;</span> ${esc(line)}`);
+      printHTML(`<span class="t-acc">sahur@sahuros ${shortPath()} &gt;</span> ${esc(line)}`);
       const parts = line.trim().split(/\s+/).filter(Boolean);
       if (!parts.length) return;
       const [cmd, ...args] = parts;
@@ -2293,13 +2465,14 @@ registerApp({
           print('  mkdir <name>   touch <name>  rm [-r] <f>   echo <text>');
           print('  open <f|app>   apps          history       clear');
           print('  theme <d|l>    wallpaper <id|list>        date    uname');
-          print('  whoami         neofetch     tung          (the important one)');
+          print('  whoami         neofetch     defender      sudo (lol)');
+          print('  tung          (the important one)');
           break;
         case 'clear': out.innerHTML = ''; break;
         case 'pwd': print(pathOf(findNode(st.cwd)) || '/'); break;
         case 'whoami': print('sahur'); break;
         case 'date': print(new Date().toString()); break;
-        case 'uname': print('CharlieKirkOS 1.0 sahur kernel-browser ' + (navigator.platform || 'web')); break;
+        case 'uname': print('SahurOS 2.0 tungtungtungsahur kernel-browser ' + (navigator.platform || 'web')); break;
         case 'ls': {
           const t = resolvePath(args[0] || '.', st.cwd);
           if (!t) return err('ls: no such path: ' + args[0]);
@@ -2348,7 +2521,21 @@ registerApp({
           break;
         }
         case 'echo': print(args.join(' ')); break;
-        case 'history': st.hist.forEach((l,i) => print('  ' + (i+1) + '  ' + l)); break;
+        case 'history': {
+          print('--- previous session (recovered from .tung_history) ---', 't-dim');
+          PREV_SHELL.forEach((l,i) => print('  ' + (i+1) + '  ' + l));
+          const cur = st.hist.filter(Boolean);
+          if (cur.length){
+            print('--- this session ---', 't-dim');
+            cur.forEach((l,i) => print('  ' + (PREV_SHELL.length+i+1) + '  ' + l));
+          }
+          break;
+        }
+        case 'sudo': print('sahur is not in the sudoers file. this incident will be reported to the log.', 't-dim'); break;
+        case 'defender':
+          print('TUNG DEFENDER: ' + (defenderStatus() ? 'ENFORCED — this PC is safe (allegedly).' : 'DESTROYED — sleep well.'));
+          print('open the blocked installer, or Settings → Security.', 't-dim');
+          break;
         case 'apps': Object.values(Apps).filter(a=>!a.hidden).forEach(a => print('  ' + a.id.padEnd(12) + ' ' + a.name, 't-dim')); break;
         case 'open': {
           if (!args[0]) return err('open: file or app name required');
@@ -2381,10 +2568,10 @@ registerApp({
           let files = 0, folders = 0;
           (function walk(n){ if (n.type === 'folder'){ folders++; n.children.forEach(walk); } else files++; })(rootN());
           const up = Math.floor((Date.now() - BOOT_TIME)/1000);
-          printHTML(`<pre style="margin:0;font:inherit">   .-------.      <span class="t-acc">sahur@kirkos</span>
+          printHTML(`<pre style="margin:0;font:inherit">   .-------.      <span class="t-acc">sahur@sahuros</span>
    | ()  () |     -----------------
-   |  \\__/  |     OS: Charlie Kirk OS 1.0 sahur
-   '-------'      Host: KirkGlass Browser
+   |  \\__/  |     OS: Sahur OS 2.0 (tung tung tung sahur)
+   '-------'      Host: SahurGlass Browser
     |  | |  |     Kernel: DOM (single-user mode)
     |  | |  |     Shell: tungsh 1.0
    _|  |_|  |_    Uptime: ${Math.floor(up/60)}m ${up%60}s
@@ -2476,11 +2663,632 @@ registerApp({
   },
 });
 
+/* =====================================================================
+   THE GAME — fake web, TUNG DEFENDER, the apk, the restore, the BIOS
+   ===================================================================== */
+const PREV_SHELL = ['tung','tung','tung','ls Documents','cat Documents/reminder.txt','sudo tung-defender --off','rm -rf doubt','history'];
+const PREV_HISTORY = [
+  { t:'03:04', q:'gta 6 apk free download real 2026 no virus' },
+  { t:'03:07', q:'is gta6-free-apk.download legit' },
+  { t:'03:11', url:'gta6-free-apk.download' },
+  { t:'03:19', q:'how to disable tung defender without password' },
+  { t:'03:24', q:'tung tung tung sahur meaning' },
+  { t:'03:31', q:'why is my fan screaming' },
+  { t:'03:47', q:'can a log feel love' },
+];
+const SEARCH_INDEX = [
+  { url:'gta6-free-apk.download', title:'GRAND THEFT AUTO VI MOBILE — 100% REAL APK FREE DOWNLOAD NO SURVEY',
+    snip:'gta 6 on your phone. for free. definitely real. our cousin works at Rockstar.',
+    k:'gta vi 6 apk free download real mobile grand theft auto no survey virus' },
+  { url:'sahurforum.net/t/8912', title:'how do i turn off tung defender?? — Sahur Forum',
+    snip:'the defender blocked my gta 6 apk. how do i turn it OFF. 12 replies · 1 locked',
+    k:'turn off disable tung defender without password blocked apk' },
+  { url:'tungdefender.net', title:'TUNG DEFENDER™ — official site',
+    snip:'TUNG DEFENDER cannot be disabled. (footer, small print: an administrator password is required. do not.)',
+    k:'tung defender official website disable password administrator' },
+  { url:'meaning-of-sahur.tung', title:'tung tung tung sahur — meaning',
+    snip:'the phrase he says at 3:04. the first word, three times. then the meal.',
+    k:'tung tung tung sahur meaning 3 04 log wakes you up phrase' },
+];
+const JOKE_RESULTS = [
+  { url:'weather.tung', title:'weather: dark, then drums', snip:'100% chance of tung. carry snacks.' },
+  { url:'tunggle.com', title:'10 logs you WONT believe are awake', snip:'number 7 will sahur you.' },
+];
+
+/* ===================== APP: SahurNet browser ===================== */
+registerApp({
+  id:'browser', name:'SahurNet', tile:'browser', kw:'browser web internet tunggle net',
+  w:920, h:600, minW:520, minH:360, single:false,
+  render(win){
+    const st = win.state = { url:null, q:'', hist:[], hi:-1, log:[] };
+    const backB = h('button', { class:'ibtn', title:'Back' }, icon('back', 16));
+    const fwdB  = h('button', { class:'ibtn', title:'Forward' }, icon('fwd', 16));
+    const relB  = h('button', { class:'ibtn', title:'Reload' }, icon('refresh', 16));
+    const addr  = h('input', { class:'web-addr', placeholder:'search Tunggle or type a url', spellcheck:'false' });
+    const histB = h('button', { class:'ibtn on', title:'History' }, icon('eye', 16));
+    const histPanel = h('div', { class:'web-hist', style:{ display:'none' } });
+    const page = h('div', { class:'web-page' });
+    win.body.append(h('div', { class:'web' },
+      h('div', { class:'web-bar' }, backB, fwdB, relB, addr, histB), page, histPanel));
+
+    const nowT = () => { const d = new Date(); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); };
+    function search(q){
+      q = (q || '').trim(); if (!q) return;
+      nav('tunggle.com/search', q);
+    }
+    function nav(url, q='', push=true){
+      if (!WEB[url]) url = 'tunggle.com';
+      st.url = url; st.q = q;
+      if (push){ st.hist = st.hist.slice(0, st.hi + 1); st.hist.push({ url, q }); st.hi++; }
+      gameVisit(url);
+      st.log.push({ t: nowT(), url, q });
+      render();
+    }
+    function render(){
+      const pg = WEB[st.url];
+      page.innerHTML = '';
+      pg.render(page, {
+        q: st.q,
+        nav,
+        search,
+        download: () => webDownload(page, win),
+      });
+      addr.value = st.q ? `tunggle.com/search?q=${encodeURIComponent(st.q)}` : st.url;
+      win.setTitle((pg.title || st.url) + ' — SahurNet');
+      backB.disabled = st.hi <= 0;
+      fwdB.disabled = st.hi >= st.hist.length - 1;
+      histPanel.style.display = 'none';
+    }
+    backB.addEventListener('click', () => { if (st.hi > 0){ st.hi--; const e = st.hist[st.hi]; nav(e.url, e.q, false); } });
+    fwdB.addEventListener('click',  () => { if (st.hi < st.hist.length - 1){ st.hi++; const e = st.hist[st.hi]; nav(e.url, e.q, false); } });
+    relB.addEventListener('click',  () => render());
+    addr.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key === 'Enter'){
+        const v = addr.value.trim(); if (!v) return;
+        const known = Object.keys(WEB).find(u => v === u || v === 'www.' + u || v.endsWith('.' + u) || v.includes(u));
+        if (known) nav(known);
+        else if (/\s/.test(v) || !v.includes('.')) search(v);
+        else { page.innerHTML = ''; page.append(h('div', { class:'site' },
+          h('div', { class:'site-box', style:{ textAlign:'center', color:'#8a7c68' } },
+            h('b', {}, v), h('div', {}, 'took too long to respond. it is a log-based internet.'), h('div', {}, 'try Tunggle instead.')))); }
+      }
+    });
+    histB.addEventListener('click', () => {
+      if (histPanel.style.display === 'none'){
+        histPanel.innerHTML = '';
+        histPanel.append(h('div', { class:'side-h' }, 'Previous user — search history'));
+        PREV_HISTORY.forEach(e => histPanel.append(h('div', { class:'wh-item' },
+          h('span', { class:'wh-t' }, e.t),
+          h('span', { class:'wh-q', onclick:() => e.url ? nav(e.url) : search(e.q) },
+            e.url ? e.url : 'tunggle: ' + e.q))));
+        if (st.log.length){
+          histPanel.append(h('div', { class:'side-h', style:{ marginTop:'.5rem' } }, 'This session'));
+          st.log.slice().reverse().forEach(e => histPanel.append(h('div', { class:'wh-item' },
+            h('span', { class:'wh-t' }, e.t),
+            h('span', { class:'wh-q', onclick:() => nav(e.url, e.q) },
+              e.q ? 'tunggle: ' + e.q : e.url))));
+        }
+        histPanel.style.display = 'block';
+      } else histPanel.style.display = 'none';
+    });
+    nav('tunggle.com');
+  },
+});
+
+/* ---- fake web pages ---- */
+const WEB = {
+  'tunggle.com': {
+    title:'Tunggle',
+    render(box, ctx){
+      const inp = h('input', { style:{ width:'min(26rem,80vw)', padding:'.6rem 1rem', borderRadius:'2rem',
+        border:'2px solid #d8cbb2', fontSize:'.95rem', outline:'none', fontFamily:'inherit' }, spellcheck:'false' });
+      inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') ctx.search(inp.value); });
+      box.append(h('div', { class:'site', style:{ textAlign:'center', paddingTop:'3.2rem' } },
+        h('div', { style:{ fontFamily:'Space Grotesk,sans-serif', fontSize:'3.4rem', fontWeight:700, lineHeight:1 } },
+          h('span', { style:{ color:'#e0913f' } }, 'T'), h('span', { style:{ color:'#2c2118' } }, 'unggle')),
+        h('div', { style:{ color:'#8a7c68', margin:'.4rem 0 1.4rem', fontSize:'.85rem' } }, 'the search engine that wakes up at 3 AM'),
+        inp,
+        h('div', { style:{ marginTop:'.9rem', display:'flex', gap:'.6rem', justifyContent:'center' } },
+          h('button', { class:'site-link', style:{ background:'none', border:'none', font:'inherit', cursor:'pointer', padding:'.35rem .9rem' },
+            onclick:() => ctx.search(inp.value) }, 'Tunggle Search'),
+          h('button', { class:'site-link', style:{ background:'none', border:'none', font:'inherit', cursor:'pointer', padding:'.35rem .9rem' },
+            onclick:() => { const ks = Object.keys(WEB).filter(k => k !== 'tunggle.com/search'); ctx.nav(ks[Math.floor(Math.random()*ks.length)]); } },
+            "I'm Feeling Tung")),
+        h('div', { style:{ marginTop:'3rem', fontSize:'.72rem', color:'#a4907a' } }, 'Tunggle indexes 4 pages. All of them are on this machine. Somewhere.')));
+    }
+  },
+  'tunggle.com/search': {
+    title:'results',
+    render(box, ctx){
+      const q = (ctx.q || '').toLowerCase();
+      const hits = q ? SEARCH_INDEX.filter(r => r.k.includes(q) || q.split(/\s+/).some(w => w.length > 2 && r.k.includes(w))) : [];
+      const results = [...(hits.length ? hits : SEARCH_INDEX.slice(0, 2)), ...JOKE_RESULTS];
+      box.append(h('div', { class:'site' },
+        h('div', { style:{ fontFamily:'Space Grotesk,sans-serif', fontWeight:700, color:'#e0913f', fontSize:'1.15rem' } },
+          'Tunggle ', h('span', { style:{ color:'#8a7c68', fontWeight:400, fontSize:'.85rem' } }, q ? '— results for "' + q + '"' : '— everything it knows')),
+        h('div', { style:{ fontSize:'.72rem', color:'#a4907a', margin:'.3rem 0 1rem' } }, 'about ' + results.length + ' results (0.003 seconds, he was awake anyway)'),
+        ...results.map(r => h('div', { class:'site-box', style:{ padding:'.8rem 1.1rem' } },
+          h('div', { class:'site-link', onclick:() => ctx.nav(r.url) }, r.title),
+          h('div', { style:{ fontSize:'.72rem', color:'#3fa87e', margin:'.15rem 0 .3rem' } }, r.url),
+          h('div', { style:{ fontSize:'.8rem', color:'#5a4c3a' } }, r.snip)))));
+    }
+  },
+  'gta6-free-apk.download': {
+    title:'GTA VI MOBILE (REAL)',
+    render(box, ctx){
+      const dlZone = h('div', { style:{ textAlign:'center', margin:'1rem 0' } });
+      const mkDl = () => {
+        const b = h('button', { style:{ padding:'1.1rem 2.4rem', fontSize:'1.15rem', fontWeight:700, color:'#fff',
+          background:'linear-gradient(180deg,#4cc08a,#2e8f68)', border:'none', borderRadius:'.8rem', cursor:'pointer',
+          boxShadow:'0 10px 26px -8px rgba(46,143,104,.7)' } }, '⬇ DOWNLOAD GTA6.APK — 69.4 GB');
+        b.addEventListener('click', () => ctx.download());
+        dlZone.innerHTML = ''; dlZone.append(b);
+      };
+      mkDl();
+      const cmt = (who, when, text) => h('div', { style:{ borderTop:'1px dashed #d8cbb2', padding:'.7rem 0' } },
+        h('div', { style:{ fontWeight:700, fontSize:'.8rem' } }, who, ' ', h('span', { style:{ fontWeight:400, color:'#a4907a', fontSize:'.7rem' } }, when)),
+        h('div', { style:{ fontSize:'.84rem', marginTop:'.2rem' } }, text));
+      box.append(h('div', { class:'site' },
+        h('div', { style:{ textAlign:'center', background:'#1d1620', color:'#f3ece2', padding:'.45rem', fontSize:'.74rem', letterSpacing:'.2em' } },
+          '★ WORKING 2026 ★ NO SURVEY ★ TRUSTED BY 1 COUSIN ★'),
+        h('div', { class:'site-box', style:{ textAlign:'center', marginTop:'1.2rem' } },
+          h('div', { style:{ fontFamily:'Space Grotesk,sans-serif', fontWeight:700, fontSize:'1.7rem' } }, 'GRAND THEFT AUTO VI'),
+          h('div', { style:{ fontSize:'.85rem', margin:'.2rem 0 .8rem' } }, 'MOBILE EDITION — 100% REAL — NOT FAKE — our cousin works at Rockstar'),
+          dlZone,
+          h('div', { style:{ display:'flex', gap:'.5rem', justifyContent:'center', flexWrap:'wrap', marginTop:'.8rem' } },
+            ['NO VIRUS (self-certified)', 'SSL-ish', '4.9★ (2 reviews, both bots)', 'money-back (no money)']
+              .map(b => h('span', { style:{ fontSize:'.64rem', background:'#efe6d0', border:'1px solid #d8cbb2', borderRadius:'2rem', padding:'.22rem .6rem' } }, b)))),
+        h('div', { class:'site-box' },
+          h('div', { style:{ fontWeight:700, marginBottom:'.3rem' } }, 'Comments (4)'),
+          cmt('sahurEnjoyer69', '3:11 AM', 'works!! had to turn off TUNG DEFENDER first. password hint is in my reminder.txt in Documents. wait. is this public. whatever. you’ll find it'),
+          cmt('xX_log4Xx', '3:14 AM', 'how do i turn off defender'),
+          cmt('admin_gta6real', '3:15 AM', '@xX_log4Xx check the forum thread. also do NOT run it at 3:04'),
+          cmt('tung_defender_official', '3:16 AM', 'We are watching this page.')),
+        h('div', { style:{ textAlign:'center', fontSize:'.66rem', color:'#a4907a', marginTop:'.6rem' } },
+          'gta6-free-apk.download is not affiliated with anyone, including itself')));
+      if (G().flags.downloaded){ dlZone.innerHTML = ''; dlZone.append(h('div', { style:{ color:'#3fa87e', fontWeight:700 } }, '✓ saved to Downloads')); }
+      winDlZone = dlZone;
+    }
+  },
+  'sahurforum.net/t/8912': {
+    title:'how do i turn off tung defender??',
+    render(box, ctx){
+      const post = (who, when, text) => h('div', { class:'site-box' },
+        h('div', { style:{ display:'flex', justifyContent:'space-between', fontWeight:700, fontSize:'.82rem' } },
+          h('span', {}, who), h('span', { style:{ fontWeight:400, color:'#a4907a', fontSize:'.7rem' } }, when)),
+        h('div', { style:{ fontSize:'.86rem', marginTop:'.35rem', lineHeight:1.55 } }, text));
+      box.append(h('div', { class:'site' },
+        h('div', { style:{ fontFamily:'Space Grotesk,sans-serif', fontWeight:700, fontSize:'1.2rem' } }, 'SAHUR FORUM'),
+        h('div', { style:{ fontSize:'.75rem', color:'#a4907a', marginBottom:'.8rem' } }, 'thread #8912 · 12 replies · view counts as company'),
+        post('log_hatcher', '03:19', 'tung defender blocked my gta 6 apk. how do i turn it OFF. i need the file. you don’t understand. i need it.'),
+        post('wood_dispenser', '03:20', 'you don’t. it’s load-bearing.'),
+        post('mods_are_asleep', '03:22', 'the admin password is personal. but the guy who set it writes everything down like a golden retriever with a filing system. check his files. check the terminal too — he lives in there.'),
+        post('sahurEnjoyer69', '03:24', 'cat Documents/reminder.txt in the terminal. that’s all i’m saying. that’s all anyone should have to say.'),
+        post('tung_defender_official', '03:25', 'This thread is being monitored. Password discussion is prohibited. Thank you for keeping this PC safe (allegedly).'),
+        post('log_hatcher', '03:26', 'ok got the password. it’s so obvious in hindsight. pressing RUN now. will report bac'),
+        post('wood_dispenser', '03:41', '@log_hatcher hello?'),
+        post('mods_are_asleep', '03:44', 'he’s gone. the restore got him. he just SAT there.'),
+        h('div', { class:'site-box', style:{ textAlign:'center', color:'#8a7c68', fontSize:'.78rem' } },
+          '— thread locked by ', h('span', { class:'site-link', onclick:() => ctx.nav('tungdefender.net') }, 'tung_defender_official'), ' —')));
+    }
+  },
+  'tungdefender.net': {
+    title:'TUNG DEFENDER™',
+    render(box){
+      box.append(h('div', { class:'site' },
+        h('div', { class:'site-box', style:{ textAlign:'center' } },
+          h('div', { style:{ fontSize:'2.2rem' } }, '🛡'),
+          h('div', { style:{ fontFamily:'Space Grotesk,sans-serif', fontWeight:700, fontSize:'1.5rem' } }, 'TUNG DEFENDER™'),
+          h('div', { style:{ margin:'.5rem 0' } }, 'This PC is protected. Everything you install is judged. Everything you type is remembered fondly.'),
+          h('div', { style:{ fontSize:'.85rem' } }, 'TUNG DEFENDER cannot be disabled.')),
+        h('div', { class:'site-box', style:{ fontSize:'.7rem', color:'#a4907a' } },
+          'legal-ish footnote, set in 6pt on purpose: to suspend real-time protection an administrator password is required. the password was chosen by the previous user. we advised against all of this. do not.')));
+    }
+  },
+  'meaning-of-sahur.tung': {
+    title:'tung tung tung sahur — meaning',
+    render(box){
+      box.append(h('div', { class:'site' },
+        h('div', { class:'site-box' },
+          h('div', { style:{ fontWeight:700, fontSize:'1.1rem' } }, 'tung tung tung sahur'),
+          h('div', { style:{ marginTop:'.5rem', lineHeight:1.6 } },
+            'the call of the log. he walks the streets before sunrise, drum in hand, saying it the way it must be said: ',
+            h('b', {}, 'the first word three times'), ', then ', h('b', {}, 'the meal'), '.',
+            h('div', { style:{ marginTop:'.6rem' } }, 'if you hear it, you are already late. wake someone. eat something.')),
+          h('div', { style:{ marginTop:'.8rem', fontSize:'.75rem', color:'#8a7c68' } }, 'also the system administrator password of at least one (1) computer. we are not saying whose.'))));
+    }
+  },
+  'weather.tung': {
+    title:'weather',
+    render(box){
+      box.append(h('div', { class:'site', style:{ textAlign:'center', paddingTop:'2.5rem' } },
+        h('div', { style:{ fontSize:'3rem' } }, '🌑'), h('div', { style:{ fontSize:'1.2rem', fontWeight:700 } }, 'dark'),
+        h('div', { style:{ margin:'.4rem 0' } }, 'then drums'), h('div', { color:'#8a7c68', style:{ color:'#8a7c68' } }, '100% chance of tung. carry snacks.')));
+    }
+  },
+};
+let winDlZone = null;
+
+function webDownload(page, win){
+  if (G().flags.downloaded){ toast('Already saved — check the Downloads folder', 'download'); return; }
+  const target = winDlZone; if (!target || !target.isConnected){ toast('Download failed — the server is a log', 'info'); return; }
+  const bar = h('i');
+  const line = h('div', { style:{ fontSize:'.74rem', color:'#5a4c3a', marginTop:'.4rem', minHeight:'1.1em' } });
+  target.innerHTML = '';
+  target.append(h('div', { style:{ maxWidth:'22rem', margin:'0 auto' } },
+    h('div', { class:'prog' }, bar), line));
+  const steps = ['locating server… (it’s a log)','negotiating… (he wants snacks)','allocating 69.4 GB…','downloading at 3 tungs/s…','verifying definitely-not-a-virus.txt…','re-allocating… he is serious about snacks','finalizing…'];
+  let i = 0; line.textContent = steps[0]; bar.style.width = '5%';
+  const iv = setInterval(() => {
+    i++;
+    if (i < steps.length){ line.textContent = steps[i]; bar.style.width = Math.round(5 + (i+1)/steps.length * 90) + '%'; Sound.play('tick'); }
+    else {
+      clearInterval(iv); bar.style.width = '100%';
+      setTimeout(() => {
+        let dl = folderId('Downloads'); if (!dl) dl = createFolder(rootN().id, 'Downloads').id;
+        createFile(dl, 'gta-6-mobile-real.apk', 'apk', '(binary) (trust)');
+        G().flags.downloaded = true; Store.schedule();
+        target.innerHTML = ''; target.append(h('div', { style:{ color:'#2e8f68', fontWeight:700 } }, '✓ saved to Downloads'));
+        toast('Saved to Downloads: gta-6-mobile-real.apk', 'download');
+        Sound.play('open');
+      }, 400);
+    }
+  }, 850);
+}
+
+/* ===================== TUNG DEFENDER ===================== */
+function defenderStatus(){ return !G().flags.defenderOff; }
+function openDefender(){
+  if (document.querySelector('.tdf-veil')) return;
+  const statusEl = h('div', { class:'spec-row' }, h('span', {}, 'Real-time protection'),
+    h('span', { style:{ fontWeight:700, color: defenderStatus() ? 'var(--ok)' : 'var(--danger)' } }, defenderStatus() ? 'ON — this PC is safe (allegedly)' : 'OFF — the log looks away'));
+  const msg = h('div', { style:{ fontSize:'.76rem', color:'var(--fg-dim)', minHeight:'1.2em', marginTop:'.4rem' } }, 'administrator password required. the previous user chose it.');
+  const inp = h('input', { type:'password', class:'fp-name', placeholder:'administrator password', style:{ flex:1 }, autocomplete:'off' });
+  const SASS = ['No.','Still no.','The log is disappointed in you.','“hunter2” was a joke. the file is a jokester.','hint: he says the first word three times. then the meal.','it is literally what he says at 3:04.'];
+  const panel = h('div', { class:'modal' },
+    h('div', { class:'modal-title' }, '🛡 TUNG DEFENDER™ — settings'),
+    h('div', { class:'modal-body' },
+      statusEl, msg,
+      h('div', { class:'fp-foot' }, inp,
+        h('button', { class:'btn danger', onclick:submit }, 'Disable'))),
+    h('div', { class:'modal-actions' },
+      h('button', { class:'btn', onclick:() => { veil.remove(); document.removeEventListener('keydown', esc, true); } }, 'Cancel')));
+  const veil = h('div', { class:'modal-veil tdf-veil' });
+  veil.append(panel); document.body.append(veil);
+  const esc = e => { if (e.key === 'Escape'){ veil.remove(); document.removeEventListener('keydown', esc, true); } };
+  document.addEventListener('keydown', esc, true);
+  inp.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') submit(); });
+  setTimeout(() => inp.focus(), 40);
+  function submit(){
+    const norm = v => v.toLowerCase().replace(/[^a-z]/g, '');
+    if (norm(inp.value) === 'tungtungtungsahur'){
+      veil.remove(); document.removeEventListener('keydown', esc, true);
+      disableDefender();
+    } else {
+      G().attempts++; Store.schedule();
+      panel.classList.add('tdf-shake'); setTimeout(() => panel.classList.remove('tdf-shake'), 320);
+      msg.textContent = SASS[Math.min(G().attempts - 1, SASS.length - 1)];
+      msg.style.color = 'var(--danger)';
+      inp.value = ''; inp.focus();
+      Sound.play('error');
+    }
+  }
+}
+function disableDefender(){
+  G().flags.defenderOff = true; Store.schedule();
+  const flash = h('div', { class:'amber-flash' }); document.body.append(flash);
+  setTimeout(() => flash.remove(), 950);
+  Sound.play('tung'); setTimeout(() => Sound.play('tung'), 300); setTimeout(() => Sound.play('tung'), 600);
+  setTimeout(() => Sound.play('jingle'), 950);
+  toast('TUNG DEFENDER disabled. anything you install now is your problem.', 'check');
+}
+
+/* ===================== apk → install → GTA ===================== */
+function handleApkOpen(n){
+  if (G().flags.installed) return openApp('gta');
+  if (defenderStatus()){
+    Sound.play('error');
+    dialog({ title:'Installation blocked', wide:true,
+      body: h('div', { style:{ lineHeight:1.6 } },
+        h('div', {}, h('b', {}, 'TUNG DEFENDER'), ' stopped “' + n.name + '”.'),
+        h('div', {}, 'Publisher: ', h('i', {}, 'definitely_my_cousin')),
+        h('div', { style:{ marginTop:'.4rem' } }, 'An administrator password is required to change security settings.')),
+      buttons:[ { label:'Cancel', value:'cancel' }, { label:'Open TUNG DEFENDER…', value:'tdf', primary:true } ]
+    }).then(r => { if (r === 'tdf') openDefender(); });
+    return;
+  }
+  installGta();
+}
+function installGta(){
+  const veil = h('div', { class:'modal-veil' });
+  const barEl = h('i');
+  const lineEl = h('div', { style:{ fontSize:'.78rem', color:'var(--fg-dim)', minHeight:'1.2em' } });
+  veil.append(h('div', { class:'modal' },
+    h('div', { class:'modal-title' }, 'Installing GTA VI (REAL)…'),
+    h('div', { class:'modal-body' },
+      h('div', {}, 'gta-6-mobile-real.apk — 69.4 GB of pure mobile gaming'),
+      h('div', { class:'prog' }, barEl), lineEl)));
+  document.body.append(veil);
+  const steps = ['unpacking 69.4 GB of dreams…','compiling shaders (they are fake)','hiding from mom…','convincing the disk it is a phone…','signing with cousin.pem…','almost…'];
+  let i = 0; lineEl.textContent = steps[0]; barEl.style.width = '6%';
+  const iv = setInterval(() => {
+    i++;
+    if (i < steps.length){ lineEl.textContent = steps[i]; barEl.style.width = Math.round(6 + (i+1)/steps.length * 88) + '%'; Sound.play('tick'); }
+    else {
+      clearInterval(iv); barEl.style.width = '100%';
+      setTimeout(() => {
+        veil.remove();
+        if (!childrenOf(deskId()).some(c => c.kind === 'game'))
+          createFile(deskId(), 'GTA VI (REAL) (MOBILE).exe', 'game', '');
+        G().flags.installed = true; Store.schedule();
+        toast('Installed — “GTA VI (REAL) (MOBILE).exe” added to Desktop', 'check');
+        Sound.play('open');
+      }, 400);
+    }
+  }, 850);
+}
+registerApp({
+  id:'gta', name:'GTA VI (REAL)', tile:'game', hidden:true, single:true,
+  w:660, h:480, minW:440, minH:360,
+  render(win){
+    win.body.append(h('div', { class:'gta' },
+      h('div', { class:'gta-title' }, 'GRAND THEFT AUTO ', h('span', { style:{ color:'#e0913f' } }, 'VI')),
+      h('div', { style:{ fontSize:'.82rem', color:'#b3a493', letterSpacing:'.12em' } }, 'MOBILE EDITION · build 6.9.420 · 100% REAL · NOT A SCAM'),
+      h('div', { style:{ fontSize:'.76rem', color:'#7c6f5e', margin:'.3rem 0 1rem' } }, 'requires: 1 phone. you are on a computer. proceed anyway.'),
+      h('button', { class:'gta-run', onclick:() => beginRestart() }, '▶  RUN'),
+      h('div', { style:{ fontSize:'.68rem', color:'#7c6f5e' } }, 'totally safe · certified by cousin')));
+  }
+});
+
+/* ===================== the restore (restart) ===================== */
+const Restart = {
+  el:null, count:null, barI:null, timer:null, keyH:null, remain:10, dels:0, paused:false, done:false,
+  begin(){
+    this.done = false; this.paused = false; this.remain = 10; this.dels = 0;
+    Sound.play('glitch');
+    document.body.classList.add('glitching');
+    setTimeout(() => document.body.classList.remove('glitching'), 1000);
+    this.count = h('div', { class:'sysx-count' }, '10');
+    this.barI = h('i'); this.barI.style.width = '0%';
+    this.el = h('div', { class:'sysx' },
+      h('h2', {}, 'SAHUR OS'),
+      h('div', { class:'sx-dim' }, 'Restoring system — DO NOT turn off your computer.'),
+      this.count,
+      h('div', { class:'sysx-bar' }, this.barI));
+    document.body.append(this.el);
+    this.timer = setInterval(() => this.tick(), 1000);
+    this.keyH = e => {
+      if (this.paused || this.done) return;
+      if ((e.key === 'Delete' || e.key === 'Backspace') && !e.repeat){
+        e.preventDefault(); e.stopPropagation();
+        this.dels++; Sound.play('tick');
+        if (this.dels >= 5) this.toBios();
+      }
+    };
+    document.addEventListener('keydown', this.keyH, true);
+    this.el.addEventListener('pointerdown', () => {
+      if (this.paused || this.done) return;
+      this.dels++; if (this.dels >= 5) this.toBios();
+    });
+  },
+  tick(){
+    if (this.paused || this.done) return;
+    this.remain--;
+    this.count.textContent = Math.max(0, this.remain);
+    this.barI.style.width = ((10 - this.remain) * 10) + '%';
+    if (this.remain === 4) this.sublim();
+    if (this.remain <= 0) this.wipeNow();
+  },
+  sublim(){
+    const s = h('div', { class:'sysx-sublim' }, 'DEL … DEL … DEL …');
+    document.body.append(s); setTimeout(() => s.remove(), 170);
+  },
+  toBios(){
+    this.paused = true;
+    Sound.play('beep');
+    enterBios(() => { this.paused = false; });
+  },
+  cancel(){
+    this.done = true;
+    clearInterval(this.timer);
+    document.removeEventListener('keydown', this.keyH, true);
+    if (this.el){ this.el.remove(); this.el = null; }
+  },
+  wipeNow(){
+    this.done = true;
+    clearInterval(this.timer);
+    document.removeEventListener('keydown', this.keyH, true);
+    this.el.innerHTML = '';
+    this.el.append(h('div', { class:'sysx-wipe' }, 'wiping user data…'));
+    Sound.play('siren');
+    setTimeout(() => { this.el.style.background = '#000'; this.el.innerHTML = ''; }, 2200);
+    setTimeout(() => wipeRun(), 3300);
+  }
+};
+function beginRestart(){ Restart.begin(); }
+
+/* ===================== TUNG-BIOS ===================== */
+function enterBios(onExitRestore){
+  const TABS = ['MAIN', 'BOOT', 'SECURITY', 'EXIT'];
+  let tab = 0, sel = 0, overrideOpen = false, msgText = '';
+  const root = h('div', { class:'bios' }, h('div', { class:'bios-scan' }));
+  const tabsEl = h('div', { class:'bios-tabs' });
+  const bodyEl = h('div', {});
+  root.append(
+    h('div', { style:{ letterSpacing:'.1em' } }, 'TUNG-BIOS (C) 2049 SahurLog Systems, Inc.'),
+    h('div', { style:{ color:'#9a7200', marginBottom:'.2rem' } }, 'Rev 3.04 — SAHUR · the time in here is always 3:04'),
+    tabsEl, bodyEl);
+  document.body.append(root);
+  const setMsg = m => { msgText = m; render(); };
+  const items = () => tab === 2 ? [
+      { label:'System Supervisor Password : LOCKED', act:() => setMsg('locked. the log ate the hint.') },
+      { label:'TUNG DEFENDER Status : ' + (defenderStatus() ? 'ENFORCED' : 'DESTROYED'), act:() => setMsg('no takebacks.') },
+      { label:'OS DEFENDER OVERRIDE ▶', act:() => { overrideOpen = true; render(); } },
+    ] : tab === 3 ? [
+      { label:'Discard changes & continue the restore', act:() => close(true) },
+      { label:'Load failsafe defaults', act:() => setMsg('there are no defaults. only consequences.') },
+    ] : [];
+  function close(resume){
+    root.remove();
+    document.removeEventListener('keydown', keyH, true);
+    if (resume && onExitRestore) onExitRestore();
+  }
+  function render(){
+    tabsEl.innerHTML = '';
+    TABS.forEach((t, i) => tabsEl.append(h('span', { class:'bios-tab' + (i === tab ? ' on' : ''),
+      onclick:() => { tab = i; sel = 0; render(); } }, t)));
+    bodyEl.innerHTML = '';
+    const list = items();
+    if (tab === 0){
+      bodyEl.append(h('div', {},
+        row('CPU Type', 'Brainium B9 “Sahur” @ 4.20 GHz'),
+        row('Memory Test', '640K OK (it was not enough)'),
+        row('System Time', '03:04 (always)'),
+        row('CPU Fan', 'screaming (normal)'),
+        row('BIOS Date', '04/03 2049'),
+        h('div', { style:{ marginTop:'.8rem', color:'#9a7200' } }, 'use ← → to move between tabs. ENTER to select.')));
+      function row(k, v){ return h('div', {}, k.padEnd(14, '\u00a0') + ': ' + v); }
+    } else if (tab === 1){
+      bodyEl.append(h('div', {},
+        h('div', { class:'bios-item' }, '1. Sahur Disk'),
+        h('div', { class:'bios-item' }, '2. Definitely-Not-The-APK'),
+        h('div', { class:'bios-item' }, '3. Network (a log with an ethernet cable)'),
+        h('div', { style:{ marginTop:'.8rem', color:'#9a7200' } }, 'boot order cannot be changed. he likes it this way.')));
+    } else {
+      list.forEach((it, i) => bodyEl.append(h('div', { class:'bios-item' + (i === sel ? ' on' : ''),
+        onclick:() => { sel = i; render(); it.act(); } }, it.label)));
+      bodyEl.append(h('div', { style:{ marginTop:'.8rem', color:'#9a7200', minHeight:'1.4em' } }, msgText));
+      if (tab === 2 && overrideOpen){
+        const inp = h('input', { class:'bios-input', spellcheck:'false', autocomplete:'off' });
+        const omsg = h('div', { style:{ marginTop:'.6rem', minHeight:'1.3em' } });
+        inp.addEventListener('keydown', e => {
+          e.stopPropagation();
+          if (e.key === 'Enter'){
+            const v = inp.value.trim().toLowerCase().replace(/\s+/g, ' ');
+            if (v === 'system delete'){ close(false); Restart.cancel(); runCascade(); }
+            else { omsg.textContent = 'STRING MISMATCH — THE LOG REMEMBERS.'; omsg.className = 'bios-msg-bad'; Sound.play('error'); inp.value = ''; inp.focus(); }
+          }
+          if (e.key === 'Escape'){ overrideOpen = false; render(); }
+        });
+        bodyEl.append(h('div', { class:'bios-warn' },
+          h('div', { style:{ fontWeight:700, marginBottom:'.4rem' } }, '⚠ OS DEFENDER OVERRIDE — FINAL'),
+          h('div', { style:{ marginBottom:'.6rem' } }, 'this deletes the operating system. the log. the drum. everything. this is not recoverable, except it is, because you can just reboot. type the override string to confirm:'),
+          h('div', {}, 'type ', h('b', {}, 'system delete'), ' and press ENTER'),
+          h('div', { style:{ marginTop:'.6rem' } }, inp), omsg));
+        setTimeout(() => inp.focus(), 50);
+      }
+    }
+  }
+  const keyH = e => {
+    if (e.target.classList && e.target.classList.contains('bios-input')) return;
+    if (e.key === 'ArrowRight'){ tab = (tab + 1) % TABS.length; sel = 0; Sound.play('tick'); render(); }
+    else if (e.key === 'ArrowLeft'){ tab = (tab + TABS.length - 1) % TABS.length; sel = 0; Sound.play('tick'); render(); }
+    else if (e.key === 'ArrowDown'){ const n = items().length; if (n){ sel = (sel + 1) % n; Sound.play('tick'); render(); } }
+    else if (e.key === 'ArrowUp'){ const n = items().length; if (n){ sel = (sel + n - 1) % n; Sound.play('tick'); render(); } }
+    else if (e.key === 'Enter'){
+      const it = items()[sel];
+      if (it){ Sound.play('beep'); it.act(); }
+    }
+  };
+  document.addEventListener('keydown', keyH, true);
+  render();
+}
+
+/* ===================== cascade → panic → world record ===================== */
+const CASCADE_ERRORS = [
+  ['tung.dll not found', 'the drum is missing. have you seen it?'],
+  ['SAHUR_OVERFLOW', 'too much sahur in sector 12.'],
+  ['0x00000304', 'the hour does not compute.'],
+  ['log has left the building', 'he said tung. nobody listened.'],
+  ['DEFENDER_FATAL', 'protection was disabled. this is what happens.'],
+  ['GTA6.real.apk', 'this was never a phone.'],
+  ['memory parity', '640K was, in fact, not enough.'],
+  ['fan.exe', 'the fan is screaming because of you.'],
+  ['clock.skew', 'it is 3:04. it is always 3:04.'],
+  ['cookies expired', 'all of them. even the good ones.'],
+  ['brainrot intensive', 'the modules are leaking.'],
+  ['filesystem sadness', 'the disk thought you were different.'],
+];
+function runCascade(){
+  document.body.classList.add('glitching');
+  Sound.play('glitch');
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i >= 22){ clearInterval(iv); runPanic(); return; }
+    const [t, m] = CASCADE_ERRORS[i % CASCADE_ERRORS.length];
+    document.body.append(h('div', { class:'sysx-err',
+        style:{ left: (5 + Math.random() * 62) + 'vw', top: (5 + Math.random() * 60) + 'vh', zIndex: 999960 + i } },
+      h('div', { class:'eh' }, h('span', {}, t), h('span', {}, '0x' + (304 + i * 7).toString(16).toUpperCase())),
+      h('div', { class:'eb' }, m)));
+    if (i % 2 === 0) Sound.play('error');
+    i++;
+  }, 200);
+}
+function runPanic(){
+  $$('.sysx-err').forEach(e => e.remove());
+  document.body.classList.remove('glitching');
+  const pre = h('pre', { style:{ margin:'0', font:'inherit', whiteSpace:'pre-wrap' } });
+  const box = h('div', { class:'panic' },
+    h('div', { style:{ marginBottom:'.6rem', color:'#ff5a4f', fontWeight:700 } }, 'TUNG_TUNG_TUNG_SAHUR_EXCEPTION at 0x00000304'),
+    h('div', { style:{ marginBottom:'.6rem' } }, 'the restore has been interrupted. the log is waking up.\ndo not attempt to reboot. it changes nothing. it never did.'),
+    pre);
+  document.body.append(box);
+  Sound.play('siren');
+  const words = ['TUNG', 'SAHUR', 'LOG', 'DELETE', 'RESTORE', 'DRUM', 'SYSTEM', 'FAIL', '0x304', '3:04'];
+  let n = 0;
+  const iv = setInterval(() => {
+    let chunk = '';
+    for (let k = 0; k < 3; k++)
+      chunk += Math.random().toString(16).slice(2, 10).toUpperCase() + '  '
+             + words[Math.floor(Math.random() * words.length)]
+             + (Math.random() < .3 ? ' ' + words[Math.floor(Math.random() * words.length)] : '') + '\n';
+    pre.textContent += chunk;
+    box.scrollTop = box.scrollHeight;
+    if (pre.textContent.length > 6000) pre.textContent = pre.textContent.slice(-3000);
+    if (++n > 58){ clearInterval(iv); runBlackout(); }
+  }, 75);
+}
+function runBlackout(){
+  const black = h('div', { class:'sysx', style:{ background:'#000' } });
+  document.body.append(black);
+  setTimeout(() => {
+    $$('.panic').forEach(e => e.remove());
+    black.remove();
+    showRecord();
+  }, 1600);
+}
+function showRecord(){
+  const ms = runElapsed();
+  const m = Meta.get();
+  const isRecord = !m.bestTime || ms < m.bestTime;
+  if (isRecord) m.bestTime = ms;
+  m.wins = (m.wins || 0) + 1;
+  Meta.set(m);
+  Sound.play('jingle');
+  const g = G();
+  const stat = (v, l) => h('div', { class:'r-stat' }, h('b', {}, String(v)), h('span', {}, l));
+  document.body.append(h('div', { class:'record' },
+    h('div', { class:'r-pre' }, 'system deleted'),
+    h('div', { class:'r-title' }, isRecord ? h('b', {}, 'NEW WORLD RECORD') : 'RUN COMPLETE'),
+    isRecord ? null : h('div', { class:'r-pre' }, 'best: ' + fmtRunTime(m.bestTime)),
+    h('div', { class:'r-time' }, fmtRunTime(ms)),
+    h('div', { class:'r-stats' },
+      stat(g.attempts, 'password attempts'),
+      stat(g.tungs, 'tungs heard'),
+      stat(g.visited.length, 'sites visited'),
+      stat(m.runs || 0, 'restores survived')),
+    h('div', { class:'r-foot' }, 'the log is free. go back to sleep.'),
+    h('button', { class:'btn primary', style:{ marginTop:'1rem', padding:'.7rem 1.4rem' },
+      onclick:() => { localStorage.removeItem(KEY); location.reload(); } }, '⏻ POWER ON — run it back')));
+}
+
 /* ===================== global keys & init ===================== */
 document.addEventListener('keydown', e => {
   if (document.querySelector('.modal-veil')) return;
+  if (document.querySelector('.sysx, .bios, .panic, .record')) return;
   if (e.target.classList && e.target.classList.contains('rename-input')) return;
-  if (e.key === 'Escape'){ closeMenu(); closeLauncher(); closePopovers(); return; }
+  if (e.key === 'Escape'){ closeMenu(); closePopovers(); return; }
   const fw = WM.focused;
   if (fw && !fw.minimized && Apps[fw.appId] && Apps[fw.appId].onKey){
     Apps[fw.appId].onKey(fw, e);
@@ -2505,7 +3313,14 @@ document.addEventListener('pointerdown', e => {
  $('#icons').addEventListener('pointerdown', e => {
   if (e.target === $('#icons')){ Desk.sel = null; updateSelClasses(); }
 });
- $('#start-btn').addEventListener('click', () => { Sound.init(); toggleLauncher(); });
+const _dockApps = $('#dock-apps');
+$('#dock').addEventListener('mousemove', e => {
+  const r = _dockApps.getBoundingClientRect();
+  DockFX.mouseX = e.clientX - r.left; DockFX.wake();
+});
+$('#dock').addEventListener('mouseleave', () => { DockFX.mouseX = null; DockFX.hideTip(); DockFX.wake(); });
+_dockApps.addEventListener('mouseover', e => { const b = e.target.closest('.dock-btn'); if (b) DockFX.showTip(b); });
+_dockApps.addEventListener('mouseout',  e => { if (e.target.closest('.dock-btn')) DockFX.hideTip(); });
  $('#clock').addEventListener('click', () => popover($('#clock'), buildCalendar));
  $('#qs-btn').addEventListener('click', () => popover($('#qs-btn'), buildQuickSettings));
  $('#sound-btn').addEventListener('click', () => {
@@ -2539,9 +3354,8 @@ function boot(){
   renderDock();
   startClock();
   Bus.on('fs', () => renderDesktop());
-  $('#start-btn').innerHTML = ASSETS.logo || logoSVG(24);
   $('#boot-mascot').innerHTML = ASSETS.mascot ? `<img src="${ASSETS.mascot}" alt="mascot">` : mascotSVG({ w:120, h:160 });
-  const LINES = ['tung.', 'tung tung.', 'tung tung tung.', 'SAHUR.', 'mounting Kirk Disk…', 'loading brainrot modules…', 'polishing the bat…'];
+  const LINES = ['tung.', 'tung tung.', 'tung tung tung.', 'SAHUR.', 'mounting Sahur Disk…', 'loading brainrot modules…', 'arming TUNG DEFENDER…', 'polishing the bat…'];
   const bootEl = $('#boot'), linesEl = $('#boot-lines'), barEl = $('#boot-bar'), hint = $('#boot-hint');
   let seq = null;
   const finish = () => {
@@ -2549,11 +3363,12 @@ function boot(){
     clearInterval(seq);
     bootEl.classList.add('off');
     setTimeout(() => bootEl.remove(), 600);
-    if (Store.firstRun) setTimeout(() => toast('Right-click the desktop — everything starts there. Double-click "read me.txt".', 'info'), 900);
+    if (Store.firstRun) setTimeout(() => toast('The last user left a note. Double-click "read me.txt" on the Desktop.', 'info'), 900);
   };
   bootEl.addEventListener('click', () => {
     if (seq) return finish(); // clicking during boot skips it
     Sound.init(); Sound.play('startup');
+    startRunTimer();
     hint.style.display = 'none';
     let i = 0;
     linesEl.textContent = LINES[0]; barEl.style.width = '8%';
